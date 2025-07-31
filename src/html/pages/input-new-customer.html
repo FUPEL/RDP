@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+<!-- [Head] start -->
+<head>
+  @@include('../layouts/head-page-meta.html', {'title': 'Input New Customer'})
+  @@include('../layouts/head-css.html')
+  <style>
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .data-table th, .data-table td {
+      border: 1px solid #e2e8f0;
+      padding: 0.75rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .data-table th {
+      background-color: #f8fafc;
+      font-weight: 600;
+      color: #4a5568;
+    }
+    .data-table tbody tr:nth-child(even) {
+      background-color: #f7fafc;
+    }
+    .data-table tbody tr:hover {
+      background-color: #edf2f7;
+    }
+    .table-container {
+      overflow-x: auto;
+    }
+    /* Custom Notification Styles */
+    #customNotification {
+      position: absolute; /* Changed from fixed to absolute */
+      top: 20px; /* Adjusted position relative to .pc-content */
+      right: 20px; /* Adjusted position relative to .pc-content */
+      padding: 12px 20px;
+      border-radius: 0.5rem; /* rounded-lg */
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-md */
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transition: opacity 0.5s ease-in-out, background-color 0.3s ease, color 0.3s ease; /* Added transitions for color/bg */
+      opacity: 0; /* Start hidden */
+    }
+    #customNotification.hidden {
+      display: none;
+    }
+    /* Specific styles for success and error */
+    #customNotification.success {
+      background-color: #d1fae5; /* green-100 */
+      color: #065f46; /* green-800 */
+    }
+    #customNotification.error {
+      background-color: #fee2e2; /* red-100 */
+      color: #991b1b; /* red-800 */
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      max-width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      transform: translateY(-20px);
+      transition: transform 0.3s ease-in-out;
+    }
+    .modal-overlay.show .modal-content {
+      transform: translateY(0);
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #4a5568;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.375rem;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+  </style>
+</head>
+<!-- [Head] end -->
+
+<!-- [Body] Start -->
+<body>
+  @@include('../layouts/loader.html')
+  @@include('../layouts/sidebar.html')
+  @@include('../layouts/topbar.html')
+
+  <!-- [ Main Content ] start -->
+  <div class="pc-container" data-page-role="Marketing,Direktur">
+    <div class="pc-content">
+      @@include('../layouts/breadcrumb.html', {'breadcrumb-item': 'Marketing', 'breadcrumb-item-active': 'Input New Customer', 'breadcrumb-item-href': '../pages/input-new-customer.html'})
+
+      <!-- Custom Notification Element -->
+      <div id="customNotification" class="hidden">
+        <span id="notificationIcon"></span>
+        <span id="notificationMessage"></span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-x-6">
+        <div class="col-span-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Form Input Customer Baru</h5>
+            </div>
+            <div class="card-body">
+              <form id="customerForm" class="space-y-6">
+                <!-- Nama Customer -->
+                <div class="space-y-2">
+                  <label for="customerName" class="block text-sm font-medium text-gray-700">Nama Customer <span class="text-red-500">*</span></label>
+                  <input type="text" id="customerName" name="customerName" placeholder="Masukkan nama customer" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                  <div id="customerNameError" class="text-red-500 text-sm hidden"></div>
+                </div>
+
+                <!-- Initial Customer -->
+                <div class="space-y-2">
+                  <label for="initialCustomer" class="block text-sm font-medium text-gray-700">Initial Customer <span class="text-red-500">*</span></label>
+                  <input type="text" id="initialCustomer" name="initialCustomer" placeholder="Masukkan initial customer" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                  <div id="initialCustomerError" class="text-red-500 text-sm hidden"></div>
+                </div>
+
+                <!-- Nama PIC -->
+                <div class="space-y-2">
+                  <label for="picName" class="block text-sm font-medium text-gray-700">Nama PIC <span class="text-red-500">*</span></label>
+                  <input type="text" id="picName" name="picName" placeholder="Masukkan nama PIC" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                  <div id="picNameError" class="text-red-500 text-sm hidden"></div>
+                </div>
+
+                <!-- No. Telepon -->
+                <div class="space-y-2">
+                  <label for="phoneNumber" class="block text-sm font-medium text-gray-700">No. Telepon <span class="text-red-500">*</span></label>
+                  <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Masukkan nomor telepon" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                  <div id="phoneNumberError" class="text-red-500 text-sm hidden"></div>
+                </div>
+
+                <!-- Alamat -->
+                <div class="space-y-2">
+                  <label for="address" class="block text-sm font-medium text-gray-700">Alamat <span class="text-red-500">*</span></label>
+                  <textarea id="address" name="address" rows="3" placeholder="Masukkan alamat lengkap" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off"></textarea>
+                  <div id="addressError" class="text-red-500 text-sm hidden"></div>
+                </div>
+
+                <div class="flex flex-col items-start gap-2">
+                  <button type="submit" id="submitButton" class="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out w-full md:w-auto">
+                    <span id="submitButtonText">Submit Data Customer</span>
+                    <span id="submitButtonLoader" class="hidden">
+                      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Menyimpan Data...
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @@include('../layouts/footer-block.html')
+  @@include('../layouts/footer-js.html')
+
+  <!-- Include Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-config.js"></script>
+  <script src="../assets/js/role-based-menu.js"></script>
+
+  <script>
+    function showNotification(message, isSuccess = true) {
+      let notification = document.getElementById('customNotification');
+      const notificationIcon = document.getElementById('notificationIcon');
+      const notificationMessage = document.getElementById('notificationMessage');
+
+      if (!notification || !notificationIcon || !notificationMessage) {
+        console.error('Notification elements not found. Please ensure #customNotification, #notificationIcon, and #notificationMessage exist in the HTML.');
+        return;
+      }
+
+      notificationMessage.textContent = message;
+      notificationIcon.textContent = isSuccess ? '✅' : '❌';
+
+      // Remove previous state classes
+      notification.classList.remove('bg-green-600', 'bg-red-600', 'hidden', 'opacity-0', 'text-white');
+      
+      // Add new state classes
+      if (isSuccess) {
+        notification.classList.add('success');
+      } else {
+        notification.classList.add('error');
+      }
+      
+      // Make visible and fade in
+      notification.classList.remove('hidden');
+      setTimeout(() => {
+        notification.style.opacity = '1';
+      }, 10);
+
+      // Hide after 3 seconds
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          notification.classList.add('hidden');
+        }, 500);
+      }, 3000);
+    }
+
+    function setSubmitButtonState(isLoading) {
+      const submitButton = document.getElementById('submitButton');
+      const submitButtonText = document.getElementById('submitButtonText');
+      const submitButtonLoader = document.getElementById('submitButtonLoader');
+      
+      if (isLoading) {
+        submitButton.disabled = true;
+        submitButtonText.classList.add('hidden');
+        submitButtonLoader.classList.remove('hidden');
+        submitButton.classList.add('opacity-75', 'cursor-not-allowed');
+      } else {
+        submitButton.disabled = false;
+        submitButtonText.classList.remove('hidden');
+        submitButtonLoader.classList.add('hidden');
+        submitButton.classList.remove('opacity-75', 'cursor-not-allowed');
+      }
+    }
+
+    function clearErrors() {
+      const errorElements = document.querySelectorAll('[id$="Error"]');
+      errorElements.forEach(element => {
+        element.classList.add('hidden');
+        element.textContent = '';
+      });
+
+      const inputs = document.querySelectorAll('input, textarea');
+      inputs.forEach(input => {
+        input.classList.remove('border-red-500');
+      });
+    }
+
+    function showFieldError(fieldId, message) {
+      const field = document.getElementById(fieldId);
+      const errorElement = document.getElementById(fieldId + 'Error');
+      
+      field.classList.add('border-red-500');
+      errorElement.textContent = message;
+      errorElement.classList.remove('hidden');
+    }
+
+    function validateForm() {
+      clearErrors();
+      let isValid = true;
+
+      const customerName = document.getElementById('customerName').value.trim();
+      const initialCustomer = document.getElementById('initialCustomer').value.trim();
+      const picName = document.getElementById('picName').value.trim();
+      const phoneNumber = document.getElementById('phoneNumber').value.trim();
+      const address = document.getElementById('address').value.trim();
+
+      if (!customerName) {
+        showFieldError('customerName', 'Nama customer wajib diisi');
+        isValid = false;
+      }
+
+      if (!initialCustomer) {
+        showFieldError('initialCustomer', 'Initial customer wajib diisi');
+        isValid = false;
+      }
+
+      if (!picName) {
+        showFieldError('picName', 'Nama PIC wajib diisi');
+        isValid = false;
+      }
+
+      if (!phoneNumber) {
+        showFieldError('phoneNumber', 'Nomor telepon wajib diisi');
+        isValid = false;
+      } else if (!/^[0-9+\-\s()]+$/.test(phoneNumber)) {
+        showFieldError('phoneNumber', 'Format nomor telepon tidak valid');
+        isValid = false;
+      }
+
+      if (!address) {
+        showFieldError('address', 'Alamat wajib diisi');
+        isValid = false;
+      }
+
+      return isValid;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const customerForm = document.getElementById('customerForm');
+
+      customerForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        console.log('Form submitted');
+
+        if (!validateForm()) {
+          showNotification("❌ Harap perbaiki kesalahan pada form!", false);
+          return;
+        }
+
+        setSubmitButtonState(true);
+
+        try {
+          // Wait for DatabaseHelper to be available
+          if (typeof window.DatabaseHelper === 'undefined') {
+            throw new Error('Database connection not available. Please refresh the page.');
+          }
+
+          const customerData = {
+            customer_name: document.getElementById('customerName').value.trim(),
+            initial_customer: document.getElementById('initialCustomer').value.trim(),
+            pic_name: document.getElementById('picName').value.trim(),
+            phone_number: document.getElementById('phoneNumber').value.trim(),
+            address: document.getElementById('address').value.trim(),
+            created_at: new Date().toISOString()
+          };
+
+          console.log('Saving customer data:', customerData);
+
+          const result = await window.DatabaseHelper.saveCustomer(customerData);
+          
+          console.log('Save result:', result);
+          
+          if (result.success) {
+            showNotification("✅ Data customer berhasil disimpan ke database!");
+            
+            // Reset form
+            customerForm.reset();
+            clearErrors();
+          } else {
+            console.error('Save error:', result.error);
+            showNotification(`❌ Gagal menyimpan data: ${result.error}`, false);
+          }
+        } catch (error) {
+          console.error('Exception in form submission:', error);
+          showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+        } finally {
+          setSubmitButtonState(false);
+        }
+      });
+
+      // Enter key navigation
+      customerForm.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && event.target.tagName !== 'BUTTON' && event.target.tagName !== 'TEXTAREA') {
+          event.preventDefault();
+          const formElements = Array.from(this.querySelectorAll('input:not([type="button"]), textarea'));
+          const currentIndex = formElements.indexOf(document.activeElement);
+          if (currentIndex > -1 && currentIndex < formElements.length - 1) {
+            formElements[currentIndex + 1].focus();
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+<!-- [Body] end -->
+</html>

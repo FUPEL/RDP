@@ -1,0 +1,1615 @@
+<!doctype html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+<!-- [Head] start -->
+<head>
+<title>Input PO | Datta Able Dashboard Template</title>
+<!-- [Meta] -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta
+  name="description"
+  content="Datta Able is trending dashboard template made using Bootstrap 5 design framework. Datta Able is available in Bootstrap, React, CodeIgniter, Angular,  and .net Technologies."
+/>
+<meta
+  name="keywords"
+  content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard"
+/>
+<meta name="author" content="CodedThemes" />
+
+<!-- [Favicon] icon -->
+<link rel="icon" href="../assets/images/favicon.svg" type="image/x-icon" />
+
+ <!-- [Font] Family -->
+ <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<!-- [phosphor Icons] https://phosphoricons.com/ -->
+<link rel="stylesheet" href="../assets/fonts/phosphor/duotone/style.css" />
+<!-- [Tabler Icons] https://tablericons.com -->
+<link rel="stylesheet" href="../assets/fonts/tabler-icons.min.css" />
+<!-- [Feather Icons] https://feathericons.com -->
+<link rel="stylesheet" href="../assets/fonts/feather.css" />
+<!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+<link rel="stylesheet" href="../assets/fonts/fontawesome.css" />
+<!-- [Material Icons] https://fonts.google.com/icons -->
+<link rel="stylesheet" href="../assets/fonts/material.css" />
+<!-- [Template CSS Files] -->
+<link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
+
+<style>
+  .autocomplete-suggestions {
+    position: absolute;
+    border: 1px solid #e2e8f0;
+    background-color: #fff;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    width: 100%;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 0.375rem;
+    top: calc(100% + 0.25rem);
+  }
+  .autocomplete-suggestion-item {
+    padding: 0.75rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #4a5568;
+    border-bottom: 1px solid #f7fafc;
+  }
+  .autocomplete-suggestion-item:hover {
+    background-color: #edf2f7;
+  }
+  .autocomplete-suggestion-item:last-child {
+    border-bottom: none;
+  }
+  .validation-error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: none;
+  }
+  .border-red-500 {
+    border-color: #ef4444 !important;
+  }
+  .border-green-500 {
+    border-color: #10b981 !important;
+  }
+  .customer-status {
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+  }
+  .customer-valid {
+    color: #10b981;
+  }
+  .customer-invalid {
+    color: #ef4444;
+  }
+</style>
+</head>
+<!-- [Head] end -->
+
+<!-- [Body] Start -->
+<body>
+  <!-- [ Pre-loader ] start -->
+  <div class="loader-bg fixed inset-0 bg-white dark:bg-themedark-cardbg z-[1034]">
+    <div class="loader-track h-[5px] w-full inline-block absolute overflow-hidden top-0">
+      <div class="loader-fill w-[300px] h-[5px] bg-primary-500 absolute top-0 left-0 animate-[hitZak_0.6s_ease-in-out_infinite_alternate]"></div>
+    </div>
+  </div>
+  <!-- [ Pre-loader ] End -->
+
+  <!-- [ Sidebar Menu ] start -->
+  <nav class="pc-sidebar">
+    <div class="navbar-wrapper">
+      <div class="m-header flex justify-start items-center py-4 px-6 h-header-height">
+        <a href="../dashboard/index.html" class="b-brand flex items-center">
+          <img src="../assets/images/LOGO_RDP-removebg-preview.png"
+               class="img-fluid logo logo-lg w-[100px] h-auto mt-5 ml-14"
+               alt="logo" />
+        </a>
+      </div>
+
+      <div class="navbar-content h-[calc(100vh_-_74px)] py-2.5">
+        <ul class="pc-navbar">
+          <ul class="pc-navbar">
+            <li class="pc-item pc-caption">
+              <label>Navigation</label>
+            </li>
+            <li class="pc-item" data-role="Direktur,Marketing,Produksi">
+              <a href="../dashboard/index.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="home"></i>
+                </span>
+                <span class="pc-mtext">Dashboard</span>
+              </a>
+            </li>
+            <li class="pc-item pc-caption" data-role="Direktur,Marketing">
+              <label>Marketing</label>
+              <i data-feather="box"></i>
+            </li>
+            <li class="pc-item pc-hasmenu" data-role="Direktur,Marketing">
+              <a href="#!" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="users"></i>
+                </span>
+                <span class="pc-mtext">Customer</span>
+                <span class="pc-arrow">
+                  <i data-feather="chevron-right"></i>
+                </span>
+              </a>
+              <ul class="pc-submenu">
+                <li class="pc-item">
+                  <a class="pc-link" href="../pages/input-new-customer.html">Input Customer</a>
+                </li>
+                <li class="pc-item">
+                  <a class="pc-link" href="../pages/kelola-data.html">Kelola Data Customer</a>
+                </li>
+              </ul>
+            </li>
+            <li class="pc-item pc-hasmenu" data-role="Direktur,Marketing">
+              <a href="#!" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="package"></i>
+                </span>
+                <span class="pc-mtext">Barang</span>
+                <span class="pc-arrow">
+                  <i data-feather="chevron-right"></i>
+                </span>
+              </a>
+              <ul class="pc-submenu">
+                <li class="pc-item">
+                  <a class="pc-link" href="../pages/input-nama-barang.html">Input Nama Barang</a>
+                </li>
+                <li class="pc-item">
+                  <a class="pc-link" href="../pages/kelola-barang.html">Kelola Barang</a>
+                </li>
+              </ul>
+            </li>
+            <li class="pc-item" data-role="Direktur,Marketing">
+              <a href="../pages/input-po.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="file-text"></i>
+                </span>
+                <span class="pc-mtext">Input PO</span>
+              </a>
+            </li>
+            <li class="pc-item" data-role="Direktur,Marketing">
+              <a href="../pages/laporan-po.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="clipboard"></i>
+                </span>
+                <span class="pc-mtext">Laporan</span>
+              </a>
+            </li>
+            <li class="pc-item pc-caption" data-role="Direktur,Produksi">
+              <label>Produksi</label>
+              <i data-feather="tool"></i>
+            </li>
+            <li class="pc-item" data-role="Direktur,Produksi">
+              <a href="../pages/Input-Produksi.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="edit-3"></i>
+                </span>
+                <span class="pc-mtext">Input Produksi</span>
+              </a>
+            </li>
+            <li class="pc-item" data-role="Direktur,Produksi">
+              <a href="../pages/history-produksi.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="clock"></i>
+                </span>
+                <span class="pc-mtext">History Produksi</span>
+              </a>
+            </li>
+            <li class="pc-item pc-caption" data-role="Direktur">
+              <label>Other</label>
+              <i data-feather="align-left"></i>
+            </li>
+            <li class="pc-item pc-hasmenu" data-role="Direktur">
+              <a href="#!" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="menu"></i>
+                </span>
+                <span class="pc-mtext">Menu levels</span>
+                <span class="pc-arrow">
+                  <i data-feather="chevron-right"></i>
+                </span>
+              </a>
+              <ul class="pc-submenu">
+                <li class="pc-item">
+                  <a class="pc-link" href="#!">Level 2.1</a>
+                </li>
+                <li class="pc-item pc-hasmenu">
+                  <a href="#!" class="pc-link">
+                    Level 2.2
+                    <span class="pc-arrow">
+                      <i data-feather="chevron-right"></i>
+                    </span>
+                  </a>
+                  <ul class="pc-submenu">
+                    <li class="pc-item">
+                      <a class="pc-link" href="#!">Level 3.1</a>
+                    </li>
+                    <li class="pc-item">
+                      <a class="pc-link" href="#!">Level 3.2</a>
+                    </li>
+                    <li class="pc-item pc-hasmenu">
+                      <a href="#!" class="pc-link">
+                        Level 3.3
+                        <span class="pc-arrow">
+                          <i data-feather="chevron-right"></i>
+                        </span>
+                      </a>
+                      <ul class="pc-submenu">
+                        <li class="pc-item">
+                          <a class="pc-link" href="#!">Level 4.1</a>
+                        </li>
+                        <li class="pc-item">
+                          <a class="pc-link" href="#!">Level 4.2</a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li class="pc-item">
+                  <a class="pc-link" href="#!">Level 2.3</a>
+                </li>
+              </ul>
+            </li>
+            <li class="pc-item" data-role="Direktur">
+              <a href="../other/sample-page.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="sidebar"></i>
+                </span>
+                <span class="pc-mtext">Sample page</span>
+              </a>
+            </li>
+          </ul>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- [ Sidebar Menu ] end -->
+
+  <!-- [ Header Topbar ] start -->
+  <header class="pc-header">
+    <div class="header-wrapper flex max-sm:px-[15px] px-[25px] grow"><!-- [Mobile Media Block] start -->
+<div class="me-auto pc-mob-drp">
+<ul class="inline-flex *:min-h-header-height *:inline-flex *:items-center">
+ <!-- ======= Menu collapse Icon ===== -->
+ <li class="pc-h-item pc-sidebar-collapse max-lg:hidden lg:inline-flex">
+   <a href="#" class="pc-head-link ltr:!ml-0 rtl:!mr-0" id="sidebar-hide">
+     <i data-feather="menu"></i>
+   </a>
+ </li>
+ <li class="pc-h-item pc-sidebar-popup lg:hidden">
+   <a href="#" class="pc-head-link ltr:!ml-0 rtl:!mr-0" id="mobile-collapse">
+     <i data-feather="menu"></i>
+   </a>
+ </li>
+ <li class="dropdown pc-h-item">
+   <a class="pc-head-link dropdown-toggle me-0" data-pc-toggle="dropdown" href="#" role="button"
+     aria-haspopup="false" aria-expanded="false">
+     <i data-feather="search"></i>
+   </a>
+   <div class="dropdown-menu pc-h-dropdown drp-search">
+     <form class="px-2 py-1">
+       <input type="search" class="form-control !border-0 !shadow-none" placeholder="Search here. . ." />
+     </form>
+   </div>
+ </li>
+</ul>
+</div>
+<!-- [Mobile Media Block end] -->
+<div class="ms-auto">
+<ul class="inline-flex *:min-h-header-height *:inline-flex *:items-center">
+ <li class="dropdown pc-h-item">
+   <a class="pc-head-link dropdown-toggle me-0" data-pc-toggle="dropdown" href="#" role="button"
+     aria-haspopup="false" aria-expanded="false">
+     <i data-feather="sun"></i>
+   </a>
+   <div class="dropdown-menu dropdown-menu-end pc-h-dropdown">
+     <a href="#!" class="dropdown-item" onclick="layout_change('dark')">
+       <i data-feather="moon"></i>
+       <span>Dark</span>
+     </a>
+     <a href="#!" class="dropdown-item" onclick="layout_change('light')">
+       <i data-feather="sun"></i>
+       <span>Light</span>
+     </a>
+     <a href="#!" class="dropdown-item" onclick="layout_change_default()">
+       <i data-feather="settings"></i>
+       <span>Default</span>
+     </a>
+   </div>
+ </li>
+ <!-- Notification dropdown - will be hidden for non-Direktur users -->
+ <li class="dropdown pc-h-item notification-dropdown" data-role="Direktur" style="display: none;">
+   <a class="pc-head-link dropdown-toggle me-0 notification-trigger" data-pc-toggle="dropdown" href="#" role="button"
+     aria-haspopup="false" aria-expanded="false" id="notificationTrigger">
+     <i data-feather="bell" class="notification-icon"></i>
+     <span class="notification-badge" style="display: none;">0</span>
+   </a>
+   <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown" style="display: none !important; position: absolute; top: 100%; right: 0; transform: translateY(0); opacity: 0; visibility: hidden;">
+     <!-- Header -->
+     <div class="notification-header">
+       <div class="d-flex align-items-center justify-content-between">
+         <div class="d-flex align-items-center">
+           <i data-feather="bell" class="me-2 notification-header-icon"></i>
+           <h6 class="mb-0 fw-semibold text-white">Notifikasi</h6>
+         </div>
+         <div class="d-flex align-items-center gap-2">
+           <button class="btn btn-sm btn-secondary mark-all-read-btn">
+             Tandai Semua
+           </button>
+           <button class="btn btn-sm btn-danger clear-all-btn">
+             Hapus Semua
+           </button>
+         </div>
+       </div>
+     </div>
+     
+     <!-- Body -->
+     <div class="notification-body">
+       <div class="loading-state text-center py-5">
+         <div class="spinner-border spinner-border-sm text-primary mb-2" role="status">
+           <span class="visually-hidden">Loading...</span>
+         </div>
+         <p class="text-muted mb-0 small">Memuat notifikasi...</p>
+       </div>
+     </div>
+     
+     <!-- Footer -->
+     <div class="notification-footer">
+       <a href="#!" class="text-decoration-none text-primary fw-medium small">Lihat Semua Notifikasi</a>
+     </div>
+   </div>
+ </li>
+ <li class="dropdown pc-h-item header-user-profile">
+   <a class="pc-head-link dropdown-toggle arrow-none me-0" data-pc-toggle="dropdown" href="#" role="button"
+     aria-haspopup="false" data-pc-auto-close="outside" aria-expanded="false">
+     <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar" />
+   </a>
+   <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown p-2 overflow-hidden">
+     <div class="dropdown-header flex items-center justify-content-between py-4 px-5 bg-primary-500">
+       <div class="flex mb-1 items-center">
+         <div class="shrink-0">
+           <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="w-10 rounded-full" />
+         </div>
+         <div class="grow ms-3">
+           <h6 class="mb-1 text-white" data-user-name>Loading... 🖖</h6>
+           <span class="text-white" data-user-email>Loading...</span>
+         </div>
+       </div>
+     </div>
+     <div class="dropdown-body py-4 px-5">
+       <div class="profile-notification-scroll position-relative" style="max-height: calc(100vh - 225px)">
+         <div class="grid my-3">
+           <button class="btn btn-primary flex items-center justify-center" id="logoutButton">
+             <svg class="pc-icon me-2 w-[22px] h-[22px]">
+               <use xlink:href="#custom-logout-1-outline"></use>
+             </svg>
+             Logout
+           </button>
+         </div>
+       </div>
+     </div>
+   </div>
+ </li>
+</ul>
+</div>
+
+<style>
+/* Modern Notification Styles - Fixed Layout & Hover Issues */
+.notification-dropdown .dropdown-menu {
+ width: 380px;
+ max-width: 95vw;
+ border-radius: 12px;
+ overflow: hidden;
+ border: none;
+ box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+ transform-origin: top;
+ margin-top: 8px;
+ /* Force hide by default with proper positioning */
+ display: none !important;
+ visibility: hidden !important;
+ opacity: 0 !important;
+ position: absolute !important;
+ top: 100% !important;
+ right: 0 !important;
+ transform: translateY(-10px) scale(0.95) !important;
+ transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+ z-index: 1050 !important;
+}
+
+/* Only show when parent has drp-show class with smooth animation */
+.notification-dropdown.drp-show .dropdown-menu {
+ display: block !important;
+ visibility: visible !important;
+ opacity: 1 !important;
+ transform: translateY(0) scale(1) !important;
+}
+
+/* Notification Trigger - Fixed Hover Issue */
+.notification-trigger {
+ position: relative;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ transition: all 0.2s ease;
+}
+
+.notification-trigger:hover {
+ transform: none !important;
+ background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.notification-trigger:hover .notification-icon {
+ transform: none !important;
+ color: inherit !important;
+}
+
+/* Badge - Fixed Positioning & Hover Issues */
+.notification-badge {
+ position: absolute;
+ top: -6px;
+ right: -6px;
+ background: #dc3545;
+ color: white;
+ font-size: 0.65rem;
+ font-weight: 700;
+ min-width: 18px;
+ height: 18px;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ border: 2px solid white;
+ box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4);
+ z-index: 1000;
+ animation: pulse 2s infinite;
+ pointer-events: none;
+}
+
+@keyframes pulse {
+ 0%, 100% {
+   transform: scale(1);
+ }
+ 50% {
+   transform: scale(1.1);
+ }
+}
+
+/* Header */
+.notification-header {
+ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+ padding: 16px 20px;
+}
+
+.notification-header-icon {
+ width: 20px;
+ height: 20px;
+ color: white;
+}
+
+.notification-header .btn {
+ font-size: 0.75rem;
+ padding: 0.25rem 0.75rem;
+ border-radius: 6px;
+ transition: all 0.2s ease;
+}
+
+.notification-header .btn:hover {
+ background: rgba(255, 255, 255, 0.2);
+ transform: translateY(-1px);
+}
+
+/* Body */
+.notification-body {
+ max-height: 420px;
+ overflow-y: auto;
+ overflow-x: hidden;
+ background: white;
+ scrollbar-width: thin;
+ scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.notification-body::-webkit-scrollbar {
+ width: 6px;
+}
+
+.notification-body::-webkit-scrollbar-track {
+ background: #f7fafc;
+ border-radius: 3px;
+}
+
+.notification-body::-webkit-scrollbar-thumb {
+ background: #cbd5e0;
+ border-radius: 3px;
+ transition: background 0.2s ease;
+}
+
+.notification-body::-webkit-scrollbar-thumb:hover {
+ background: #a0aec0;
+}
+
+/* Notification Items - Fixed Alignment */
+.notification-item {
+ padding: 16px 20px;
+ border-bottom: 1px solid #f1f5f9;
+ transition: all 0.2s ease;
+ border-left: 3px solid transparent;
+ cursor: pointer;
+ position: relative;
+}
+
+.notification-item:not(.read) {
+ background: linear-gradient(90deg, rgba(99, 102, 241, 0.03) 0%, rgba(255, 255, 255, 1) 100%);
+ border-left-color: #6366f1;
+}
+
+.notification-item:hover {
+ background: #f8fafc;
+ transform: translateX(2px);
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.notification-item.read {
+ opacity: 0.75;
+}
+
+.notification-item:last-child {
+ border-bottom: none;
+}
+
+/* Avatar - Fixed Alignment */
+.notification-avatar {
+ width: 44px;
+ height: 44px;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-weight: 600;
+ font-size: 0.875rem;
+ border: 2px solid white;
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+ flex-shrink: 0;
+}
+
+/* Content - Fixed Alignment */
+.notification-content {
+ flex: 1;
+ min-width: 0;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+}
+
+.notification-title {
+ font-size: 0.875rem;
+ font-weight: 600;
+ color: #1f2937;
+ line-height: 1.3;
+ margin: 0 0 4px 0;
+ display: -webkit-box; /* Keep for broader compatibility */
+ -webkit-box-orient: vertical; /* Keep for broader compatibility */
+ overflow: hidden;
+ line-clamp: 2; /* Standard property */
+}
+
+.notification-description {
+ font-size: 0.8125rem;
+ color: #6b7280;
+ line-height: 1.4;
+ margin: 0 0 8px 0;
+ display: -webkit-box; /* Keep for broader compatibility */
+ -webkit-box-orient: vertical; /* Keep for broader compatibility */
+ overflow: hidden;
+ line-clamp: 2; /* Standard property */
+}
+
+.notification-meta {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ font-size: 0.7rem;
+ color: #9ca3af;
+}
+
+.notification-time {
+ font-size: 0.75rem;
+ color: #6b7280;
+ white-space: nowrap;
+ flex-shrink: 0;
+ margin-left: auto;
+ font-weight: 500;
+}
+
+/* Date Separator - Fixed Alignment */
+.notification-date-separator {
+ background: #f9fafb;
+ border-bottom: 1px solid #e5e7eb;
+ padding: 8px 20px;
+ font-size: 0.75rem;
+ font-weight: 600;
+ color: #6b7280;
+ text-transform: uppercase;
+ letter-spacing: 0.5px;
+ position: sticky;
+ top: 0;
+ z-index: 10;
+}
+
+/* Unread Indicator */
+.unread-dot {
+ width: 8px;
+ height: 8px;
+ background: #ef4444;
+ border-radius: 50%;
+ position: absolute;
+ top: 16px;
+ right: 16px;
+ animation: blink 2s infinite;
+}
+
+@keyframes blink {
+ 0%, 50% { opacity: 1; }
+ 51%, 100% { opacity: 0.3; }
+}
+
+/* Empty State */
+.empty-state {
+ padding: 3rem 2rem;
+ text-align: center;
+}
+
+.empty-state-icon {
+ width: 64px;
+ height: 64px;
+ margin: 0 auto 1rem;
+ background: #f3f4f6;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ color: #9ca3af;
+}
+
+/* Footer */
+.notification-footer {
+ border-top: 1px solid #e5e7eb;
+ background: #f9fafb;
+ padding: 12px 20px;
+ text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+ .notification-dropdown .dropdown-menu {
+   width: 350px !important;
+   max-width: calc(100vw - 20px) !important;
+   margin-right: 10px;
+ }
+ 
+ .notification-body {
+   max-height: 350px !important;
+ }
+ 
+ .notification-item {
+   padding: 12px 16px !important;
+ }
+ 
+ .notification-header {
+   padding: 12px 16px !important;
+ }
+ 
+ .notification-date-separator {
+   padding: 6px 16px !important;
+ }
+}
+
+@media (max-width: 480px) {
+ .notification-dropdown .dropdown-menu {
+   width: 320px !important;
+ }
+ 
+ .notification-header .d-flex.gap-2 {
+   flex-direction: column;
+   gap: 0.25rem !important;
+ }
+ 
+ .notification-header .btn {
+   font-size: 0.7rem !important;
+   padding: 0.2rem 0.5rem !important;
+ }
+ 
+ .notification-avatar {
+   width: 36px !important;
+   height: 36px !important;
+ }
+}
+
+/* Loading State */
+.loading-state {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ padding: 2rem;
+}
+
+.spinner-border-sm {
+ width: 1.5rem;
+ height: 1.5rem;
+}
+</style>
+
+<script>
+ // This script will be enhanced by role-based-menu.js
+ // Keep the basic logout functionality as fallback
+ function handleLogout() {
+   localStorage.clear(); 
+   window.location.href = '../pages/login-v1.html'; 
+ }
+
+ // Fallback logout handler if role-based-menu.js doesn't load
+ document.addEventListener('DOMContentLoaded', function() {
+   const logoutBtn = document.getElementById('logoutButton');
+   if (logoutBtn && !logoutBtn.hasAttribute('data-enhanced')) {
+     logoutBtn.addEventListener('click', handleLogout);
+   }
+ });
+</script>
+</div>
+  </header>
+  <!-- [ Header ] end -->
+
+
+<!-- [ Main Content ] start -->
+<div class="pc-container">
+  <div class="pc-content">
+    <!-- [ breadcrumb ] start -->
+    <div class="page-header">
+      <div class="page-block">
+        <div class="page-header-title">
+          <h5 class="mb-0 font-medium">Input PO</h5>
+        </div>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a href="../dashboard/index.html">Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="Marketing-href">Marketing</a></li>
+          <li class="breadcrumb-item" aria-current="page">Input PO</li>
+        </ul>
+      </div>
+    </div>
+    <!-- [ breadcrumb ] end -->
+
+
+    <div class="grid grid-cols-12 gap-x-6">
+      <div class="col-span-12">
+        <div class="card">
+          <div class="card-header">
+            <h5>Form Input Purchase Order</h5>
+          </div>
+          <div class="card-body">
+            <form id="poForm">
+              <div class="mb-4">
+                <label for="noPo" class="block text-sm font-medium text-gray-700">NO PO <span class="text-red-500">*</span></label>
+                <input type="text" id="noPo" name="noPo" class="form-control mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Masukkan nomor PO" required />
+              </div>
+              
+              <div class="mb-4 relative">
+                <label for="customerName" class="block text-sm font-medium text-gray-700">Nama Customer <span class="text-red-500">*</span></label>
+                <input type="text" id="customerName" name="customerName" class="form-control mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Ketik nama customer..." autocomplete="off" required />
+                <div id="customerSuggestions" class="autocomplete-suggestions" style="display: none;"></div>
+                <div id="customerStatus" class="customer-status"></div>
+              </div>
+              
+              <div class="mb-4 relative">
+                <label for="salesName" class="block text-sm font-medium text-gray-700">Nama Sales <span class="text-red-500">*</span></label>
+                <input type="text" id="salesName" name="salesName" class="form-control mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Ketik nama sales..." autocomplete="off" required />
+                <div id="salesSuggestions" class="autocomplete-suggestions" style="display: none;"></div>
+                <div id="salesStatus" class="customer-status"></div>
+              </div>
+
+              <div class="mb-4 relative">
+                <label for="assyName" class="block text-sm font-medium text-gray-700">Nama ASSY <span class="text-red-500">*</span></label>
+                <input type="text" id="assyName" name="assyName" class="form-control mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Ketik nama ASSY..." autocomplete="off" required />
+                <div id="assySuggestions" class="autocomplete-suggestions" style="display: none;"></div>
+                <div id="assyStatus" class="customer-status"></div>
+              </div>
+              
+              <div class="mb-4">
+                <label for="qty" class="block text-sm font-medium text-gray-700">Qty <span class="text-red-500">*</span></label>
+                <input type="number" id="qty" name="qty" min="1" class="form-control mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Masukkan jumlah" oninput="calculateTotal()" required />
+              </div>
+              
+              <div class="mb-4">
+                <label for="unitPrice" class="block text-sm font-medium text-gray-700">Harga Satuan <span class="text-red-500">*</span></label>
+                <input type="number" id="unitPrice" name="unitPrice" min="0" step="0.01" class="form-control mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Masukkan harga satuan" oninput="calculateTotal()" required />
+              </div>
+              
+              <div class="mb-4">
+                <label for="ppn" class="block text-sm font-medium text-gray-700">PPN 11%</label>
+                <input type="text" id="ppn" name="ppn" class="form-control mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm" readonly />
+              </div>
+              
+              <div class="mb-6">
+                <label for="totalPrice" class="block text-sm font-medium text-gray-700">Total Harga</label>
+                <input type="text" id="totalPrice" name="totalPrice" class="form-control mt-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm" readonly />
+              </div>
+              
+              <div id="formValidationMessage" class="validation-error-message"></div>
+              
+              <button type="submit" id="submitBtn" class="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed">
+                <span id="submitBtnText">Simpan PO</span>
+                <span id="submitBtnLoader" class="hidden">
+                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Menyimpan...
+                </span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="pc-footer">
+  <div class="footer-wrapper container-fluid mx-10">
+    <div class="flex justify-center items-center py-4">
+      <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+        &copy; 2025 PT. RIZQI DA SA PERKASA. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- Required Js -->
+<script src="../assets/js/plugins/simplebar.min.js"></script>
+<script src="../assets/js/plugins/popper.min.js"></script>
+<script src="../assets/js/icon/custom-icon.js"></script>
+<script src="../assets/js/plugins/feather.min.js"></script>
+<script src="../assets/js/component.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/supabase-config.js"></script>
+<script src="../assets/js/script.js"></script>
+
+<div class="floting-button fixed bottom-[50px] right-[30px] z-[1030]">
+</div>
+
+
+<script>
+layout_change('false');
+</script>
+ 
+
+<script>
+layout_theme_sidebar_change('dark');
+</script>
+
+
+<script>
+change_box_container('false');
+</script>
+ 
+<script>
+layout_caption_change('true');
+</script>
+ 
+<script>
+layout_rtl_change('false');
+</script>
+ 
+<script>
+preset_change('preset-1');
+</script>
+ 
+<script>
+main_layout_change('vertical');
+</script>
+
+
+
+<!-- Include Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/js/supabase-config.js"></script>
+<script src="../assets/js/role-based-menu.js"></script>
+
+<script>
+let customerValidationState = {
+  isValid: false,
+  customerData: null
+};
+
+let assyValidationState = {
+  isValid: false,
+  assyData: null
+};
+
+let salesValidationState = {
+  isValid: false,
+  salesData: null
+};
+
+// Global variable to store the current user's role
+let currentUserRole = null;
+
+function showNotification(message, isSuccess = true) {
+  let notification = document.getElementById('customNotification');
+
+  if (!notification) {
+    notification = document.createElement('div');
+    notification.id = 'customNotification';
+    notification.className = 'fixed bottom-4 right-4 px-6 py-4 rounded-lg shadow-xl z-50 hidden opacity-0 transition-opacity duration-500 flex items-center gap-3';
+    document.body.appendChild(notification);
+
+    const iconSpan = document.createElement('span');
+    iconSpan.id = 'notificationIcon';
+    iconSpan.className = 'text-2xl';
+    notification.appendChild(iconSpan);
+
+    const messageSpan = document.createElement('span');
+    messageSpan.id = 'notificationMessage';
+    messageSpan.className = 'font-semibold text-white';
+    notification.appendChild(messageSpan);
+  }
+
+  const notificationIcon = notification.querySelector('#notificationIcon');
+  const notificationMessage = notification.querySelector('#notificationMessage');
+
+  notificationMessage.textContent = message;
+  notificationIcon.textContent = isSuccess ? '✔' : '✖';
+
+  notification.classList.remove('bg-green-600', 'bg-red-600', 'hidden', 'opacity-0');
+  if (isSuccess) {
+    notification.classList.add('bg-green-600');
+  } else {
+    notification.classList.add('bg-red-600');
+  }
+  notification.classList.add('text-white');
+
+  notification.style.opacity = '1';
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    setTimeout(() => {
+      notification.classList.add('hidden');
+    }, 500);
+  }, 3000);
+}
+
+function setSubmitButtonState(isLoading) {
+  const submitBtn = document.getElementById('submitBtn');
+  const submitBtnText = document.getElementById('submitBtnText');
+  const submitBtnLoader = document.getElementById('submitBtnLoader');
+
+  if (isLoading) {
+    submitBtn.disabled = true;
+    submitBtnText.classList.add('hidden');
+    submitBtnLoader.classList.remove('hidden');
+  } else {
+    submitBtn.disabled = false;
+    submitBtnText.classList.remove('hidden');
+    submitBtnLoader.classList.add('hidden');
+  }
+}
+
+function calculateTotal() {
+  const qtyInput = document.getElementById('qty');
+  const unitPriceInput = document.getElementById('unitPrice');
+  const ppnInput = document.getElementById('ppn');
+  const totalPriceInput = document.getElementById('totalPrice');
+
+  const qty = parseFloat(qtyInput.value) || 0;
+  const unitPrice = parseFloat(unitPriceInput.value) || 0;
+
+  const subtotal = qty * unitPrice;
+  const ppn = subtotal * 0.11;
+  const total = subtotal + ppn;
+
+  const formatter = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  ppnInput.value = formatter.format(ppn);
+  totalPriceInput.value = formatter.format(total);
+}
+
+async function validateCustomer(customerName) {
+  const customerStatus = document.getElementById('customerStatus');
+  const customerInput = document.getElementById('customerName');
+  
+  if (!customerName.trim()) {
+    customerValidationState.isValid = false;
+    customerValidationState.customerData = null;
+    customerStatus.textContent = '';
+    customerInput.classList.remove('border-green-500', 'border-red-500');
+    return;
+  }
+
+  try {
+    if (typeof window.DatabaseHelper === 'undefined') {
+      throw new Error('Database connection not available');
+    }
+
+    const result = await window.DatabaseHelper.getCustomerByName(customerName);
+    
+    if (result.success && result.data) {
+      customerValidationState.isValid = true;
+      customerValidationState.customerData = result.data;
+      customerStatus.textContent = '✓ Customer terdaftar';
+      customerStatus.className = 'customer-status customer-valid';
+      customerInput.classList.remove('border-red-500');
+      customerInput.classList.add('border-green-500');
+    } else {
+      customerValidationState.isValid = false;
+      customerValidationState.customerData = null;
+      customerStatus.textContent = '✗ Customer belum terdaftar';
+      customerStatus.className = 'customer-status customer-invalid';
+      customerInput.classList.remove('border-green-500');
+      customerInput.classList.add('border-red-500');
+    }
+  } catch (error) {
+    console.error('Error validating customer:', error);
+    customerValidationState.isValid = false;
+    customerValidationState.customerData = null;
+    customerStatus.textContent = '✗ Error validasi customer';
+    customerStatus.className = 'customer-status customer-invalid';
+    customerInput.classList.remove('border-green-500');
+    customerInput.classList.add('border-red-500');
+  }
+}
+
+async function validateAssy(assyName) {
+  const assyStatus = document.getElementById('assyStatus');
+  const assyInput = document.getElementById('assyName');
+
+  if (!assyName.trim()) {
+    assyValidationState.isValid = false;
+    assyValidationState.assyData = null;
+    assyStatus.textContent = '';
+    assyInput.classList.remove('border-green-500', 'border-red-500');
+    return;
+  }
+
+  try {
+    if (typeof window.DatabaseHelper === 'undefined') {
+      throw new Error('Database connection not available');
+    }
+
+    const result = await window.DatabaseHelper.getItemByName(assyName);
+    
+    if (result.success && result.data) {
+      assyValidationState.isValid = true;
+      assyValidationState.assyData = result.data;
+      assyStatus.textContent = '✓ ASSY terdaftar';
+      assyStatus.className = 'customer-status customer-valid';
+      assyInput.classList.remove('border-red-500');
+      assyInput.classList.add('border-green-500');
+    } else {
+      assyValidationState.isValid = false;
+      assyValidationState.assyData = null;
+      assyStatus.textContent = '✗ ASSY belum terdaftar';
+      assyStatus.className = 'customer-status customer-invalid';
+      assyInput.classList.remove('border-green-500');
+      assyInput.classList.add('border-red-500');
+    }
+  } catch (error) {
+    console.error('Error validating ASSY:', error);
+    assyValidationState.isValid = false;
+    assyValidationState.assyData = null;
+    assyStatus.textContent = '✗ Error validasi ASSY';
+    assyStatus.className = 'customer-status customer-invalid';
+    assyInput.classList.remove('border-green-500');
+    assyInput.classList.add('border-red-500');
+  }
+}
+
+async function validateSales(salesName) {
+  const salesStatus = document.getElementById('salesStatus');
+  const salesInput = document.getElementById('salesName');
+
+  if (!salesName.trim()) {
+    salesValidationState.isValid = false;
+    salesValidationState.salesData = null;
+    salesStatus.textContent = '';
+    salesInput.classList.remove('border-green-500', 'border-red-500');
+    return;
+  }
+
+  // Check if the typed name exactly matches any cached sales display_name
+  const foundSales = cachedSales.find(s => s.display_name && s.display_name.trim().toLowerCase() === salesName.trim().toLowerCase());
+
+  if (foundSales) {
+    salesValidationState.isValid = true;
+    salesValidationState.salesData = foundSales;
+    salesStatus.textContent = '✓ Sales terdaftar';
+    salesStatus.className = 'customer-status customer-valid';
+    salesInput.classList.remove('border-red-500');
+    salesInput.classList.add('border-green-500');
+  } else {
+    salesValidationState.isValid = false;
+    salesValidationState.salesData = null;
+    salesStatus.textContent = '✗ Sales belum terdaftar';
+    salesStatus.className = 'customer-status customer-invalid';
+    salesInput.classList.remove('border-green-500');
+    salesInput.classList.add('border-red-500');
+  }
+}
+
+// Caching variables for autocomplete data
+let cachedCustomers = [];
+let cachedItems = [];
+let cachedSales = [];
+
+// Function to fetch and cache all customers
+async function fetchAndCacheCustomers() {
+  if (typeof window.DatabaseHelper === 'undefined') {
+    console.warn('DatabaseHelper not available for fetching customers.');
+    return;
+  }
+  if (cachedCustomers.length === 0) { // Only fetch if cache is empty
+    const result = await window.DatabaseHelper.getCustomers();
+    if (result.success) {
+      cachedCustomers = result.data;
+      console.log('Customers cached:', cachedCustomers.length);
+    } else {
+      console.error('Error fetching customers for cache:', result.error);
+    }
+  }
+}
+
+// Function to fetch and cache all items (ASSY)
+async function fetchAndCacheItems() {
+  if (typeof window.DatabaseHelper === 'undefined') {
+    console.warn('DatabaseHelper not available for fetching items.');
+    return;
+  }
+  if (cachedItems.length === 0) { // Only fetch if cache is empty
+    const result = await window.DatabaseHelper.getItems();
+    if (result.success) {
+      cachedItems = result.data;
+      console.log('Items cached:', cachedItems.length);
+    } else {
+      console.error('Error fetching items for cache:', result.error);
+    }
+  }
+}
+
+// Function to fetch and cache sales based on user role
+async function fetchAndCacheSales() {
+  if (typeof window.DatabaseHelper === 'undefined') {
+    console.warn('DatabaseHelper not available for fetching sales.');
+    return;
+  }
+
+  const client = window.DatabaseHelper._getSupabaseClient();
+  if (!client) {
+    console.error("Supabase client is not initialized for fetching sales.");
+    return;
+  }
+
+  if (currentUserRole === 'Sales') {
+    // If current user is Sales, only fetch their own profile
+    const currentUser = await window.DatabaseHelper.getCurrentUser();
+    if (currentUser) {
+      // Fetch the current user's profile to get their display_name and confirm role
+      const { data: profileData, error: profileError } = await client
+        .from("profiles")
+        .select("id, display_name")
+        .eq("id", currentUser.id)
+        .eq("role", "Sales") // Ensure they are indeed a 'Sales' role
+        .single();
+      
+      if (profileError) {
+        console.error('Error fetching current sales user profile:', profileError);
+        cachedSales = [];
+      } else if (profileData) {
+        cachedSales = [profileData]; // Store only their own profile
+        console.log('Sales (current user only) cached:', cachedSales);
+      } else {
+        cachedSales = [];
+        console.log('Current user is Sales but no matching profile found or not a Sales role.');
+      }
+    } else {
+      cachedSales = [];
+      console.log('No current user found to fetch sales profile.');
+    }
+  } else {
+    // For Marketing or higher roles, fetch all sales profiles
+    const { data, error } = await client
+      .from("profiles")
+      .select("id, display_name")
+      .eq("role", "Sales")
+      .order("display_name", { ascending: true });
+    
+    if (error) {
+      console.error('Error fetching all sales for cache:', error);
+      cachedSales = [];
+    } else {
+      cachedSales = data || [];
+      console.log('All Sales profiles cached:', cachedSales.length);
+    }
+  }
+}
+
+async function setupCustomerAutocomplete() {
+  const input = document.getElementById('customerName');
+  const suggestionsContainer = document.getElementById('customerSuggestions');
+  let debounceTimer;
+
+  // Pre-fetch customers when the autocomplete is set up
+  await fetchAndCacheCustomers();
+
+  input.addEventListener('input', function() {
+    const searchTerm = this.value.trim();
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      await showCustomerSuggestions(searchTerm);
+      await validateCustomer(searchTerm);
+    }, 300);
+  });
+
+  input.addEventListener('focus', async function() {
+    // Show all suggestions when focused, or filter if something is already typed
+    await showCustomerSuggestions(this.value.trim());
+  });
+
+  async function showCustomerSuggestions(searchTerm) {
+    suggestionsContainer.innerHTML = '';
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const filteredSuggestions = cachedCustomers
+      .filter(customer => 
+        (customer.customer_name && customer.customer_name.toLowerCase().includes(lowerCaseSearchTerm)) || 
+        (customer.initial_customer && customer.initial_customer.toLowerCase().includes(lowerCaseSearchTerm))
+      )
+      .slice(0, 5); // Limit to 5 suggestions
+
+    if (filteredSuggestions.length > 0) {
+      filteredSuggestions.forEach(customer => {
+        const suggestionItem = document.createElement('div');
+        suggestionItem.classList.add('autocomplete-suggestion-item');
+        suggestionItem.innerHTML = `
+          <div class="font-medium">${customer.customer_name} <span class="text-gray-500 text-sm">(${customer.initial_customer || 'N/A'})</span></div>
+          <div class="text-xs text-gray-500">${customer.pic_name || 'N/A'} - ${customer.phone_number || 'N/A'}</div>
+        `;
+        
+        suggestionItem.addEventListener('mousedown', (e) => {
+          e.preventDefault(); // Prevent input blur when clicking suggestion
+        });
+        
+        suggestionItem.addEventListener('click', function() {
+          input.value = customer.customer_name.trim(); // Trim value on selection
+          suggestionsContainer.innerHTML = '';
+          suggestionsContainer.style.display = 'none';
+          validateCustomer(customer.customer_name.trim());
+        });
+        
+        suggestionsContainer.appendChild(suggestionItem);
+      });
+      suggestionsContainer.style.display = 'block';
+    } else {
+      suggestionsContainer.style.display = 'none';
+    }
+  }
+
+  input.addEventListener('blur', function() {
+    // Delay hiding to allow click on suggestion items
+    setTimeout(() => {
+      suggestionsContainer.style.display = 'none';
+    }, 150);
+  });
+}
+
+async function setupAssyAutocomplete() {
+  const input = document.getElementById('assyName');
+  const suggestionsContainer = document.getElementById('assySuggestions');
+  let debounceTimer;
+
+  // Pre-fetch items when the autocomplete is set up
+  await fetchAndCacheItems();
+
+  input.addEventListener('input', function() {
+    const searchTerm = this.value.trim();
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      await showAssySuggestions(searchTerm);
+      await validateAssy(searchTerm);
+    }, 300);
+  });
+
+  input.addEventListener('focus', async function() {
+    // Show all suggestions when focused, or filter if something is already typed
+    await showAssySuggestions(this.value.trim());
+  });
+
+  async function showAssySuggestions(searchTerm) {
+    suggestionsContainer.innerHTML = '';
+    const filteredSuggestions = cachedItems
+      .filter(item => item.part_assy_name && item.part_assy_name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .slice(0, 5); // Limit to 5 suggestions
+
+    if (filteredSuggestions.length > 0) {
+      filteredSuggestions.forEach(item => {
+        const suggestionItem = document.createElement('div');
+        suggestionItem.classList.add('autocomplete-suggestion-item');
+        suggestionItem.innerHTML = `
+          <div class="font-medium">${item.part_assy_name}</div>
+          <div class="text-xs text-gray-500">Part Details: ${item.part_details?.length || 0} items</div>
+        `;
+        
+        suggestionItem.addEventListener('mousedown', (e) => {
+          e.preventDefault(); // Prevent input blur when clicking suggestion
+        });
+        
+        suggestionItem.addEventListener('click', function() {
+          input.value = item.part_assy_name.trim(); // Trim value on selection
+          suggestionsContainer.innerHTML = '';
+          suggestionsContainer.style.display = 'none';
+          validateAssy(item.part_assy_name.trim());
+        });
+        
+        suggestionsContainer.appendChild(suggestionItem);
+      });
+      suggestionsContainer.style.display = 'block';
+    } else {
+      suggestionsContainer.style.display = 'none';
+    }
+  }
+
+  input.addEventListener('blur', function() {
+    // Delay hiding to allow click on suggestion items
+    setTimeout(() => {
+      suggestionsContainer.style.display = 'none';
+    }, 150);
+  });
+}
+
+async function setupSalesAutocomplete() {
+  const input = document.getElementById('salesName');
+  const suggestionsContainer = document.getElementById('salesSuggestions');
+  let debounceTimer;
+
+  // Pre-fetch sales based on the determined currentUserRole
+  await fetchAndCacheSales();
+
+  // If the user is 'Sales', and their own name is the only one, pre-fill and disable the input
+  if (currentUserRole === 'Sales' && cachedSales.length === 1) {
+    input.value = cachedSales[0].display_name.trim(); // Trim value on pre-fill
+    input.readOnly = true; // Make it read-only
+    input.classList.add('bg-gray-100'); // Add a class for visual indication
+    validateSales(input.value); // Validate immediately
+    // No need for event listeners if it's read-only, so return early
+    return;
+  }
+
+  // Only add event listeners if the input is not read-only (i.e., for Marketing/Direktur roles)
+  input.addEventListener('input', function() {
+    const searchTerm = this.value.trim();
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      await showSalesSuggestions(searchTerm);
+      await validateSales(searchTerm);
+    }, 300);
+  });
+
+  input.addEventListener('focus', async function() {
+    await showSalesSuggestions(this.value.trim()); // Show all/filtered suggestions when focused
+  });
+
+  async function showSalesSuggestions(searchTerm) {
+    suggestionsContainer.innerHTML = '';
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    // Filter by display_name
+    const filteredSuggestions = cachedSales
+      .filter(sales => sales.display_name && sales.display_name.trim().toLowerCase().includes(lowerCaseSearchTerm))
+      .slice(0, 5); // Limit to 5 suggestions
+
+    if (filteredSuggestions.length > 0) {
+      filteredSuggestions.forEach(sales => {
+        const suggestionItem = document.createElement('div');
+        suggestionItem.classList.add('autocomplete-suggestion-item');
+        // Display display_name
+        suggestionItem.innerHTML = `
+          <div class="font-medium">${sales.display_name}</div>
+        `;
+        
+        suggestionItem.addEventListener('mousedown', (e) => {
+          e.preventDefault(); // Prevent input blur when clicking suggestion
+        });
+        
+        suggestionItem.addEventListener('click', function() {
+          input.value = sales.display_name.trim(); // Set input value to display_name and trim
+          suggestionsContainer.innerHTML = '';
+          suggestionsContainer.style.display = 'none';
+          validateSales(sales.display_name.trim()); // Validate after selection and trim
+        });
+        
+        suggestionsContainer.appendChild(suggestionItem);
+      });
+      suggestionsContainer.style.display = 'block';
+    } else {
+      suggestionsContainer.style.display = 'none';
+    }
+  }
+
+  input.addEventListener('blur', function() {
+    // Delay hiding to allow click on suggestion items
+    setTimeout(() => {
+      suggestionsContainer.style.display = 'none';
+      validateSales(input.value.trim()); // Validate on blur to catch manual entries and trim
+    }, 150);
+  });
+}
+
+
+document.addEventListener('DOMContentLoaded', async function() {
+  calculateTotal();
+
+  // First, get the current user's role
+  if (typeof window.DatabaseHelper !== 'undefined') {
+    const currentUser = await window.DatabaseHelper.getCurrentUser();
+    if (currentUser) {
+      const profile = await window.DatabaseHelper.getUserProfile(currentUser.id);
+      if (profile && profile.role) {
+        currentUserRole = profile.role;
+        console.log('Current user role:', currentUserRole);
+      } else {
+        console.warn('Could not retrieve user profile or role.');
+      }
+    } else {
+      console.warn('No current user session found.');
+    }
+  } else {
+    console.error('DatabaseHelper not available on DOMContentLoaded.');
+  }
+ 
+  // Then, setup autocompletes, which will now use the determined currentUserRole
+  await setupCustomerAutocomplete();
+  await setupAssyAutocomplete();
+  await setupSalesAutocomplete();
+
+  const poForm = document.getElementById('poForm');
+  const formValidationMessage = document.getElementById('formValidationMessage');
+
+  poForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    poForm.querySelectorAll('input').forEach(input => {
+      if (input.id !== 'customerName' && input.id !== 'assyName' && input.id !== 'salesName') {
+        input.classList.remove('border-red-500');
+      }
+    });
+    formValidationMessage.textContent = '';
+    formValidationMessage.style.display = 'none';
+
+    let isValid = true;
+    let errorMessages = [];
+
+    const requiredInputs = poForm.querySelectorAll('[required]');
+    requiredInputs.forEach(input => {
+      if (!input.value.trim() || (input.type === 'number' && parseFloat(input.value) <= 0)) {
+        if (input.id !== 'customerName' && input.id !== 'assyName' && input.id !== 'salesName') {
+          input.classList.add('border-red-500');
+        }
+        isValid = false;
+      }
+    });
+
+    if (!isValid) {
+      errorMessages.push("❌ Harap isi semua kolom yang wajib diisi dengan benar!");
+    }
+
+    if (!customerValidationState.isValid) {
+      errorMessages.push("❌ Customer belum terdaftar. Silakan daftarkan customer terlebih dahulu.");
+      isValid = false;
+    }
+
+    if (!assyValidationState.isValid) {
+      errorMessages.push("❌ ASSY belum terdaftar. Silakan daftarkan ASSY terlebih dahulu.");
+      isValid = false;
+    }
+
+    if (!salesValidationState.isValid) { // Add this validation
+      errorMessages.push("❌ Nama Sales belum terdaftar. Silakan pilih sales dari daftar.");
+      isValid = false;
+    }
+
+    if (!isValid) {
+      formValidationMessage.innerHTML = errorMessages.join('<br>');
+      formValidationMessage.style.display = 'block';
+      showNotification("❌ Form tidak dapat disubmit. Harap perbaiki kesalahan.", false);
+      return;
+    }
+
+    setSubmitButtonState(true);
+
+    try {
+      if (typeof window.DatabaseHelper === 'undefined') {
+        throw new Error('Database connection not available. Please refresh the page.');
+      }
+
+      const currentDate = new Date();
+      const poDate = currentDate.toISOString().split('T')[0];
+
+      const poData = {
+        no_po: document.getElementById('noPo').value.trim(),
+        customer_name: customerValidationState.customerData.customer_name,
+        sales_name: salesValidationState.salesData.display_name, // Menggunakan display_name dari salesData
+        assy_name: assyValidationState.assyData.part_assy_name,
+        qty: parseInt(document.getElementById('qty').value),
+        unit_price: parseFloat(document.getElementById('unitPrice').value),
+        ppn: parseFloat(document.getElementById('ppn').value.replace(/[^\d.-]/g, '')),
+        total_price: parseFloat(document.getElementById('totalPrice').value.replace(/[^\d.-]/g, '')),
+        po_date: poDate,
+        created_at: new Date().toISOString()
+      };
+
+      console.log('Saving PO data:', poData);
+
+      const result = await window.DatabaseHelper.savePO(poData);
+      
+      if (result.success) {
+        showNotification("✅ PO berhasil disimpan ke database!", true);
+        poForm.reset();
+        calculateTotal();
+        formValidationMessage.style.display = 'none';
+        
+        customerValidationState.isValid = false;
+        customerValidationState.customerData = null;
+        document.getElementById('customerStatus').textContent = '';
+        document.getElementById('customerName').classList.remove('border-green-500', 'border-red-500');
+
+        assyValidationState.isValid = false;
+        assyValidationState.assyData = null;
+        document.getElementById('assyStatus').textContent = '';
+        document.getElementById('assyName').classList.remove('border-green-500', 'border-red-500');
+
+        salesValidationState.isValid = false; // Reset sales validation state
+        salesValidationState.salesData = null;
+        document.getElementById('salesStatus').textContent = '';
+        document.getElementById('salesName').classList.remove('border-green-500', 'border-red-500');
+
+        // Re-setup sales autocomplete to reflect role-based behavior after reset
+        // This is important if the user's role somehow changes or if the form is reset
+        // and we want the sales field to re-initialize based on the current role.
+        // However, for a single-page app, the role won't change without a full reload.
+        // So, this might be redundant but harmless.
+        // If the input was readOnly, resetting the form will clear it, so we need to re-apply the readOnly state.
+        const salesInput = document.getElementById('salesName');
+        if (currentUserRole === 'Sales' && cachedSales.length === 1) {
+            salesInput.value = cachedSales[0].display_name.trim(); // Trim value on pre-fill
+            salesInput.readOnly = true;
+            salesInput.classList.add('bg-gray-100');
+            validateSales(salesInput.value);
+        } else {
+            salesInput.readOnly = false;
+            salesInput.classList.remove('bg-gray-100');
+        }
+
+      } else {
+        showNotification(`❌ Gagal menyimpan PO: ${result.error}`, false);
+      }
+    } catch (error) {
+      console.error('Error in PO submission:', error);
+      showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+    } finally {
+      setSubmitButtonState(false);
+    }
+  });
+});
+</script>
+
+</body>
+<!-- [Body] end -->
+</html>

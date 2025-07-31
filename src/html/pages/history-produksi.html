@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+<head>
+ @@include('../layouts/head-page-meta.html', {'title': 'History Produksi'})
+ @@include('../layouts/head-css.html')
+<style>
+ .data-table {
+   width: 100%;
+   border-collapse: collapse;
+   margin-top: 1rem;
+ }
+ .data-table th, .data-table td {
+   border: 1px solid #e2e8f0;
+   padding: 0.75rem;
+   text-align: left;
+   vertical-align: top; /* Ensures vertical alignment starts from the top */
+ }
+ .data-table th {
+   background-color: #f8fafc;
+   font-weight: 600;
+   color: #4a5568;
+ }
+ .data-table tbody tr:nth-child(even) {
+   background-color: #f7fafc;
+ }
+ .data-table tbody tr:hover {
+   background-color: #edf2f7;
+ }
+ .table-container {
+   overflow-x: auto;
+ }
+ /* Custom Notification Styles */
+ #customNotification {
+   position: absolute; /* Changed from fixed to absolute */
+   top: 20px; /* Adjusted position relative to .pc-content */
+   right: 20px; /* Adjusted position relative to .pc-content */
+   padding: 12px 20px;
+   border-radius: 0.5rem; /* rounded-lg */
+   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-md */
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   z-index: 1000;
+   transition: opacity 0.5s ease-in-out, background-color 0.3s ease, color 0.3s ease; /* Added transitions for color/bg */
+   opacity: 0; /* Start hidden */
+ }
+ #customNotification.hidden {
+   display: none;
+ }
+ /* Specific styles for success and error */
+ #customNotification.success {
+   background-color: #d1fae5; /* green-100 */
+   color: #065f46; /* green-800 */
+ }
+ #customNotification.error {
+   background-color: #fee2e2; /* red-100 */
+   color: #991b1b; /* red-800 */
+ }
+
+ /* Modal Styles */
+ .modal-overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: rgba(0, 0, 0, 0.5);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   z-index: 1000;
+   opacity: 0;
+   visibility: hidden;
+   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+ }
+ .modal-overlay.show {
+   opacity: 1;
+   visibility: visible;
+ }
+ .modal-content {
+   background-color: white;
+   padding: 2rem;
+   border-radius: 0.5rem;
+   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+   max-width: 90%;
+   max-height: 90%;
+   overflow-y: auto;
+   transform: translateY(-20px);
+   transition: transform 0.3s ease-in-out;
+ }
+ .modal-overlay.show .modal-content {
+   transform: translateY(0);
+ }
+ .form-group {
+   margin-bottom: 1rem;
+ }
+ .form-group label {
+   display: block;
+   margin-bottom: 0.5rem;
+   font-weight: 500;
+   color: #4a5568;
+ }
+ .form-group input, .form-group select, .form-group textarea {
+   width: 100%;
+   padding: 0.5rem 0.75rem;
+   border: 1px solid #e2e8f0;
+   border-radius: 0.375rem;
+   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+ }
+</style>
+</head>
+<body>
+ @@include('../layouts/loader.html')
+ @@include('../layouts/sidebar.html')
+ @@include('../layouts/topbar.html')
+
+ <div class="pc-container" data-page-role="Produksi,Direktur">
+   <div class="pc-content">
+     @@include('../layouts/breadcrumb.html', {'breadcrumb-item': 'Produksi', 'breadcrumb-item-active': 'History', 'breadcrumb-item-href': '../pages/history-produksi.html'})
+
+     <div id="customNotification" class="hidden">
+       <span id="notificationIcon"></span>
+       <span id="notificationMessage"></span>
+     </div>
+
+     <div class="grid grid-cols-12 gap-x-6">
+       <div class="col-span-12">
+         <div class="card">
+           <div class="card-header">
+             <h5>History Data Produksi</h5>
+           </div>
+           <div class="card-body">
+             <div id="dataDisplayContainer">
+               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                 <div class="space-y-2">
+                   <label for="filterDateFrom" class="block text-sm font-medium text-gray-700">Tanggal Mulai (From)</label>
+                   <input type="date" id="filterDateFrom" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" />
+                 </div>
+                 <div class="space-y-2">
+                   <label for="filterDateTo" class="block text-sm font-medium text-gray-700">Tanggal Selesai (To)</label>
+                   <input type="date" id="filterDateTo" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" />
+                 </div>
+                 <div class="space-y-2">
+                   <label for="filterProcessType" class="block text-sm font-medium text-gray-700">Filter Jenis Proses</label>
+                   <select id="filterProcessType" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                     <option value="">Semua Jenis Proses</option>
+                     <option value="Stamping">Stamping</option>
+                     <option value="Welding">Welding</option>
+                   </select>
+                 </div>
+                 <div class="space-y-2">
+                   <label for="filterShift" class="block text-sm font-medium text-gray-700">Filter Shift</label>
+                   <select id="filterShift" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                     <option value="">Semua Shift</option>
+                     <option value="Shift 1">Shift 1</option>
+                     <option value="Shift 2">Shift 2</option>
+                   </select>
+                 </div>
+               </div>
+
+               <div class="flex flex-wrap gap-4 mb-6 items-center">
+                 <button id="toggleSelectionModeButton" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out flex items-center gap-2">
+                   <i data-feather="download" class="size-5"></i>
+                   <span>Unduh Data</span>
+                 </button>
+                 <button id="downloadSelectedCsvButton" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out hidden">
+                   Unduh Terpilih (CSV)
+                 </button>
+                 <button id="cancelSelectionButton" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out hidden">
+                   Batal Pilih
+                 </button>
+               </div>
+
+               <div class="table-container">
+                 <table class="data-table w-full">
+                   <thead>
+                     <tr>
+                       <th class="px-4 py-2 selection-checkbox-header hidden">
+                         <input type="checkbox" id="selectAllCheckboxes" class="form-checkbox h-4 w-4 text-primary-600" />
+                       </th>
+                       <th class="px-4 py-2">Tanggal</th>
+                       <th class="px-4 py-2">Nama Operator</th>
+                       <th class="px-4 py-2">Shift</th>
+                       <th class="px-4 py-2">Jenis Proses</th>
+                       <th class="px-4 py-2">Part Name</th>
+                       <th class="px-4 py-2">Process</th>
+                       <th class="px-4 py-2">Mesin</th>
+                       <th class="px-4 py-2">Start</th>
+                       <th class="px-4 py-2">Finish</th>
+                       <th class="px-4 py-2">Break (menit)</th>
+                       <th class="px-4 py-2">Duration</th>
+                       <th class="px-4 py-2">OK</th>
+                       <th class="px-4 py-2">NG</th>
+                       <th class="px-4 py-2">QC Line</th>
+                       <th class="px-4 py-2">Note</th>
+                       <th class="px-4 py-2">Aksi</th>
+                     </tr>
+                   </thead>
+                   <tbody id="productionHistoryTableBody">
+                     </tbody>
+                 </table>
+               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+
+ <div id="editProductionModal" class="modal-overlay hidden">
+   <div class="modal-content">
+     <h3 class="text-xl font-semibold mb-4">Edit Data Produksi</h3>
+     <form id="editProductionForm">
+       <input type="hidden" id="editProductionId">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <div class="form-group">
+           <label for="editTanggal">Tanggal</label>
+           <input type="date" id="editTanggal" required>
+         </div>
+         <div class="form-group">
+           <label for="editNamaOperator">Nama Operator</label>
+           <input type="text" id="editNamaOperator" required>
+         </div>
+         <div class="form-group">
+           <label for="editShift">Shift</label>
+           <select id="editShift" required>
+             <option value="Shift 1">Shift 1</option>
+             <option value="Shift 2">Shift 2</option>
+           </select>
+         </div>
+         <div class="form-group">
+           <label for="editJenisProses">Jenis Proses</label>
+           <select id="editJenisProses" required>
+             <option value="Stamping">Stamping</option>
+             <option value="Welding">Welding</option>
+           </select>
+         </div>
+
+         <div id="editStampingFields" class="contents">
+            <div class="form-group">
+                <label for="editPartName">Part Name</label>
+                <input type="text" id="editPartName">
+            </div>
+            <div class="form-group">
+                <label for="editProcess">Process</label>
+                <input type="text" id="editProcess">
+            </div>
+         </div>
+
+         <div id="editWeldingFields" class="form-group md:col-span-2 hidden">
+            <label for="editPartNameProcess">Partname & Process</label>
+            <textarea id="editPartNameProcess" rows="4"></textarea>
+         </div>
+         <div class="form-group">
+           <label for="editMesin">Mesin</label>
+           <input type="text" id="editMesin" required>
+         </div>
+         <div class="form-group">
+           <label for="editStartTime">Start</label>
+           <input type="time" id="editStartTime">
+         </div>
+         <div class="form-group">
+           <label for="editFinishTime">Finish</label>
+           <input type="time" id="editFinishTime">
+         </div>
+         <div class="form-group">
+           <label for="editBreakMenit">Break (menit)</label>
+           <input type="number" id="editBreakMenit">
+         </div>
+         <div class="form-group">
+           <label for="editOK">OK</label>
+           <input type="number" id="editOK">
+         </div>
+         <div class="form-group">
+           <label for="editNG">NG</label>
+           <input type="number" id="editNG">
+         </div>
+         <div class="form-group">
+           <label for="editQCLine">QC Line</label>
+           <input type="text" id="editQCLine">
+         </div>
+         <div class="form-group md:col-span-2">
+           <label for="editNote">Note</label>
+           <textarea id="editNote" rows="3"></textarea>
+         </div>
+       </div>
+       <div class="flex justify-end gap-4 mt-6">
+         <button type="button" id="cancelEditProduction" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Batal</button>
+         <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Simpan Perubahan</button>
+       </div>
+     </form>
+   </div>
+ </div>
+
+ @@include('../layouts/footer-block.html')
+ @@include('../layouts/footer-js.html')
+
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+ <script src="../assets/js/supabase-config.js"></script>
+ <script src="../assets/js/role-based-menu.js"></script> <script>
+ document.addEventListener('DOMContentLoaded', async function() {
+   console.log('History Produksi page script loaded and DOMContentLoaded.');
+
+   const tableBody = document.getElementById('productionHistoryTableBody');
+   const filterDateFromInput = document.getElementById('filterDateFrom');
+   const filterDateToInput = document.getElementById('filterDateTo');
+   const filterProcessTypeSelect = document.getElementById('filterProcessType');
+   const filterShiftSelect = document.getElementById('filterShift');
+
+   const toggleSelectionModeButton = document.getElementById('toggleSelectionModeButton');
+   const downloadSelectedCsvButton = document.getElementById('downloadSelectedCsvButton');
+   const cancelSelectionButton = document.getElementById('cancelSelectionButton');
+   const selectAllCheckboxes = document.getElementById('selectAllCheckboxes');
+
+   // Edit Modal Elements
+   const editProductionModal = document.getElementById('editProductionModal');
+   const editProductionForm = document.getElementById('editProductionForm');
+   const editProductionIdInput = document.getElementById('editProductionId');
+   const editTanggalInput = document.getElementById('editTanggal');
+   const editNamaOperatorInput = document.getElementById('editNamaOperator');
+   const editShiftSelect = document.getElementById('editShift');
+   const editJenisProsesSelect = document.getElementById('editJenisProses');
+
+   // START PERUBAHAN
+   const editStampingFields = document.getElementById('editStampingFields');
+   const editWeldingFields = document.getElementById('editWeldingFields');
+   const editPartNameInput = document.getElementById('editPartName');
+   const editProcessInput = document.getElementById('editProcess');
+   const editPartNameProcessTextarea = document.getElementById('editPartNameProcess');
+   // END PERUBAHAN
+
+   const editMesinInput = document.getElementById('editMesin');
+   const editStartTimeInput = document.getElementById('editStartTime');
+   const editFinishTimeInput = document.getElementById('editFinishTime');
+   const editBreakMenitInput = document.getElementById('editBreakMenit');
+   const editOKInput = document.getElementById('editOK');
+   const editNGInput = document.getElementById('editNG');
+   const editQCLineInput = document.getElementById('editQCLine');
+   const editNoteInput = document.getElementById('editNote');
+   const cancelEditProductionButton = document.getElementById('cancelEditProduction');
+
+
+   let allProductionData = [];
+   let currentFilteredData = [];
+   let isSelectionMode = false;
+   let currentUserRole = null; 
+
+   const checkRoleInterval = setInterval(() => {
+     if (window.roleBasedMenuInstance && window.roleBasedMenuInstance.userRole) {
+       currentUserRole = window.roleBasedMenuInstance.userRole;
+       console.log('History Produksi: User role detected:', currentUserRole);
+       clearInterval(checkRoleInterval);
+       applyFilters();
+     } else {
+       console.log('History Produksi: Waiting for roleBasedMenuInstance to be ready...');
+     }
+   }, 100);
+
+   function formatTimeForDisplay(utcDateTimeString) {
+     if (!utcDateTimeString) return '';
+     const date = new Date(utcDateTimeString);
+     const options = {
+       hour: '2-digit',
+       minute: '2-digit',
+       hour12: false,
+       timeZone: 'Asia/Jakarta'
+     };
+     const formatter = new Intl.DateTimeFormat('id-ID', options);
+     return formatter.format(date);
+   }
+
+   function formatTimeForInput(utcDateTimeString) {
+     if (!utcDateTimeString) return '';
+     const date = new Date(utcDateTimeString);
+     const options = {
+       hour: '2-digit',
+       minute: '2-digit',
+       hour12: false,
+       timeZone: 'Asia/Jakarta'
+     };
+     const formatter = new Intl.DateTimeFormat('en-US', options);
+     return formatter.format(date);
+   }
+
+   function formatDurationForDisplay(totalMinutes) {
+     const minutes = parseInt(totalMinutes);
+     if (isNaN(minutes) || minutes === null) return '';
+     const hours = Math.floor(minutes / 60);
+     const remainingMinutes = minutes % 60;
+     let result = [];
+     if (hours > 0) result.push(`${hours} jam`);
+     if (remainingMinutes > 0 || (hours === 0 && remainingMinutes === 0)) result.push(`${remainingMinutes} menit`);
+     return result.join(' ');
+   }
+
+   function showNotification(message, isSuccess = true) {
+     let notification = document.getElementById('customNotification');
+     const notificationIcon = document.getElementById('notificationIcon');
+     const notificationMessage = document.getElementById('notificationMessage');
+     if (!notification || !notificationIcon || !notificationMessage) return;
+     notificationMessage.textContent = message;
+     notificationIcon.textContent = isSuccess ? '✅' : '❌';
+     notification.classList.remove('success', 'error', 'hidden', 'opacity-0');
+     notification.classList.add(isSuccess ? 'success' : 'error');
+     notification.classList.remove('hidden');
+     setTimeout(() => { notification.style.opacity = '1'; }, 10);
+     setTimeout(() => {
+       notification.style.opacity = '0';
+       setTimeout(() => { notification.classList.add('hidden'); }, 500);
+     }, 3000);
+   }
+
+   function renderTable(dataToRender) {
+     tableBody.innerHTML = '';
+     if (dataToRender.length === 0) {
+       tableBody.innerHTML = `<tr><td colspan="17" class="px-4 py-2 text-center text-gray-500">Belum ada data produksi yang sesuai filter.</td></tr>`;
+       return;
+     }
+
+     const canModify = currentUserRole === 'Direktur' || currentUserRole === 'Produksi';
+     dataToRender.forEach((data, index) => {
+       let displayPartName = data.part_name || '';
+       let displayProcess = data.process || '';
+
+       if (data.jenis_proses === 'Welding' && data.part_name && data.part_name.includes('->')) {
+         const lines = data.part_name.split('\n');
+         const partNames = [];
+         const processGroups = [];
+         lines.forEach(line => {
+           const parts = line.replace('•', '').split('->');
+           if (parts.length === 2) {
+             partNames.push(parts[0].trim());
+             processGroups.push(parts[1].trim());
+           } else {
+             partNames.push(line.replace('•', '').trim());
+             processGroups.push('');
+           }
+         });
+         displayPartName = partNames.join('<br>');
+         displayProcess = processGroups.join('<br>');
+       }
+
+       const row = document.createElement('tr');
+       row.innerHTML = `
+         <td class="px-4 py-2 selection-checkbox-cell ${isSelectionMode ? '' : 'hidden'}">
+           <input type="checkbox" class="row-checkbox h-4 w-4 text-primary-600" data-row-id="${data.id}" />
+         </td>
+         <td class="px-4 py-2">${data.tanggal}</td>
+         <td class="px-4 py-2">${data.nama_operator || ''}</td>
+         <td class="px-4 py-2">${data.shift}</td>
+         <td class="px-4 py-2">${data.jenis_proses}</td>
+         <td class="px-4 py-2">${displayPartName}</td>
+         <td class="px-4 py-2">${displayProcess}</td>
+         <td class="px-4 py-2">${data.mesin}</td>
+         <td class="px-4 py-2">${formatTimeForDisplay(data.start_time)}</td>
+         <td class="px-4 py-2">${formatTimeForDisplay(data.finish_time)}</td>
+         <td class="px-4 py-2">${data.break_menit || ''}</td>
+         <td class="px-4 py-2">${data.duration || ''}</td>
+         <td class="px-4 py-2">${data.ok || ''}</td>
+         <td class="px-4 py-2">${data.ng || ''}</td>
+         <td class="px-4 py-2">${data.qc_line || ''}</td>
+         <td class="px-4 py-2">${data.note || ''}</td>
+         <td class="px-4 py-2 flex gap-2">
+           ${canModify ? `
+             <button class="text-blue-500 hover:text-blue-700" data-edit-id="${data.id}" title="Edit Data">
+               <i data-feather="edit" class="size-5"></i>
+             </button>
+             <button class="text-red-500 hover:text-red-700" data-delete-id="${data.id}" title="Hapus Data">
+               <i data-feather="trash-2" class="size-5"></i>
+             </button>
+           ` : ''}
+         </td>
+       `;
+       tableBody.appendChild(row);
+     });
+     feather.replace();
+   }
+
+   async function applyFilters() {
+     const filters = {
+       dateFrom: filterDateFromInput.value,
+       dateTo: filterDateToInput.value,
+       processType: filterProcessTypeSelect.value,
+       shift: filterShiftSelect.value
+     };
+     const result = await DatabaseHelper.getProductionData(filters);
+     if (result.success) {
+       currentFilteredData = result.data;
+       renderTable(currentFilteredData);
+     } else {
+       showNotification(`❌ Gagal memuat data: ${result.error}`, false);
+     }
+   }
+
+   function downloadCsv(data, filename) {
+     if (data.length === 0) {
+       alert("Tidak ada data untuk diunduh.");
+       return;
+     }
+     const headers = ["Tanggal", "Nama Operator", "Shift", "Jenis Proses", "Part Name", "Process", "Mesin", "Start", "Finish", "Break (menit)", "Duration", "OK", "NG", "QC Line", "Note"];
+     const dataKeys = ["tanggal", "nama_operator", "shift", "jenis_proses", "part_name", "process", "mesin", "start_time", "finish_time", "break_menit", "duration", "ok", "ng", "qc_line", "note"];
+     let csvContent = headers.map(h => `"${h.replace(/"/g, '""')}"`).join(',') + '\n';
+     data.forEach(row => {
+       const rowData = dataKeys.map(key => {
+         let value = row[key] !== null && row[key] !== undefined ? String(row[key]) : '';
+         if (key === 'start_time' || key === 'finish_time') value = formatTimeForDisplay(row[key]);
+         if (value.includes(',') || value.includes('"') || value.includes('\n')) value = `"${value.replace(/"/g, '""')}"`;
+         return value;
+       }).join(',');
+       csvContent += rowData + '\n';
+     });
+     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+     const link = document.createElement('a');
+     const url = URL.createObjectURL(blob);
+     link.setAttribute('href', url);
+     link.setAttribute('download', filename);
+     document.body.appendChild(link);
+     link.click();
+     document.body.removeChild(link);
+     URL.revokeObjectURL(url);
+   }
+
+   async function deleteRow(idToDelete) {
+     if (currentUserRole !== 'Direktur' && currentUserRole !== 'Produksi') {
+       showNotification("❌ Anda tidak memiliki izin untuk menghapus data ini.", false);
+       return;
+     }
+     if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+       const result = await DatabaseHelper.deleteProductionData(idToDelete);
+       if (result.success) {
+         showNotification("✅ Data produksi berhasil dihapus!", true);
+         await applyFilters();
+       } else {
+         showNotification(`❌ Gagal menghapus data: ${result.error}`, false);
+       }
+     }
+   }
+
+   // --- START PERUBAHAN ---
+   function toggleEditModalFields(jenisProses) {
+       if (jenisProses === 'Welding') {
+           editStampingFields.classList.add('hidden');
+           editWeldingFields.classList.remove('hidden');
+       } else { // Stamping
+           editStampingFields.classList.remove('hidden');
+           editWeldingFields.classList.add('hidden');
+       }
+   }
+
+   function openEditModal(data) {
+     editProductionIdInput.value = data.id;
+     editTanggalInput.value = data.tanggal;
+     editNamaOperatorInput.value = data.nama_operator || '';
+     editShiftSelect.value = data.shift;
+     editJenisProsesSelect.value = data.jenis_proses;
+     editMesinInput.value = data.mesin;
+     editStartTimeInput.value = formatTimeForInput(data.start_time);
+     editFinishTimeInput.value = formatTimeForInput(data.finish_time);
+     editBreakMenitInput.value = data.break_menit || '';
+     editOKInput.value = data.ok || '';
+     editNGInput.value = data.ng || '';
+     editQCLineInput.value = data.qc_line || '';
+     editNoteInput.value = data.note || '';
+
+     // Panggil fungsi toggle untuk mengatur field yang terlihat
+     toggleEditModalFields(data.jenis_proses);
+
+     // Isi field berdasarkan jenis proses
+     if (data.jenis_proses === 'Welding') {
+         editPartNameProcessTextarea.value = data.part_name || '';
+     } else {
+         editPartNameInput.value = data.part_name || '';
+         editProcessInput.value = data.process || '';
+     }
+
+     editProductionModal.classList.add('show');
+   }
+   // --- END PERUBAHAN ---
+
+   function closeEditModal() {
+     editProductionModal.classList.remove('show');
+     editProductionForm.reset();
+   }
+
+   editProductionForm.addEventListener('submit', async function(event) {
+     event.preventDefault();
+     const idToUpdate = editProductionIdInput.value;
+     
+     const tanggal = editTanggalInput.value;
+     const startTimeStr = editStartTimeInput.value;
+     const finishTimeStr = editFinishTimeInput.value;
+     const breakMinutes = parseInt(editBreakMenitInput.value) || 0;
+
+     let calculatedDurationMinutes = 0;
+     if (startTimeStr && finishTimeStr) {
+       let start = new Date(`${tanggal}T${startTimeStr}`);
+       let finish = new Date(`${tanggal}T${finishTimeStr}`);
+       if (finish < start) finish.setDate(finish.getDate() + 1);
+       calculatedDurationMinutes = (finish - start) / (1000 * 60) - breakMinutes;
+       if (calculatedDurationMinutes < 0) calculatedDurationMinutes = 0;
+     }
+     const formattedDurationForDB = formatDurationForDisplay(calculatedDurationMinutes);
+
+     let startTimestamp = startTimeStr ? new Date(`${tanggal}T${startTimeStr}`).toISOString() : null;
+     let finishTimestamp = null;
+     if (finishTimeStr) {
+         let finishDate = new Date(`${tanggal}T${finishTimeStr}`);
+         if (startTimestamp && finishDate < new Date(startTimestamp)) {
+             finishDate.setDate(finishDate.getDate() + 1);
+         }
+         finishTimestamp = finishDate.toISOString();
+     }
+     
+     // --- START PERUBAHAN ---
+     let finalPartName, finalProcess;
+     if (editJenisProsesSelect.value === 'Welding') {
+        finalPartName = editPartNameProcessTextarea.value;
+        const lines = finalPartName.split('\n');
+        const processesSet = new Set();
+        lines.forEach(line => {
+            const parts = line.replace('•', '').split('->');
+            if (parts.length === 2) {
+                const processStr = parts[1].trim();
+                processStr.split(',').forEach(p => {
+                    const trimmedP = p.trim();
+                    if(trimmedP) processesSet.add(trimmedP);
+                });
+            }
+        });
+        finalProcess = [...processesSet].join(', ');
+     } else {
+        finalPartName = editPartNameInput.value;
+        finalProcess = editProcessInput.value;
+     }
+     // --- END PERUBAHAN ---
+
+     const updatedData = {
+       tanggal: tanggal,
+       nama_operator: editNamaOperatorInput.value,
+       shift: editShiftSelect.value,
+       jenis_proses: editJenisProsesSelect.value,
+       part_name: finalPartName, // Menggunakan variabel yang sudah diproses
+       process: finalProcess,     // Menggunakan variabel yang sudah diproses
+       mesin: editMesinInput.value,
+       start_time: startTimestamp,
+       finish_time: finishTimestamp,
+       break_menit: breakMinutes,
+       duration: formattedDurationForDB,
+       ok: parseInt(editOKInput.value) || 0,
+       ng: parseInt(editNGInput.value) || 0,
+       qc_line: editQCLineInput.value || null,
+       note: editNoteInput.value || null,
+     };
+
+     if (currentUserRole !== 'Direktur' && currentUserRole !== 'Produksi') {
+       showNotification("❌ Anda tidak memiliki izin untuk mengubah data ini.", false);
+       return;
+     }
+
+     const result = await DatabaseHelper.updateProductionData(idToUpdate, updatedData);
+
+     if (result.success) {
+       showNotification("✅ Data produksi berhasil diperbarui!", true);
+       closeEditModal();
+       await applyFilters();
+     } else {
+       showNotification(`❌ Gagal memperbarui data: ${result.error}`, false);
+     }
+   });
+
+   cancelEditProductionButton.addEventListener('click', closeEditModal);
+   editProductionModal.addEventListener('click', (event) => (event.target === editProductionModal) && closeEditModal());
+   editJenisProsesSelect.addEventListener('change', (event) => toggleEditModalFields(event.target.value)); // <-- Tambahkan event listener
+
+   // Event listeners
+   filterDateFromInput.addEventListener('change', applyFilters);
+   filterDateToInput.addEventListener('change', applyFilters);
+   filterProcessTypeSelect.addEventListener('change', applyFilters);
+   filterShiftSelect.addEventListener('change', applyFilters);
+
+   toggleSelectionModeButton.addEventListener('click', function() {
+     isSelectionMode = !isSelectionMode;
+     document.querySelectorAll('.selection-checkbox-header, .selection-checkbox-cell').forEach(el => el.classList.toggle('hidden', !isSelectionMode));
+     downloadSelectedCsvButton.classList.toggle('hidden', !isSelectionMode);
+     cancelSelectionButton.classList.toggle('hidden', !isSelectionMode);
+     if (!isSelectionMode) {
+       document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
+       selectAllCheckboxes.checked = false;
+     }
+   });
+
+   selectAllCheckboxes.addEventListener('change', function() {
+     document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = this.checked);
+   });
+
+   downloadSelectedCsvButton.addEventListener('click', function() {
+     const selectedData = [];
+     document.querySelectorAll('.row-checkbox:checked').forEach(checkbox => {
+       const item = currentFilteredData.find(data => String(data.id) === checkbox.dataset.rowId);
+       if (item) selectedData.push(item);
+     });
+     if (selectedData.length === 0) {
+       alert("Pilih setidaknya satu baris untuk diunduh.");
+       return;
+     }
+     selectedData.sort((a, b) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime());
+     downloadCsv(selectedData, 'data_produksi_terpilih.csv');
+     cancelSelectionButton.click();
+   });
+
+   cancelSelectionButton.addEventListener('click', function() {
+     isSelectionMode = false;
+     document.querySelectorAll('.selection-checkbox-header, .selection-checkbox-cell').forEach(el => el.classList.add('hidden'));
+     downloadSelectedCsvButton.classList.add('hidden');
+     cancelSelectionButton.classList.add('hidden');
+     document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
+     selectAllCheckboxes.checked = false;
+   });
+
+   tableBody.addEventListener('click', async function(event) {
+     const deleteButton = event.target.closest('[data-delete-id]');
+     const editButton = event.target.closest('[data-edit-id]');
+     if (deleteButton) {
+       await deleteRow(deleteButton.dataset.deleteId);
+     } else if (editButton) {
+       const dataToEdit = currentFilteredData.find(data => String(data.id) === editButton.dataset.editId);
+       if (dataToEdit) openEditModal(dataToEdit);
+       else showNotification('❌ Data tidak ditemukan untuk diedit.', false);
+     }
+   });
+ });
+ </script>
+ 
+</body>
+</html>

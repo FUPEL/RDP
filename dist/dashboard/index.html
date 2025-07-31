@@ -1,0 +1,1181 @@
+<!doctype html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+<!-- [Head] start -->
+<head>
+  <title>Dashboard | Datta Able Dashboard Template</title>
+  <!-- [Meta] -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta
+    name="description"
+    content="Datta Able is trending dashboard template made using Bootstrap 5 design framework. Datta Able is available in Bootstrap, React, CodeIgniter, Angular,  and .net Technologies."
+  />
+  <meta
+    name="keywords"
+    content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard"
+  />
+  <meta name="author" content="CodedThemes" />
+
+  <!-- [Favicon] icon -->
+  <link rel="icon" href="../assets/images/favicon.svg" type="image/x-icon" />
+
+   <!-- [Font] Family -->
+   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- [phosphor Icons] https://phosphoricons.com/ -->
+  <link rel="stylesheet" href="../assets/fonts/phosphor/duotone/style.css" />
+  <!-- [Tabler Icons] https://tablericons.com -->
+  <link rel="stylesheet" href="../assets/fonts/tabler-icons.min.css" />
+  <!-- [Feather Icons] https://feathericons.com -->
+  <link rel="stylesheet" href="../assets/fonts/feather.css" />
+  <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+  <link rel="stylesheet" href="../assets/fonts/fontawesome.css" />
+  <!-- [Material Icons] https://fonts.google.com/icons -->
+  <link rel="stylesheet" href="../assets/fonts/material.css" />
+  <!-- [Template CSS Files] -->
+  <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
+
+</head>
+<!-- [Head] end -->
+
+<!-- [Body] Start -->
+<body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+  <!-- [ Pre-loader ] start -->
+  <div class="loader-bg fixed inset-0 bg-white dark:bg-themedark-cardbg z-[1034]">
+    <div class="loader-track h-[5px] w-full inline-block absolute overflow-hidden top-0">
+      <div class="loader-fill w-[300px] h-[5px] bg-primary-500 absolute top-0 left-0 animate-[hitZak_0.6s_ease-in-out_infinite_alternate]"></div>
+    </div>
+  </div>
+  <!-- [ Pre-loader ] End -->
+
+  <!-- [ Sidebar Menu ] start -->
+  <nav class="pc-sidebar">
+    <div class="navbar-wrapper">
+      <div class="m-header flex justify-start items-center py-4 px-6 h-header-height">
+        <a href="../dashboard/index.html" class="b-brand flex items-center">
+          <img src="../assets/images/LOGO_RDP-removebg-preview.png"
+               class="img-fluid logo logo-lg w-[100px] h-auto mt-5 ml-14"
+               alt="logo" />
+        </a>
+      </div>
+
+      <div class="navbar-content h-[calc(100vh_-_74px)] py-2.5">
+        <ul class="pc-navbar">
+          <ul class="pc-navbar">
+            <li class="pc-item pc-caption">
+              <label>Navigation</label>
+            </li>
+            <li class="pc-item" data-role="Direktur,Marketing,Produksi">
+              <a href="../dashboard/index.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="home"></i>
+                </span>
+                <span class="pc-mtext">Dashboard</span>
+              </a>
+            </li>
+            <li class="pc-item pc-caption" data-role="Direktur,Marketing">
+              <label>Marketing</label>
+              <i data-feather="box"></i>
+            </li>
+            <li class="pc-item pc-hasmenu" data-role="Direktur,Marketing">
+              <a href="#!" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="users"></i>
+                </span>
+                <span class="pc-mtext">Customer</span>
+                <span class="pc-arrow">
+                  <i data-feather="chevron-right"></i>
+                </span>
+              </a>
+              <ul class="pc-submenu">
+                <li class="pc-item">
+                  <a class="pc-link" href="../pages/input-new-customer.html">Input Customer</a>
+                </li>
+                <li class="pc-item">
+                  <a class="pc-link" href="../pages/kelola-data.html">Kelola Data Customer</a>
+                </li>
+              </ul>
+            </li>
+            <li class="pc-item pc-hasmenu" data-role="Direktur,Marketing">
+              <a href="#!" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="package"></i>
+                </span>
+                <span class="pc-mtext">Barang</span>
+                <span class="pc-arrow">
+                  <i data-feather="chevron-right"></i>
+                </span>
+              </a>
+              <ul class="pc-submenu">
+                <li class="pc-item">
+                  <a class="pc-link" href="../pages/input-nama-barang.html">Input Nama Barang</a>
+                </li>
+                <li class="pc-item">
+                  <a class="pc-link" href="../pages/kelola-barang.html">Kelola Barang</a>
+                </li>
+              </ul>
+            </li>
+            <li class="pc-item" data-role="Direktur,Marketing">
+              <a href="../pages/input-po.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="file-text"></i>
+                </span>
+                <span class="pc-mtext">Input PO</span>
+              </a>
+            </li>
+            <li class="pc-item" data-role="Direktur,Marketing">
+              <a href="../pages/laporan-po.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="clipboard"></i>
+                </span>
+                <span class="pc-mtext">Laporan</span>
+              </a>
+            </li>
+            <li class="pc-item pc-caption" data-role="Direktur,Produksi">
+              <label>Produksi</label>
+              <i data-feather="tool"></i>
+            </li>
+            <li class="pc-item" data-role="Direktur,Produksi">
+              <a href="../pages/Input-Produksi.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="edit-3"></i>
+                </span>
+                <span class="pc-mtext">Input Produksi</span>
+              </a>
+            </li>
+            <li class="pc-item" data-role="Direktur,Produksi">
+              <a href="../pages/history-produksi.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="clock"></i>
+                </span>
+                <span class="pc-mtext">History Produksi</span>
+              </a>
+            </li>
+            <li class="pc-item pc-caption" data-role="Direktur">
+              <label>Other</label>
+              <i data-feather="align-left"></i>
+            </li>
+            <li class="pc-item pc-hasmenu" data-role="Direktur">
+              <a href="#!" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="menu"></i>
+                </span>
+                <span class="pc-mtext">Menu levels</span>
+                <span class="pc-arrow">
+                  <i data-feather="chevron-right"></i>
+                </span>
+              </a>
+              <ul class="pc-submenu">
+                <li class="pc-item">
+                  <a class="pc-link" href="#!">Level 2.1</a>
+                </li>
+                <li class="pc-item pc-hasmenu">
+                  <a href="#!" class="pc-link">
+                    Level 2.2
+                    <span class="pc-arrow">
+                      <i data-feather="chevron-right"></i>
+                    </span>
+                  </a>
+                  <ul class="pc-submenu">
+                    <li class="pc-item">
+                      <a class="pc-link" href="#!">Level 3.1</a>
+                    </li>
+                    <li class="pc-item">
+                      <a class="pc-link" href="#!">Level 3.2</a>
+                    </li>
+                    <li class="pc-item pc-hasmenu">
+                      <a href="#!" class="pc-link">
+                        Level 3.3
+                        <span class="pc-arrow">
+                          <i data-feather="chevron-right"></i>
+                        </span>
+                      </a>
+                      <ul class="pc-submenu">
+                        <li class="pc-item">
+                          <a class="pc-link" href="#!">Level 4.1</a>
+                        </li>
+                        <li class="pc-item">
+                          <a class="pc-link" href="#!">Level 4.2</a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li class="pc-item">
+                  <a class="pc-link" href="#!">Level 2.3</a>
+                </li>
+              </ul>
+            </li>
+            <li class="pc-item" data-role="Direktur">
+              <a href="../other/sample-page.html" class="pc-link">
+                <span class="pc-micon">
+                  <i data-feather="sidebar"></i>
+                </span>
+                <span class="pc-mtext">Sample page</span>
+              </a>
+            </li>
+          </ul>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- [ Sidebar Menu ] end -->
+
+  <!-- [ Header Topbar ] start -->
+  <header class="pc-header">
+    <div class="header-wrapper flex max-sm:px-[15px] px-[25px] grow"><!-- [Mobile Media Block] start -->
+<div class="me-auto pc-mob-drp">
+<ul class="inline-flex *:min-h-header-height *:inline-flex *:items-center">
+ <!-- ======= Menu collapse Icon ===== -->
+ <li class="pc-h-item pc-sidebar-collapse max-lg:hidden lg:inline-flex">
+   <a href="#" class="pc-head-link ltr:!ml-0 rtl:!mr-0" id="sidebar-hide">
+     <i data-feather="menu"></i>
+   </a>
+ </li>
+ <li class="pc-h-item pc-sidebar-popup lg:hidden">
+   <a href="#" class="pc-head-link ltr:!ml-0 rtl:!mr-0" id="mobile-collapse">
+     <i data-feather="menu"></i>
+   </a>
+ </li>
+ <li class="dropdown pc-h-item">
+   <a class="pc-head-link dropdown-toggle me-0" data-pc-toggle="dropdown" href="#" role="button"
+     aria-haspopup="false" aria-expanded="false">
+     <i data-feather="search"></i>
+   </a>
+   <div class="dropdown-menu pc-h-dropdown drp-search">
+     <form class="px-2 py-1">
+       <input type="search" class="form-control !border-0 !shadow-none" placeholder="Search here. . ." />
+     </form>
+   </div>
+ </li>
+</ul>
+</div>
+<!-- [Mobile Media Block end] -->
+<div class="ms-auto">
+<ul class="inline-flex *:min-h-header-height *:inline-flex *:items-center">
+ <li class="dropdown pc-h-item">
+   <a class="pc-head-link dropdown-toggle me-0" data-pc-toggle="dropdown" href="#" role="button"
+     aria-haspopup="false" aria-expanded="false">
+     <i data-feather="sun"></i>
+   </a>
+   <div class="dropdown-menu dropdown-menu-end pc-h-dropdown">
+     <a href="#!" class="dropdown-item" onclick="layout_change('dark')">
+       <i data-feather="moon"></i>
+       <span>Dark</span>
+     </a>
+     <a href="#!" class="dropdown-item" onclick="layout_change('light')">
+       <i data-feather="sun"></i>
+       <span>Light</span>
+     </a>
+     <a href="#!" class="dropdown-item" onclick="layout_change_default()">
+       <i data-feather="settings"></i>
+       <span>Default</span>
+     </a>
+   </div>
+ </li>
+ <!-- Notification dropdown - will be hidden for non-Direktur users -->
+ <li class="dropdown pc-h-item notification-dropdown" data-role="Direktur" style="display: none;">
+   <a class="pc-head-link dropdown-toggle me-0 notification-trigger" data-pc-toggle="dropdown" href="#" role="button"
+     aria-haspopup="false" aria-expanded="false" id="notificationTrigger">
+     <i data-feather="bell" class="notification-icon"></i>
+     <span class="notification-badge" style="display: none;">0</span>
+   </a>
+   <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown" style="display: none !important; position: absolute; top: 100%; right: 0; transform: translateY(0); opacity: 0; visibility: hidden;">
+     <!-- Header -->
+     <div class="notification-header">
+       <div class="d-flex align-items-center justify-content-between">
+         <div class="d-flex align-items-center">
+           <i data-feather="bell" class="me-2 notification-header-icon"></i>
+           <h6 class="mb-0 fw-semibold text-white">Notifikasi</h6>
+         </div>
+         <div class="d-flex align-items-center gap-2">
+           <button class="btn btn-sm btn-secondary mark-all-read-btn">
+             Tandai Semua
+           </button>
+           <button class="btn btn-sm btn-danger clear-all-btn">
+             Hapus Semua
+           </button>
+         </div>
+       </div>
+     </div>
+     
+     <!-- Body -->
+     <div class="notification-body">
+       <div class="loading-state text-center py-5">
+         <div class="spinner-border spinner-border-sm text-primary mb-2" role="status">
+           <span class="visually-hidden">Loading...</span>
+         </div>
+         <p class="text-muted mb-0 small">Memuat notifikasi...</p>
+       </div>
+     </div>
+     
+     <!-- Footer -->
+     <div class="notification-footer">
+       <a href="#!" class="text-decoration-none text-primary fw-medium small">Lihat Semua Notifikasi</a>
+     </div>
+   </div>
+ </li>
+ <li class="dropdown pc-h-item header-user-profile">
+   <a class="pc-head-link dropdown-toggle arrow-none me-0" data-pc-toggle="dropdown" href="#" role="button"
+     aria-haspopup="false" data-pc-auto-close="outside" aria-expanded="false">
+     <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar" />
+   </a>
+   <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown p-2 overflow-hidden">
+     <div class="dropdown-header flex items-center justify-content-between py-4 px-5 bg-primary-500">
+       <div class="flex mb-1 items-center">
+         <div class="shrink-0">
+           <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="w-10 rounded-full" />
+         </div>
+         <div class="grow ms-3">
+           <h6 class="mb-1 text-white" data-user-name>Loading... 🖖</h6>
+           <span class="text-white" data-user-email>Loading...</span>
+         </div>
+       </div>
+     </div>
+     <div class="dropdown-body py-4 px-5">
+       <div class="profile-notification-scroll position-relative" style="max-height: calc(100vh - 225px)">
+         <div class="grid my-3">
+           <button class="btn btn-primary flex items-center justify-center" id="logoutButton">
+             <svg class="pc-icon me-2 w-[22px] h-[22px]">
+               <use xlink:href="#custom-logout-1-outline"></use>
+             </svg>
+             Logout
+           </button>
+         </div>
+       </div>
+     </div>
+   </div>
+ </li>
+</ul>
+</div>
+
+<style>
+/* Modern Notification Styles - Fixed Layout & Hover Issues */
+.notification-dropdown .dropdown-menu {
+ width: 380px;
+ max-width: 95vw;
+ border-radius: 12px;
+ overflow: hidden;
+ border: none;
+ box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+ transform-origin: top;
+ margin-top: 8px;
+ /* Force hide by default with proper positioning */
+ display: none !important;
+ visibility: hidden !important;
+ opacity: 0 !important;
+ position: absolute !important;
+ top: 100% !important;
+ right: 0 !important;
+ transform: translateY(-10px) scale(0.95) !important;
+ transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+ z-index: 1050 !important;
+}
+
+/* Only show when parent has drp-show class with smooth animation */
+.notification-dropdown.drp-show .dropdown-menu {
+ display: block !important;
+ visibility: visible !important;
+ opacity: 1 !important;
+ transform: translateY(0) scale(1) !important;
+}
+
+/* Notification Trigger - Fixed Hover Issue */
+.notification-trigger {
+ position: relative;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ transition: all 0.2s ease;
+}
+
+.notification-trigger:hover {
+ transform: none !important;
+ background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.notification-trigger:hover .notification-icon {
+ transform: none !important;
+ color: inherit !important;
+}
+
+/* Badge - Fixed Positioning & Hover Issues */
+.notification-badge {
+ position: absolute;
+ top: -6px;
+ right: -6px;
+ background: #dc3545;
+ color: white;
+ font-size: 0.65rem;
+ font-weight: 700;
+ min-width: 18px;
+ height: 18px;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ border: 2px solid white;
+ box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4);
+ z-index: 1000;
+ animation: pulse 2s infinite;
+ pointer-events: none;
+}
+
+@keyframes pulse {
+ 0%, 100% {
+   transform: scale(1);
+ }
+ 50% {
+   transform: scale(1.1);
+ }
+}
+
+/* Header */
+.notification-header {
+ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+ padding: 16px 20px;
+}
+
+.notification-header-icon {
+ width: 20px;
+ height: 20px;
+ color: white;
+}
+
+.notification-header .btn {
+ font-size: 0.75rem;
+ padding: 0.25rem 0.75rem;
+ border-radius: 6px;
+ transition: all 0.2s ease;
+}
+
+.notification-header .btn:hover {
+ background: rgba(255, 255, 255, 0.2);
+ transform: translateY(-1px);
+}
+
+/* Body */
+.notification-body {
+ max-height: 420px;
+ overflow-y: auto;
+ overflow-x: hidden;
+ background: white;
+ scrollbar-width: thin;
+ scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.notification-body::-webkit-scrollbar {
+ width: 6px;
+}
+
+.notification-body::-webkit-scrollbar-track {
+ background: #f7fafc;
+ border-radius: 3px;
+}
+
+.notification-body::-webkit-scrollbar-thumb {
+ background: #cbd5e0;
+ border-radius: 3px;
+ transition: background 0.2s ease;
+}
+
+.notification-body::-webkit-scrollbar-thumb:hover {
+ background: #a0aec0;
+}
+
+/* Notification Items - Fixed Alignment */
+.notification-item {
+ padding: 16px 20px;
+ border-bottom: 1px solid #f1f5f9;
+ transition: all 0.2s ease;
+ border-left: 3px solid transparent;
+ cursor: pointer;
+ position: relative;
+}
+
+.notification-item:not(.read) {
+ background: linear-gradient(90deg, rgba(99, 102, 241, 0.03) 0%, rgba(255, 255, 255, 1) 100%);
+ border-left-color: #6366f1;
+}
+
+.notification-item:hover {
+ background: #f8fafc;
+ transform: translateX(2px);
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.notification-item.read {
+ opacity: 0.75;
+}
+
+.notification-item:last-child {
+ border-bottom: none;
+}
+
+/* Avatar - Fixed Alignment */
+.notification-avatar {
+ width: 44px;
+ height: 44px;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-weight: 600;
+ font-size: 0.875rem;
+ border: 2px solid white;
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+ flex-shrink: 0;
+}
+
+/* Content - Fixed Alignment */
+.notification-content {
+ flex: 1;
+ min-width: 0;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+}
+
+.notification-title {
+ font-size: 0.875rem;
+ font-weight: 600;
+ color: #1f2937;
+ line-height: 1.3;
+ margin: 0 0 4px 0;
+ display: -webkit-box; /* Keep for broader compatibility */
+ -webkit-box-orient: vertical; /* Keep for broader compatibility */
+ overflow: hidden;
+ line-clamp: 2; /* Standard property */
+}
+
+.notification-description {
+ font-size: 0.8125rem;
+ color: #6b7280;
+ line-height: 1.4;
+ margin: 0 0 8px 0;
+ display: -webkit-box; /* Keep for broader compatibility */
+ -webkit-box-orient: vertical; /* Keep for broader compatibility */
+ overflow: hidden;
+ line-clamp: 2; /* Standard property */
+}
+
+.notification-meta {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ font-size: 0.7rem;
+ color: #9ca3af;
+}
+
+.notification-time {
+ font-size: 0.75rem;
+ color: #6b7280;
+ white-space: nowrap;
+ flex-shrink: 0;
+ margin-left: auto;
+ font-weight: 500;
+}
+
+/* Date Separator - Fixed Alignment */
+.notification-date-separator {
+ background: #f9fafb;
+ border-bottom: 1px solid #e5e7eb;
+ padding: 8px 20px;
+ font-size: 0.75rem;
+ font-weight: 600;
+ color: #6b7280;
+ text-transform: uppercase;
+ letter-spacing: 0.5px;
+ position: sticky;
+ top: 0;
+ z-index: 10;
+}
+
+/* Unread Indicator */
+.unread-dot {
+ width: 8px;
+ height: 8px;
+ background: #ef4444;
+ border-radius: 50%;
+ position: absolute;
+ top: 16px;
+ right: 16px;
+ animation: blink 2s infinite;
+}
+
+@keyframes blink {
+ 0%, 50% { opacity: 1; }
+ 51%, 100% { opacity: 0.3; }
+}
+
+/* Empty State */
+.empty-state {
+ padding: 3rem 2rem;
+ text-align: center;
+}
+
+.empty-state-icon {
+ width: 64px;
+ height: 64px;
+ margin: 0 auto 1rem;
+ background: #f3f4f6;
+ border-radius: 50%;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ color: #9ca3af;
+}
+
+/* Footer */
+.notification-footer {
+ border-top: 1px solid #e5e7eb;
+ background: #f9fafb;
+ padding: 12px 20px;
+ text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+ .notification-dropdown .dropdown-menu {
+   width: 350px !important;
+   max-width: calc(100vw - 20px) !important;
+   margin-right: 10px;
+ }
+ 
+ .notification-body {
+   max-height: 350px !important;
+ }
+ 
+ .notification-item {
+   padding: 12px 16px !important;
+ }
+ 
+ .notification-header {
+   padding: 12px 16px !important;
+ }
+ 
+ .notification-date-separator {
+   padding: 6px 16px !important;
+ }
+}
+
+@media (max-width: 480px) {
+ .notification-dropdown .dropdown-menu {
+   width: 320px !important;
+ }
+ 
+ .notification-header .d-flex.gap-2 {
+   flex-direction: column;
+   gap: 0.25rem !important;
+ }
+ 
+ .notification-header .btn {
+   font-size: 0.7rem !important;
+   padding: 0.2rem 0.5rem !important;
+ }
+ 
+ .notification-avatar {
+   width: 36px !important;
+   height: 36px !important;
+ }
+}
+
+/* Loading State */
+.loading-state {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ padding: 2rem;
+}
+
+.spinner-border-sm {
+ width: 1.5rem;
+ height: 1.5rem;
+}
+</style>
+
+<script>
+ // This script will be enhanced by role-based-menu.js
+ // Keep the basic logout functionality as fallback
+ function handleLogout() {
+   localStorage.clear(); 
+   window.location.href = '../pages/login-v1.html'; 
+ }
+
+ // Fallback logout handler if role-based-menu.js doesn't load
+ document.addEventListener('DOMContentLoaded', function() {
+   const logoutBtn = document.getElementById('logoutButton');
+   if (logoutBtn && !logoutBtn.hasAttribute('data-enhanced')) {
+     logoutBtn.addEventListener('click', handleLogout);
+   }
+ });
+</script>
+</div>
+  </header>
+  <!-- [ Header ] end -->
+
+
+  <!-- [ Main Content ] start -->
+  <div class="pc-container" data-page-role="Direktur,Marketing,Produksi">
+    <div class="pc-content">
+      <!-- [ breadcrumb ] start -->
+      <div class="page-header">
+        <div class="page-block">
+          <div class="page-header-title">
+            <h5 class="mb-0 font-medium">Default</h5>
+          </div>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../dashboard/index.html">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="Dashboard-href">Dashboard</a></li>
+            <li class="breadcrumb-item" aria-current="page">Default</li>
+          </ul>
+        </div>
+      </div>
+      <!-- [ breadcrumb ] end -->
+
+
+      <!-- [ Main Content ] start -->
+      <div class="grid grid-cols-12 gap-x-6">
+        <!-- [ sample-page content ] start -->
+        <div class="col-span-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Hello Card</h5>
+            </div>
+            <div class="card-body">
+              <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+            </div>
+          </div>
+        </div>
+        <!-- [ sample-page content ] end -->
+
+        <!-- Existing content from index.html -->
+        <div class="col-span-12 xl:col-span-4 md:col-span-6">
+          <div class="card">
+            <div class="card-header !pb-0 !border-b-0">
+              <h5>Daily Sales</h5>
+            </div>
+            <div class="card-body">
+              <div class="flex items-center justify-between gap-3 flex-wrap">
+                <h3 class="font-light flex items-center mb-0">
+                  <i class="feather icon-arrow-up text-success-500 text-[30px] mr-1.5"></i>
+                  $ 249.95
+                </h3>
+                <p class="mb-0">67%</p>
+              </div>
+              <div class="w-full bg-theme-bodybg rounded-lg h-1.5 mt-6 dark:bg-themedark-bodybg">
+                <div class="bg-theme-bg-1 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]" role="progressbar"
+                  style="width: 75%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-span-12 xl:col-span-4 md:col-span-6">
+          <div class="card">
+            <div class="card-header !pb-0 !border-b-0">
+              <h5>Monthly Sales</h5>
+            </div>
+            <div class="card-body">
+              <div class="flex items-center justify-between gap-3 flex-wrap">
+                <h3 class="font-light flex items-center mb-0">
+                  <i class="feather icon-arrow-down text-danger-500 text-[30px] mr-1.5"></i>
+                  $ 2.942.32
+                </h3>
+                <p class="mb-0">36%</p>
+              </div>
+              <div class="w-full bg-theme-bodybg rounded-lg h-1.5 mt-6 dark:bg-themedark-bodybg">
+                <div class="bg-theme-bg-2 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]" role="progressbar"
+                  style="width: 35%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-span-12 xl:col-span-4">
+          <div class="card">
+            <div class="card-header !pb-0 !border-b-0">
+              <h5>Yearly Sales</h5>
+            </div>
+            <div class="card-body">
+              <div class="flex items-center justify-between gap-3 flex-wrap">
+                <h3 class="font-light flex items-center mb-0">
+                  <i class="feather icon-arrow-up text-success-500 text-[30px] mr-1.5"></i>
+                  $8.638.32
+                </h3>
+                <p class="mb-0">80%</p>
+              </div>
+              <div class="w-full bg-theme-bodybg rounded-lg h-1.5 mt-6 dark:bg-themedark-bodybg">
+                <div class="bg-theme-bg-1 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]" role="progressbar"
+                  style="width: 80%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-span-12 xl:col-span-4">
+          <div class="card card-social">
+            <div class="card-body border-b border-theme-border dark:border-themedark-border">
+              <div class="flex items-center justify-center">
+                <div class="shrink-0">
+                  <i class="fab fa-facebook-f text-primary-500 text-[36px]"></i>
+                </div>
+                <div class="grow ltr:text-right rtl:text-left">
+                  <h3 class="mb-2">12,281</h3>
+                  <h5 class="text-success-500 mb-0">+7.2% <span class="text-muted">Total Likes</span></h5>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="grid grid-cols-12 gap-x-6">
+                <div class="col-span-6">
+                  <h6 class="text-center mb-2.5"><span class="text-muted m-r-5">Target:</span>35,098</h6>
+                  <div class="w-full bg-theme-bodybg rounded-lg h-1.5 dark:bg-themedark-bodybg">
+                    <div class="bg-theme-bg-1 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]" role="progressbar" style="width: 60%"></div>
+                  </div>
+                </div>
+                <div class="col-span-6">
+                  <h6 class="text-center mb-2.5"><span class="text-muted m-r-5">Duration:</span>350</h6>
+                  <div class="w-full bg-theme-bodybg rounded-lg h-1.5 dark:bg-themedark-bodybg">
+                    <div class="bg-theme-bg-2 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]" role="progressbar" style="width: 45%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-span-12 xl:col-span-4 md:col-span-6">
+          <div class="card card-social">
+            <div class="card-body border-b border-theme-border dark:border-themedark-border">
+              <div class="flex items-center justify-center">
+                <div class="shrink-0">
+                  <i class="fab fa-twitter text-primary-500 text-[36px]"></i>
+                </div>
+                <div class="grow ltr:text-right rtl:text-left">
+                  <h3 class="mb-2">11,200</h3>
+                  <h5 class="text-purple-500 mb-0">+6.2% <span class="text-muted">Total Likes</span></h5>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="grid grid-cols-12 gap-x-6">
+                <div class="col-span-6">
+                  <h6 class="text-center mb-2.5"><span class="text-muted m-r-5">Target:</span>34,185</h6>
+                  <div class="w-full bg-theme-bodybg rounded-lg h-1.5 dark:bg-themedark-bodybg">
+                    <div class="bg-success-500 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]" role="progressbar" style="width: 40%"></div>
+                  </div>
+                </div>
+                <div class="col-span-6">
+                  <h6 class="text-center mb-2.5"><span class="text-muted m-r-5">Duration:</span>800</h6>
+                  <div class="w-full bg-theme-bodybg rounded-lg h-1.5 dark:bg-themedark-bodybg">
+                    <div class="bg-primary-500 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]" role="progressbar" style="width: 70%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-span-12 xl:col-span-4 md:col-span-6">
+          <div class="card card-social">
+            <div class="card-body border-b border-theme-border dark:border-themedark-border">
+              <div class="flex items-center justify-center">
+                <div class="shrink-0">
+                  <i class="fab fa-google-plus-g text-danger-500 text-[36px]"></i>
+                </div>
+                <div class="grow ltr:text-right rtl:text-left">
+                  <h3 class="mb-2">10,500</h3>
+                  <h5 class="text-purple-500 mb-0">+5.9% <span class="text-muted">Total Likes</span></h5>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="grid grid-cols-12 gap-x-6">
+                <div class="col-span-6">
+                  <h6 class="text-center mb-2.5"><span class="text-muted m-r-5">Target:</span>25,998</h6>
+                  <div class="w-full bg-theme-bodybg rounded-lg h-1.5 dark:bg-themedark-bodybg">
+                    <div class="bg-theme-bg-1 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]" role="progressbar" style="width: 80%"></div>
+                  </div>
+                </div>
+                <div class="col-span-6">
+                  <h6 class="text-center mb-2.5"><span class="text-muted m-r-5">Duration:</span>900</h6>
+                  <div class="w-full bg-theme-bodybg rounded-lg h-1.5 dark:bg-themedark-bodybg">
+                    <div class="bg-theme-bg-2 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]" role="progressbar" style="width: 50%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-span-12 xl:col-span-4 md:col-span-6">
+          <div class="card user-list">
+            <div class="card-header">
+              <h5>Rating</h5>
+            </div>
+            <div class="card-body">
+              <div class="flex items-center justify-between gap-1 mb-5">
+                <h2 class="font-light flex items-center m-0">
+                  4.7
+                  <i class="fas fa-star text-[10px] ml-2.5 text-warning-500"></i>
+                </h2>
+                <h6 class="flex items-center m-0">
+                  0.4
+                  <i class="fas fa-caret-up text-success text-[22px] ml-2.5"></i>
+                </h6>
+              </div>
+
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <h6 class="flex items-center gap-1">
+                  <i class="fas fa-star text-[10px] mr-2.5 text-warning-500"></i>
+                  5
+                </h6>
+                <h6>384</h6>
+              </div>
+              <div class="w-full bg-theme-bodybg rounded-lg h-1.5 mb-6 mt-3 dark:bg-themedark-bodybg">
+                <div
+                  class="bg-theme-bg-1 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]"
+                  role="progressbar"
+                  style="width: 70%"
+                ></div>
+              </div>
+
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <h6 class="flex items-center gap-1">
+                  <i class="fas fa-star text-[10px] mr-2.5 text-warning-500"></i>
+                  4
+                </h6>
+                <h6>145</h6>
+              </div>
+              <div class="w-full bg-theme-bodybg rounded-lg h-1.5 mb-6 mt-3 dark:bg-themedark-bodybg">
+                <div
+                  class="bg-theme-bg-1 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]"
+                  role="progressbar"
+                  style="width: 35%"
+                ></div>
+              </div>
+
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <h6 class="flex items-center gap-1">
+                  <i class="fas fa-star text-[10px] mr-2.5 text-warning-500"></i>
+                  3
+                </h6>
+                <h6>24</h6>
+              </div>
+              <div class="w-full bg-theme-bodybg rounded-lg h-1.5 mb-6 mt-3 dark:bg-themedark-bodybg">
+                <div
+                  class="bg-theme-bg-1 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]"
+                  role="progressbar"
+                  style="width: 25%"
+                ></div>
+              </div>
+
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <h6 class="flex items-center gap-1">
+                  <i class="fas fa-star text-[10px] mr-2.5 text-warning-500"></i>
+                  2
+                </h6>
+                <h6>1</h6>
+              </div>
+              <div class="w-full bg-theme-bodybg rounded-lg h-1.5 mt-4 dark:bg-themedark-bodybg">
+                <div
+                  class="bg-theme-bg-1 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]"
+                  role="progressbar"
+                  style="width: 10%"
+                ></div>
+              </div>
+
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <h6 class="flex items-center gap-1">
+                  <i class="fas fa-star text-[10px] mr-2.5 text-warning-500"></i>
+                  1
+                </h6>
+                <h6>0</h6>
+              </div>
+              <div class="w-full bg-theme-bodybg rounded-lg h-1.5 mt-4 dark:bg-themedark-bodybg">
+                <div
+                  class="bg-theme-bg-1 h-full rounded-lg shadow-[0_10px_20px_0_rgba(0,0,0,0.3)]"
+                  role="progressbar"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-span-12 xl:col-span-8 md:col-span-6">
+          <div class="card table-card">
+            <div class="card-header">
+              <h5>Recent Users</h5>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <tbody>
+                    <tr class="unread">
+                      <td>
+                        <img class="rounded-full max-w-10" style="width: 40px" src="../assets/images/user/avatar-1.jpg" alt="activity-user" />
+                      </td>
+                      <td>
+                        <h6 class="mb-1">Isabella Christensen</h6>
+                        <p class="m-0">Lorem Ipsum is simply dummy text of…</p>
+                      </td>
+                      <td>
+                        <h6 class="text-muted">
+                          <i class="fas fa-circle text-success text-[10px] ltr:mr-4 rtl:ml-4"></i>
+                          11 MAY 12:56
+                        </h6>
+                      </td>
+                      <td>
+                        <a href="#!" class="badge bg-theme-bg-2 text-white text-[12px] mx-2">Reject</a>
+                        <a href="#!" class="badge bg-theme-bg-1 text-white text-[12px]">Approve</a>
+                      </td>
+                    </tr>
+                    <tr class="unread">
+                      <td>
+                        <img class="rounded-full max-w-10" style="width: 40px" src="../assets/images/user/avatar-2.jpg" alt="activity-user" />
+                      </td>
+                      <td>
+                        <h6 class="mb-1">Mathilde Andersen</h6>
+                        <p class="m-0">Lorem Ipsum is simply dummy text of…</p>
+                      </td>
+                      <td>
+                        <h6 class="text-muted">
+                          <i class="fas fa-circle text-danger text-[10px] ltr:mr-4 rtl:ml-4"></i>
+                          11 MAY 10:35
+                        </h6>
+                      </td>
+                      <td>
+                        <a href="#!" class="badge bg-theme-bg-2 text-white text-[12px] mx-2">Reject</a>
+                        <a href="#!" class="badge bg-theme-bg-1 text-white text-[12px]">Approve</a>
+                      </td>
+                    </tr>
+                    <tr class="unread">
+                      <td>
+                        <img class="rounded-full max-w-10" style="width: 40px" src="../assets/images/user/avatar-3.jpg" alt="activity-user" />
+                      </td>
+                      <td>
+                        <h6 class="mb-1">Karla Sorensen</h6>
+                        <p class="m-0">Lorem Ipsum is simply dummy text of…</p>
+                      </td>
+                      <td>
+                        <h6 class="text-muted">
+                          <i class="fas fa-circle text-success text-[10px] ltr:mr-4 rtl:ml-4"></i>
+                          9 MAY 17:38
+                        </h6>
+                      </td>
+                      <td>
+                        <a href="#!" class="badge bg-theme-bg-2 text-white text-[12px] mx-2">Reject</a>
+                        <a href="#!" class="badge bg-theme-bg-1 text-white text-[12px]">Approve</a>
+                      </td>
+                    </tr>
+                    <tr class="unread">
+                      <td>
+                        <img class="rounded-full max-w-10" style="width: 40px" src="../assets/images/user/avatar-1.jpg" alt="activity-user" />
+                      </td>
+                      <td>
+                        <h6 class="mb-1">Ida Jorgensen</h6>
+                        <p class="m-0">Lorem Ipsum is simply dummy text of…</p>
+                      </td>
+                      <td>
+                        <h6 class="text-muted f-w-300">
+                          <i class="fas fa-circle text-danger text-[10px] ltr:mr-4 rtl:ml-4"></i>
+                          19 MAY 12:56
+                        </h6>
+                      </td>
+                      <td>
+                        <a href="#!" class="badge bg-theme-bg-2 text-white text-[12px] mx-2">Reject</a>
+                        <a href="#!" class="badge bg-theme-bg-1 text-white text-[12px]">Approve</a>
+                      </td>
+                    </tr>
+                    <tr class="unread">
+                      <td>
+                        <img class="rounded-full max-w-10" style="width: 40px" src="../assets/images/user/avatar-2.jpg" alt="activity-user" />
+                      </td>
+                      <td>
+                        <h6 class="mb-1">Albert Andersen</h6>
+                        <p class="m-0">Lorem Ipsum is simply dummy text of…</p>
+                      </td>
+                      <td>
+                        <h6 class="text-muted">
+                          <i class="fas fa-circle text-success text-[10px] ltr:mr-4 rtl:ml-4"></i>
+                          21 July 12:56
+                        </h6>
+                      </td>
+                      <td>
+                        <a href="#!" class="badge bg-theme-bg-2 text-white text-[12px] mx-2">Reject</a>
+                        <a href="#!" class="badge bg-theme-bg-1 text-white text-[12px]">Approve</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Existing content from index.html end -->
+      </div>
+      <!-- [ Main Content ] end -->
+    </div>
+  </div>
+  <!-- [ Main Content ] end -->
+
+  <footer class="pc-footer">
+    <div class="footer-wrapper container-fluid mx-10">
+      <div class="flex justify-center items-center py-4">
+        <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+          &copy; 2025 PT. RIZQI DA SA PERKASA. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Required Js -->
+  <script src="../assets/js/plugins/simplebar.min.js"></script>
+  <script src="../assets/js/plugins/popper.min.js"></script>
+  <script src="../assets/js/icon/custom-icon.js"></script>
+  <script src="../assets/js/plugins/feather.min.js"></script>
+  <script src="../assets/js/component.js"></script>
+  <script src="../assets/js/theme.js"></script>
+  <script src="../assets/js/supabase-config.js"></script>
+  <script src="../assets/js/script.js"></script>
+
+  <div class="floting-button fixed bottom-[50px] right-[30px] z-[1030]">
+  </div>
+
+  
+  <script>
+  layout_change('false');
+  </script>
+   
+  
+  <script>
+  layout_theme_sidebar_change('dark');
+  </script>
+  
+  
+  <script>
+  change_box_container('false');
+  </script>
+   
+  <script>
+  layout_caption_change('true');
+  </script>
+   
+  <script>
+  layout_rtl_change('false');
+  </script>
+   
+  <script>
+  preset_change('preset-1');
+  </script>
+   
+  <script>
+  main_layout_change('vertical');
+  </script>
+  
+
+
+  <!-- Include Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-config.js"></script>
+  <script src="../assets/js/role-based-menu.js"></script>
+</body>
+<!-- [Body] end -->
+</html>

@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+ <!-- [Head] start -->
+ <head>
+   <title>Login | Datta Able Dashboard Template</title>
+   <!-- [Meta] -->
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+   <meta
+     name="description"
+     content="Datta Able is trending dashboard template made using Bootstrap 5 design framework. Datta Able is available in Bootstrap, React, CodeIgniter, Angular,  and .net Technologies."
+   />
+   <meta
+     name="keywords"
+     content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard"
+   />
+   <meta name="author" content="CodedThemes" />
+
+   <!-- [Favicon] icon -->
+   <link rel="icon" href="../assets/images/favicon.svg" type="image/x-icon" />
+
+    <!-- [Font] Family -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+   <!-- [phosphor Icons] https://phosphoricons.com/ -->
+   <link rel="stylesheet" href="../assets/fonts/phosphor/duotone/style.css" />
+   <!-- [Tabler Icons] https://tablericons.com -->
+   <link rel="stylesheet" href="../assets/fonts/tabler-icons.min.css" />
+   <!-- [Feather Icons] https://feathericons.com -->
+   <link rel="stylesheet" href="../assets/fonts/feather.css" />
+   <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+   <link rel="stylesheet" href="../assets/fonts/fontawesome.css" />
+   <!-- [Material Icons] https://fonts.google.com/icons -->
+   <link rel="stylesheet" href="../assets/fonts/material.css" />
+   <!-- [Template CSS Files] -->
+   <link rel="stylesheet" href="../assets/css/style.css" id="main-style-link" />
+
+ </head>
+ <!-- [Head] end -->
+ <!-- [Body] Start -->
+
+ <body>
+   <!-- [ Pre-loader ] start -->
+   <div class="loader-bg fixed inset-0 bg-white dark:bg-themedark-cardbg z-[1034]">
+     <div class="loader-track h-[5px] w-full inline-block absolute overflow-hidden top-0">
+       <div class="loader-fill w-[300px] h-[5px] bg-primary-500 absolute top-0 left-0 animate-[hitZak_0.6s_ease-in-out_infinite_alternate]"></div>
+     </div>
+   </div>
+   <!-- [ Pre-loader ] End -->
+
+   <div class="auth-main relative">
+     <div class="auth-wrapper v1 flex items-center w-full h-full min-h-screen">
+       <div class="auth-form flex items-center justify-center grow flex-col min-h-screen relative p-6 ">
+         <div class="w-full max-w-[350px] relative">
+           <div class="auth-bg ">
+             <span class="absolute top-[-100px] right-[-100px] w-[300px] h-[300px] block rounded-full bg-theme-bg-1 animate-[floating_7s_infinite]"></span>
+             <span class="absolute top-[150px] right-[-150px] w-5 h-5 block rounded-full bg-primary-500 animate-[floating_9s_infinite]"></span>
+             <span class="absolute left-[-150px] bottom-[150px] w-5 h-5 block rounded-full bg-theme-bg-1 animate-[floating_7s_infinite]"></span>
+             <span class="absolute left-[-100px] bottom-[-100px] w-[300px] h-[300px] block rounded-full bg-theme-bg-2 animate-[floating_9s_infinite]"></span>
+           </div>
+           <div class="card sm:my-12  w-full shadow-none">
+             <div class="card-body !p-10">
+               <div class="text-center mb-8">
+                 <a href="#"><img src="../assets/images/LOGO_RDP-removebg-preview.png" alt="img" class="mx-auto auth-logo"/></a>
+               </div>
+               <h4 class="text-center font-medium mb-4">Login</h4>
+               <form id="loginForm">
+                 <div class="mb-3">
+                   <input type="email" class="form-control" id="floatingInput" placeholder="Email Address" required autocomplete="off" />
+                 </div>
+                 <div class="mb-4 relative">
+                   <input type="password" class="form-control" id="floatingInput1" placeholder="Password" required autocomplete="off" />
+                   <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer">
+                     <i data-feather="eye"></i>
+                   </button>
+                 </div>
+                 <div class="flex mt-1 justify-start items-center flex-wrap">
+                   <div class="form-check">
+                     <input class="form-check-input input-primary" type="checkbox" id="rememberMe" />
+                     <label class="form-check-label text-muted" for="rememberMe">Remember me?</label>
+                   </div>
+                 </div>
+                 <div class="mt-4 text-center">
+                   <button type="submit" id="loginButton" class="btn btn-primary mx-auto shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed">
+                     <span id="loginBtnText">Login</span>
+                     <span id="loginBtnLoader" class="hidden">
+                       <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                       </svg>
+                       Logging in...
+                     </span>
+                   </button>
+                 </div>
+               </form>
+             </div>
+           </div>
+         </div>
+         
+       </div>
+     </div>
+   </div>
+   <!-- [ Main Content ] end -->
+   
+   <!-- Include Supabase CDN -->
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+   <!-- Include our config after Supabase is loaded -->
+   <script src="../assets/js/supabase-config.js"></script>
+   <!-- Required Js -->
+   <script src="../assets/js/plugins/simplebar.min.js"></script>
+   <script src="../assets/js/plugins/popper.min.js"></script>
+   <script src="../assets/js/icon/custom-icon.js"></script>
+   <script src="../assets/js/plugins/feather.min.js"></script>
+   <script src="../assets/js/component.js"></script>
+   <script src="../assets/js/theme.js"></script>
+   <script src="../assets/js/supabase-config.js"></script>
+   <script src="../assets/js/script.js"></script>
+
+   <div class="floting-button fixed bottom-[50px] right-[30px] z-[1030]">
+   </div>
+
+   
+   <script>
+   layout_change('false');
+   </script>
+    
+   
+   <script>
+   layout_theme_sidebar_change('dark');
+   </script>
+   
+   
+   <script>
+   change_box_container('false');
+   </script>
+    
+   <script>
+   layout_caption_change('true');
+   </script>
+    
+   <script>
+   layout_rtl_change('false');
+   </script>
+    
+   <script>
+   preset_change('preset-1');
+   </script>
+    
+   <script>
+   main_layout_change('vertical');
+   </script>
+   
+ 
+   <script>
+     function showNotification(message, isSuccess = true) {
+       let notification = document.getElementById('customNotification');
+       if (!notification) {
+         notification = document.createElement('div');
+         notification.id = 'customNotification';
+         notification.className = 'fixed bottom-4 right-4 px-6 py-4 rounded-lg shadow-xl z-50 hidden opacity-0 transition-opacity duration-500 flex items-center gap-3';
+         document.body.appendChild(notification);
+
+         const iconSpan = document.createElement('span');
+         iconSpan.id = 'notificationIcon';
+         iconSpan.className = 'text-2xl';
+         notification.appendChild(iconSpan);
+
+         const messageSpan = document.createElement('span');
+         messageSpan.id = 'notificationMessage';
+         messageSpan.className = 'font-semibold text-white';
+         notification.appendChild(messageSpan);
+       }
+
+       const notificationIcon = notification.querySelector('#notificationIcon');
+       const notificationMessage = notification.querySelector('#notificationMessage');
+
+       notificationMessage.textContent = message;
+       notificationIcon.textContent = isSuccess ? '✔' : '✖';
+
+       notification.classList.remove('bg-green-600', 'bg-red-600', 'hidden', 'opacity-0');
+       if (isSuccess) {
+         notification.classList.add('bg-green-600');
+       } else {
+         notification.classList.add('bg-red-600');
+       }
+       notification.classList.add('text-white');
+
+       notification.style.opacity = '1';
+       setTimeout(() => {
+         notification.style.opacity = '0';
+         setTimeout(() => {
+           notification.classList.add('hidden');
+         }, 500);
+       }, 3000);
+     }
+
+     function setLoginButtonState(isLoading) {
+       const loginBtn = document.getElementById('loginButton');
+       const loginBtnText = document.getElementById('loginBtnText');
+       const loginBtnLoader = document.getElementById('loginBtnLoader');
+
+       if (isLoading) {
+         loginBtn.disabled = true;
+         loginBtnText.classList.add('hidden');
+         loginBtnLoader.classList.remove('hidden');
+       } else {
+         loginBtn.disabled = false;
+         loginBtnText.classList.remove('hidden');
+         loginBtnLoader.classList.add('hidden');
+       }
+     }
+
+     // Wait for page to load completely
+     window.addEventListener('load', async function() {
+       console.log('Page loaded, checking for existing session...');
+       
+       // Wait a bit for supabase to initialize
+       setTimeout(async () => {
+         try {
+           if (typeof window.DatabaseHelper !== 'undefined') {
+             const session = await window.DatabaseHelper.getCurrentSession();
+             const rememberMeStored = localStorage.getItem('rememberMe') === 'true'; // Get the stored preference
+
+             // If a session exists but "Remember Me" was NOT checked, sign out to prevent unintended auto-login
+             if (session && session.user && !rememberMeStored) {
+               console.log('User session exists but "Remember Me" was not checked. Signing out.');
+               await window.DatabaseHelper.signOut();
+               // Optionally, clear session storage if it's used for temporary sessions
+               sessionStorage.clear();
+             }
+             // IMPORTANT: The automatic redirect on page load is intentionally removed.
+             // The user will now remain on the login page even if "Remember Me" is checked and a session exists.
+           }
+         } catch (error) {
+           console.log('No existing session found or error during session check:', error);
+         }
+
+         // Setup login form
+         const loginForm = document.getElementById('loginForm');
+         const emailInput = document.getElementById('floatingInput');
+         const passwordInput = document.getElementById('floatingInput1');
+         const rememberMeCheckbox = document.getElementById('rememberMe');
+         const togglePassword = document.getElementById('togglePassword');
+
+         // Restore remember me state and pre-fill email and password
+         const rememberedEmail = localStorage.getItem('rememberedEmail');
+         const rememberedPassword = localStorage.getItem('rememberedPassword'); // New: Get stored password
+         const rememberMeCheckedOnLoad = localStorage.getItem('rememberMe') === 'true';
+         
+         if (rememberMeCheckedOnLoad && rememberedEmail) {
+           emailInput.value = rememberedEmail;
+           rememberMeCheckbox.checked = true;
+           if (rememberedPassword) { // New: Pre-fill password if available
+             passwordInput.value = rememberedPassword;
+           }
+         } else {
+           // Ensure checkbox is unchecked if rememberMe is not true in localStorage
+           rememberMeCheckbox.checked = false;
+           emailInput.value = ''; // Clear email if not remembered
+           passwordInput.value = ''; // New: Clear password if not remembered
+         }
+
+         // Password toggle logic
+         if (togglePassword) {
+           togglePassword.addEventListener('click', function () {
+             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+             passwordInput.setAttribute('type', type);
+             // Toggle icon using Feather icons
+             this.innerHTML = type === 'password' ? '<i data-feather="eye"></i>' : '<i data-feather="eye-off"></i>';
+             // Re-replace feather icons to ensure the new icon is rendered
+             if (typeof window.feather !== "undefined") {
+               window.feather.replace();
+             }
+           });
+         }
+
+         if (loginForm) {
+           loginForm.addEventListener('submit', async function(event) {
+             event.preventDefault();
+
+             const email = emailInput.value.trim();
+             const password = passwordInput.value.trim();
+             const rememberMe = rememberMeCheckbox.checked;
+
+             console.log('Login attempt with:', { email, rememberMe });
+
+             if (!email || !password) {
+               showNotification("❌ Email dan password tidak boleh kosong!", false);
+               return;
+             }
+
+             // Validate email format
+             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+             if (!emailRegex.test(email)) {
+               showNotification("❌ Format email tidak valid!", false);
+               return;
+             }
+
+             setLoginButtonState(true);
+
+             try {
+               if (typeof window.DatabaseHelper === 'undefined') {
+                 throw new Error('DatabaseHelper not loaded');
+               }
+
+               console.log('Sending login request to Supabase...');
+               const { data, error } = await window.DatabaseHelper.signInWithPassword(email, password, rememberMe);
+
+               console.log('Login result:', { data, error });
+
+               if (error) {
+                 console.error('Login error details:', error);
+                 let errorMessage = "Login gagal";
+                 
+                 if (error.message) {
+                   if (error.message.includes('Invalid login credentials') || 
+                       error.message.includes('invalid_credentials') ||
+                       error.message.includes('Email not confirmed')) {
+                     errorMessage = "Email atau password salah";
+                   } else if (error.message.includes('Too many requests')) {
+                     errorMessage = "Terlalu banyak percobaan login. Coba lagi nanti.";
+                   } else if (error.message.includes('Network')) {
+                     errorMessage = "Masalah koneksi internet";
+                   } else {
+                     errorMessage = error.message;
+                   }
+                 }
+                 
+                 showNotification(`❌ ${errorMessage}`, false);
+               } else if (data && data.user) {
+                 console.log('Login successful for user:', data.user.email);
+                 
+                 // Handle remember me storage based on current checkbox state
+                 if (rememberMe) {
+                   localStorage.setItem('rememberedEmail', email);
+                   localStorage.setItem('rememberedPassword', password); // New: Store password
+                   localStorage.setItem('rememberMe', 'true');
+                 } else {
+                   localStorage.removeItem('rememberedEmail');
+                   localStorage.removeItem('rememberedPassword'); // New: Remove password
+                   localStorage.removeItem('rememberMe');
+                 }
+                 
+                 showNotification("✅ Login berhasil!", true);
+                 
+                 // Wait a moment for the notification to show, then redirect
+                 setTimeout(() => {
+                   window.location.href = '../dashboard/index.html';
+                 }, 1000);
+               } else {
+                 console.error('Unexpected login response:', { data, error });
+                 showNotification("❌ Login gagal: Respons tidak valid dari server.", false);
+               }
+             } catch (err) {
+               console.error('Login exception:', err);
+               showNotification(`❌ Login gagal: ${err.message || 'Terjadi kesalahan sistem'}`, false);
+             }
+             
+             setLoginButtonState(false);
+           });
+         } else {
+           console.error("Login form not found.");
+         }
+       }, 1000); // Wait 1 second for everything to load
+     });
+   </script>
+ </body>
+ <!-- [Body] end -->
+</html>
