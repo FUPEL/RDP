@@ -1,127 +1,123 @@
-;(() => {
-  document.addEventListener("DOMContentLoaded", async () => {
-    console.log("Input Staff: DOM Content Loaded.")
+document.addEventListener('DOMContentLoaded', () => {
+  // Pastikan Supabase dan Typeahead sudah termuat
+  if (typeof supabase === 'undefined') {
+    console.error('Supabase client is not loaded.');
+    return;
+  }
+  if (typeof $ === 'undefined' || typeof $.fn.typeahead === 'undefined') {
+    console.error('jQuery or Typeahead.js is not loaded.');
+    return;
+  }
 
-    // Ensure DatabaseHelper is available
-    if (typeof window.DatabaseHelper === "undefined") {
-      console.error("Input Staff: DatabaseHelper is not defined. Supabase functions will not work.")
-      return
+  // Fungsi untuk mengambil data role dari tabel 'roles' di Supabase
+  async function getRoles() {
+    try {
+      const { data, error } = await supabase.from('roles').select('role_name');
+      if (error) {
+        throw error;
+      }
+      return data.map(role => role.role_name);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+      showNotification('Gagal memuat daftar role.', false);
+      return [];
     }
+  }
 
-    const emailInput = document.getElementById("email")
-    const passwordInput = document.getElementById("password")
-    const displayNameInput = document.getElementById("displayName")
-    const roleInput = document.getElementById("role")
-    const inputStaffForm = document.getElementById("inputStaffForm")
+  // Inisialisasi Typeahead untuk input role
+  async function initializeRoleTypeahead() {
+    const roleNames = await getRoles();
+    
+    const roles = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.whitespace,
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      local: roleNames
+    });
 
-    // Declare Bloodhound and $ variables
-    const Bloodhound = window.Bloodhound
-    const $ = window.jQuery
+    $('#role').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 0
+    }, {
+      name: 'roles',
+      source: roles,
+      limit: 10
+    });
+  }
 
-    // --- Role Typeahead/Autosuggestion ---
-    const setupRoleTypeahead = async () => {
-      const result = await window.DatabaseHelper.getDistinctRoles()
-      if (result.success) {
-        const roles = result.data
-        console.log("Input Staff: Fetched distinct roles for typeahead:", roles)
+  // Jalankan inisialisasi
+  initializeRoleTypeahead();
 
-        const rolesBloodhound = new Bloodhound({
-          datumTokenizer: Bloodhound.tokenizers.whitespace,
-          queryTokenizer: Bloodhound.tokenizers.whitespace,
-          local: roles,
-        })
+  // Menangani proses submit form
+  const form = document.getElementById('inputStaffForm');
+  if (form) {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
 
-        roleInput.setAttribute("autocomplete", "off") // Disable browser autocomplete
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const displayName = document.getElementById('displayName').value;
+      const role = document.getElementById('role').value;
 
-        $(roleInput).typeahead(
-          {
-            hint: true,
-            highlight: true,
-            minLength: 0, // Show suggestions immediately
-          },
-          {
-            name: "roles",
-            source: rolesBloodhound,
-            limit: 10, // Limit the number of suggestions
-          },
-        )
+      try {
+        // Langkah 1: Panggil fungsi Supabase untuk mendaftarkan user baru
+        const { data: signUpData, error: signUpError } = await supabase.rpc('create_new_user', {
+            p_email: email,
+            p_password: password,
+            p_display_name: displayName,
+            p_role: role
+        });
 
-        // Handle selection to ensure the input value is correctly set
-        $(roleInput).bind("typeahead:select", (ev, suggestion) => {
-          roleInput.value = suggestion
-          console.log("Input Staff: Role selected:", suggestion)
-        })
-
-        // Handle blur to ensure the input value is correctly set if not selected from dropdown
-        $(roleInput).bind("blur", () => {
-          if (!roles.includes(roleInput.value) && roleInput.value !== "") {
-            // Optional: if you want to force selection from list or clear invalid input
-            // roleInput.value = '';
-            console.warn("Input Staff: Role entered is not in the suggested list:", roleInput.value)
-          }
-        })
-      } else {
-        console.error("Input Staff: Failed to load distinct roles:", result.error)
+        if (signUpError) {
+          throw new Error(signUpError.message);
+        }
+        
+        showNotification('Staff baru berhasil dibuat!', true);
+        form.reset();
+        $('#role').typeahead('val', ''); // Membersihkan input typeahead
+        
+      } catch (error) {
+        console.error('Error saat membuat staff:', error);
+        showNotification(error.message, false);
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit';
       }
-    }
+    });
+  }
+});
 
-    // Initialize Typeahead
-    setupRoleTypeahead()
-
-    // --- Form Submission ---
-    inputStaffForm.addEventListener("submit", async (e) => {
-      e.preventDefault()
-
-      const email = emailInput.value.trim()
-      const password = passwordInput.value
-      const displayName = displayNameInput.value.trim()
-      const role = roleInput.value.trim()
-
-      if (!email || !password || !displayName || !role) {
-        alert("Harap lengkapi semua kolom.")
-        return
-      }
-
-      // 1. Sign up new user in Supabase Auth
-      const { data: authData, error: authError } = await window.DatabaseHelper.signUpNewUser(email, password)
-
-      if (authError) {
-        console.error("Input Staff: Error signing up user:", authError)
-        alert(`Gagal mendaftarkan pengguna: ${authError.message || authError.toString()}`)
-        return
-      }
-
-      const userId = authData.user?.id
-
-      if (!userId) {
-        alert("Gagal mendapatkan ID pengguna setelah pendaftaran.")
-        return
-      }
-
-      console.log("Input Staff: User signed up successfully with ID:", userId)
-
-      // 2. Create profile in 'profiles' table
-      const { success: profileSuccess, error: profileError } = await window.DatabaseHelper.createProfile(
-        userId,
-        displayName,
-        role,
-      )
-
-      if (!profileSuccess) {
-        console.error("Input Staff: Error creating user profile:", profileError)
-        alert(`Gagal membuat profil pengguna: ${profileError}`)
-        // Optional: If profile creation fails, you might want to delete the user from auth
-        // await window.DatabaseHelper._getSupabaseClient().auth.admin.deleteUser(userId);
-        return
-      }
-
-      console.log("Input Staff: User profile created successfully.")
-      alert("Staff baru berhasil ditambahkan!")
-
-      // Clear form
-      inputStaffForm.reset()
-      $(roleInput).typeahead("val", "") // Clear typeahead input
-      setupRoleTypeahead() // Re-initialize typeahead to refresh suggestions if needed
-    })
-  })
-})()
+// Pastikan fungsi notifikasi tersedia secara global jika belum
+function showNotification(message, isSuccess = true) {
+  let notification = document.getElementById('customNotification');
+  if (!notification) {
+    // Buat elemen notifikasi jika tidak ada
+    const notificationHTML = `
+      <div id="customNotification" style="position: fixed; top: 20px; right: 20px; z-index: 1050; display: none;">
+        <div class="toast-body"></div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', notificationHTML);
+    notification = document.getElementById('customNotification');
+  }
+  
+  const toastBody = notification.querySelector('.toast-body') || notification;
+  toastBody.textContent = message;
+  
+  // Hapus kelas sebelumnya dan tambahkan yang baru
+  notification.classList.remove('bg-success', 'bg-danger', 'text-white');
+  if(isSuccess) {
+    notification.classList.add('bg-success', 'text-white');
+  } else {
+    notification.classList.add('bg-danger', 'text-white');
+  }
+  
+  // Tampilkan notifikasi
+  notification.style.display = 'block';
+  setTimeout(() => {
+    notification.style.display = 'none';
+  }, 3000);
+}

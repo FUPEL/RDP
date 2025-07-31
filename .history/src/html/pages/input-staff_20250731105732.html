@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- [Head] start -->
+  <head>
+    @@include('../layouts/head-page-meta.html', {'title': 'Input Staff'})
+    @@include('../layouts/head-css.html')
+    <link rel="stylesheet" href="../assets/css/plugins/typeahead.min.css" />
+    <style>
+      /* Custom styles for Typeahead dropdown */
+      .tt-menu {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+      }
+      .tt-suggestion {
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+      .tt-suggestion.tt-cursor,
+      .tt-suggestion:hover {
+        background-color: #f0f0f0;
+      }
+
+      /* Custom Notification Styles */
+      #customNotification {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease-in-out, background-color 0.3s ease, color 0.3s ease;
+      }
+      #customNotification.hidden {
+        display: none;
+      }
+      /* Specific styles for success and error */
+      #customNotification.success {
+        background-color: #d1fae5; /* green-100 */
+        color: #065f46; /* green-800 */
+      }
+      #customNotification.error {
+        background-color: #fee2e2; /* red-100 */
+        color: #991b1b; /* red-800 */
+      }
+    </style>
+  </head>
+  <!-- [Head] end -->
+
+  <!-- [Body] start -->
+  <body>
+    @@include('../layouts/loader.html')
+    <!-- [ Sidebar ] start -->
+    @@include('../layouts/sidebar.html')
+    <!-- [ Sidebar ] end -->
+    <!-- [ Header ] start -->
+    @@include('../layouts/topbar.html')
+    <!-- [ Header ] end -->
+
+    <!-- [ Main Content ] start -->
+    <div class="pc-container" data-page-role="Direktur">
+      <div class="pc-content">
+        @@include('../layouts/breadcrumb.html', { "breadcrumb-item": "Admin Panel", "breadcrumb-item-active": "Input Staff" })
+
+        <!-- Custom Notification Element -->
+        <div id="customNotification" class="hidden">
+          <span id="notificationIcon"></span>
+          <span id="notificationMessage"></span>
+        </div>
+
+        <!-- [ Main Content ] start -->
+        <div class="row">
+          <!-- [ sample-page ] start -->
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h5>Input Staff Baru</h5>
+              </div>
+              <div class="card-body">
+                <form id="inputStaffForm">
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" required />
+                  </div>
+                  <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" required />
+                  </div>
+                  <div class="mb-3">
+                    <label for="displayName" class="form-label">Display Name</label>
+                    <input type="text" class="form-control" id="displayName" required />
+                  </div>
+                  <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <input type="text" class="form-control" id="role" required />
+                  </div>
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- [ sample-page ] end -->
+        </div>
+        <!-- [ Main Content ] end -->
+      </div>
+    </div>
+    <!-- [ Main Content ] end -->
+    @@include('../layouts/footer-block.html')
+    @@include('../layouts/footer-js.html')
+    <script src="../assets/js/plugins/typeahead.bundle.min.js"></script>
+    <script src="../assets/js/admin/input-staff.js"></script>
+    <script>
+      function showNotification(message, isSuccess = true) {
+        console.log("showNotification called with message:", message, "isSuccess:", isSuccess);
+        let notification = document.getElementById('customNotification');
+        if (!notification) {
+          notification = document.createElement('div');
+          notification.id = 'customNotification';
+          notification.className = 'px-6 py-4 rounded-lg shadow-xl z-50 hidden opacity-0 transition-opacity duration-500 flex items-center gap-3';
+          document.querySelector('.pc-content').appendChild(notification);
+
+          const iconSpan = document.createElement('span');
+          iconSpan.id = 'notificationIcon';
+          iconSpan.className = 'text-2xl';
+          notification.appendChild(iconSpan);
+
+          const messageSpan = document.createElement('span');
+          messageSpan.id = 'notificationMessage';
+          messageSpan.className = 'font-semibold';
+          notification.appendChild(messageSpan);
+        }
+
+        const notificationIcon = notification.querySelector('#notificationIcon');
+        const notificationMessage = notification.querySelector('#notificationMessage');
+
+        notificationMessage.textContent = message;
+        notificationIcon.textContent = isSuccess ? '✔' : '✖';
+
+        notification.classList.remove('bg-green-600', 'bg-red-600', 'hidden', 'opacity-0', 'text-white');
+        if (isSuccess) {
+          notification.classList.add('success');
+        } else {
+          notification.classList.add('error');
+        }
+
+        notification.style.opacity = '1';
+        notification.style.visibility = 'visible';
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          setTimeout(() => {
+            notification.classList.add('hidden');
+            notification.style.visibility = 'hidden';
+          }, 500);
+        }, 3000);
+      }
+    </script>
+  </body>
+  <!-- [Body] end -->
+</html>

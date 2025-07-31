@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" data-page-role="Direktur">
+  <head>
+    <title>Input Staff | RDP</title>
+    @@include('../layouts/head-page-meta.html')
+    <!-- [Page specific CSS] start -->
+    <link rel="stylesheet" href="../assets/css/plugins/typeahead.min.css" />
+    @@include('../layouts/head-css.html')
+    <style>
+      /* Custom styles for Typeahead dropdown to match theme */
+      .tt-menu {
+        background-color: #fff;
+        border: 1px solid #d9dee3;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+        padding: 0.5rem 0;
+        margin-top: 0.25rem;
+        width: 100%;
+        z-index: 1050;
+      }
+      .tt-suggestion {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        clear: both;
+        font-weight: 400;
+        color: #566a7f;
+        text-align: inherit;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+        cursor: pointer;
+      }
+      .tt-suggestion.tt-cursor,
+      .tt-suggestion:hover {
+        background-color: #f5f5f9;
+        color: #000;
+      }
+    </style>
+  </head>
+
+  <body class="layout-modern">
+    @@include('../layouts/loader.html')
+    <!-- [ Main Content ] start -->
+    <div class="layout-wrapper">
+      @@include('../layouts/sidebar.html')
+      <div class="layout-container">
+        @@include('../layouts/topbar.html')
+        <div class="content-wrapper">
+          <div class="container-xxl flex-grow-1 container-p-y">
+            <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Admin Panel /</span> Input Staff</h4>
+
+            <div class="row">
+              <div class="col-xl">
+                <div class="card mb-4">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Formulir Staff Baru</h5>
+                  </div>
+                  <div class="card-body">
+                    <form id="inputStaffForm">
+                      <div class="mb-3">
+                        <label class="form-label" for="email">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="contoh@email.com" required />
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Minimal 6 karakter" required />
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label" for="displayName">Display Name</label>
+                        <input type="text" class="form-control" id="displayName" placeholder="Nama Lengkap Staff" required />
+                      </div>
+                      <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <input type="text" class="form-control" id="role" placeholder="Ketik untuk mencari role..." required />
+                      </div>
+                      <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- / Content -->
+          @@include('../layouts/footer-block.html')
+        </div>
+      </div>
+    </div>
+    <!-- [ Main Content ] end -->
+    @@include('../layouts/footer-js.html')
+    <!-- [Page specific Javascript] start -->
+    <script src="../assets/js/plugins/typeahead.bundle.min.js"></script>
+    <script src="../assets/js/admin/input-staff.js"></script>
+    <!-- [Page specific Javascript] end -->
+  </body>
+</html>
