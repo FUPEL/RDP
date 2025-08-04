@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+<!-- [Head] start -->
+<head>
+  @@include('../layouts/head-page-meta.html', {'title': 'Kelola Mesin'})
+  @@include('../layouts/head-css.html')
+  <style>
+    .editable-cell {
+      cursor: pointer;
+    }
+    .editable-cell input {
+      width: 100%;
+      border: 1px solid #ccc;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+    }
+    .action-buttons button {
+      margin-right: 0.5rem;
+    }
+    .validation-message {
+      color: #ef4444;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+    /* Custom Notification Styles */
+    #customNotification {
+      position: absolute; /* Changed from fixed to absolute */
+      top: 20px; /* Adjusted position relative to .pc-content */
+      right: 20px; /* Adjusted position relative to .pc-content */
+      padding: 12px 20px;
+      border-radius: 0.5rem; /* rounded-lg */
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-md */
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transition: opacity 0.5s ease-in-out, background-color 0.3s ease, color 0.3s ease; /* Added transitions for color/bg */
+      opacity: 0; /* Start hidden */
+    }
+    #customNotification.hidden {
+      display: none;
+    }
+    /* Specific styles for success and error */
+    #customNotification.success {
+      background-color: #d1fae5; /* green-100 */
+      color: #065f46; /* green-800 */
+    }
+    #customNotification.error {
+      background-color: #fee2e2; /* red-100 */
+      color: #991b1b; /* red-800 */
+    }
+  </style>
+</head>
+<!-- [Head] end -->
+
+<!-- [Body] Start -->
+<body>
+  @@include('../layouts/loader.html')
+  @@include('../layouts/sidebar.html')
+  @@include('../layouts/topbar.html')
+
+  <!-- [ Main Content ] start -->
+  <div class="pc-container" data-page-role="Direktur,Produksi">
+    <div class="pc-content">
+      @@include('../layouts/breadcrumb.html', { "breadcrumb-item-active": "Kelola Mesin", "breadcrumb-item": "Data Master", "breadcrumb-item-href": "#" })
+
+      <!-- Custom Notification Element -->
+      <div id="customNotification" class="hidden">
+        <span id="notificationIcon"></span>
+        <span id="notificationMessage"></span>
+      </div>
+
+      <!-- [ Page Content ] start -->
+      <div class="grid grid-cols-12 gap-x-6">
+        <div class="col-span-12">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5>Daftar Mesin</h5>
+              <a href="../pages/input-mesin.html" class="btn btn-primary">Tambah Mesin Baru</a>
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <input type="text" id="machineSearchInput" placeholder="Cari Nama Mesin..." class="form-control block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover" id="machinesTable">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Nama Mesin</th>
+                      <th>Dibuat Pada</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="machineTableBody">
+                    <!-- Data mesin akan dimuat di sini -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- [ Page Content ] end -->
+    </div>
+  </div>
+  <!-- [ Main Content ] end -->
+
+  @@include('../layouts/footer-block.html')
+  @@include('../layouts/footer-js.html')
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-config.js"></script>
+  <script src="../assets/js/role-based-menu.js"></script>
+
+  <script>
+    function showNotification(message, isSuccess = true) {
+      let notification = document.getElementById('customNotification');
+      if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'customNotification';
+        notification.className = 'px-6 py-4 rounded-lg shadow-xl z-50 hidden opacity-0 transition-opacity duration-500 flex items-center gap-3';
+        document.querySelector('.pc-content').appendChild(notification);
+
+        const iconSpan = document.createElement('span');
+        iconSpan.id = 'notificationIcon';
+        iconSpan.className = 'text-2xl';
+        notification.appendChild(iconSpan);
+
+        const messageSpan = document.createElement('span');
+        messageSpan.id = 'notificationMessage';
+        messageSpan.className = 'font-semibold';
+        notification.appendChild(messageSpan);
+      }
+
+      const notificationIcon = notification.querySelector('#notificationIcon');
+      const notificationMessage = notification.querySelector('#notificationMessage');
+
+      notificationMessage.textContent = message;
+      notificationIcon.textContent = isSuccess ? '✔' : '✖';
+
+      notification.classList.remove('hidden', 'opacity-0', 'success', 'error');
+      if (isSuccess) {
+        notification.classList.add('success');
+      } else {
+        notification.classList.add('error');
+      }
+      
+      notification.style.opacity = '1';
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          notification.classList.add('hidden');
+        }, 500);
+      }, 3000);
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const machineTableBody = document.getElementById('machineTableBody');
+      const machineSearchInput = document.getElementById('machineSearchInput');
+      let allMachineData = [];
+
+      async function loadMachineData(dataToDisplay = null) {
+        try {
+          if (typeof window.DatabaseHelper === 'undefined') {
+            throw new Error('Database connection not available. Please refresh the page.');
+          }
+
+          if (!dataToDisplay) {
+            console.log('Loading machine data...');
+            // Fetch data from the 'machines' table using the new getMachines function
+            const result = await window.DatabaseHelper.getMachines();
+            
+            if (result.error) {
+              console.error('Failed to load machines:', result.error);
+              showNotification(`❌ Gagal memuat data: ${result.error}`, false);
+              machineTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-red-500">Gagal memuat data</td></tr>';
+              return;
+            }
+            allMachineData = result.data || [];
+          }
+
+          const data = dataToDisplay || allMachineData;
+          machineTableBody.innerHTML = '';
+
+          if (data.length === 0) {
+            machineTableBody.innerHTML = '<tr><td colspan="4" class="text-center">Tidak ada data mesin.</td></tr>';
+            return;
+          }
+
+          data.forEach((machine, index) => {
+            const row = machineTableBody.insertRow();
+            row.dataset.id = machine.id; // Store the UUID string directly
+
+            row.innerHTML = `
+              <td>${index + 1}</td>
+              <td data-field="machine_name" class="editable-cell">${machine.machine_name || '-'}</td>
+              <td>${new Date(machine.created_at).toLocaleString()}</td>
+              <td class="action-buttons">
+                <button class="btn btn-sm btn-primary edit-btn">Edit</button>
+                <button class="btn btn-sm btn-danger delete-btn">Hapus</button>
+              </td>
+            `;
+          });
+
+          addEventListeners();
+          showNotification(`✅ Data berhasil dimuat (${data.length} mesin)`, true);
+        } catch (error) {
+          console.error('Exception loading machine data:', error);
+          showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+          machineTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-red-500">Terjadi kesalahan saat memuat data</td></tr>';
+        }
+      }
+
+    function addEventListeners() {
+      machineTableBody.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const row = this.closest('tr');
+          toggleEditMode(row, true);
+        });
+      });
+
+      machineTableBody.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', async function() {
+          const row = this.closest('tr');
+          const id = row.dataset.id; // Get the UUID string directly
+          await deleteMachine(id);
+        });
+      });
+    }
+
+    function toggleEditMode(row, isEditing) {
+      const fields = ['machine_name'];
+      const actionButtonsCell = row.querySelector('.action-buttons');
+      const id = row.dataset.id; // Get the UUID string directly
+      const originalData = allMachineData.find(machine => machine.id === id);
+
+      if (isEditing) {
+        fields.forEach(field => {
+          const cell = row.querySelector(`[data-field="${field}"]`);
+          const originalValue = cell.textContent;
+          cell.innerHTML = `<input type="text" value="${originalValue}" data-original-value="${originalValue}" />`;
+        });
+
+        actionButtonsCell.innerHTML = `
+          <button class="btn btn-sm btn-success save-btn">Simpan</button>
+          <button class="btn btn-sm btn-secondary cancel-btn">Batal</button>
+        `;
+        actionButtonsCell.querySelector('.save-btn').addEventListener('click', async function() {
+          await saveMachine(row, id);
+        });
+        actionButtonsCell.querySelector('.cancel-btn').addEventListener('click', function() {
+          toggleEditMode(row, false);
+        });
+      } else {
+        fields.forEach(field => {
+          const cell = row.querySelector(`[data-field="${field}"]`);
+          cell.textContent = originalData[field] || '-';
+        });
+        actionButtonsCell.innerHTML = `
+          <button class="btn btn-sm btn-primary edit-btn">Edit</button>
+          <button class="btn btn-sm btn-danger delete-btn">Hapus</button>
+        `;
+        addEventListeners();
+      }
+    }
+
+    async function saveMachine(row, id) {
+      const machineNameInput = row.querySelector('[data-field="machine_name"] input');
+
+      const newMachineName = machineNameInput.value.trim();
+
+      if (!newMachineName) {
+        machineNameInput.classList.add('border-red-500');
+        showNotification("❌ Nama Mesin tidak boleh kosong!", false);
+        return;
+      } else {
+        machineNameInput.classList.remove('border-red-500');
+      }
+
+      try {
+        if (typeof window.DatabaseHelper === 'undefined' || typeof window.DatabaseHelper.updateData === 'undefined') {
+          throw new Error('Database connection or updateData function not available');
+        }
+
+        const updatedMachine = { 
+          machine_name: newMachineName,
+        };
+        
+        // Update data in the 'machines' table using the new updateData function
+        const result = await window.DatabaseHelper.updateData('machines', id, updatedMachine);
+        
+        if (result.success) {
+          showNotification("✅ Data mesin berhasil diperbarui!", true);
+          await loadMachineData();
+          const searchTerm = machineSearchInput.value.toLowerCase();
+          if (searchTerm) {
+            const filteredData = allMachineData.filter(machine =>
+              machine.machine_name.toLowerCase().includes(searchTerm)
+            );
+            loadMachineData(filteredData);
+          }
+        } else {
+          showNotification(`❌ Gagal memperbarui data: ${result.error}`, false);
+        }
+      } catch (error) {
+        console.error('Error updating machine:', error);
+        showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+      }
+    }
+
+    async function deleteMachine(id) {
+      if (confirm('Apakah Anda yakin ingin menghapus data mesin ini?')) {
+        try {
+          if (typeof window.DatabaseHelper === 'undefined' || typeof window.DatabaseHelper.deleteData === 'undefined') {
+            throw new Error('Database connection or deleteData function not available');
+          }
+
+          // Delete data from the 'machines' table using the new deleteData function
+          const result = await window.DatabaseHelper.deleteData('machines', id);
+          
+          if (result.success) {
+            showNotification("✅ Data mesin berhasil dihapus!", true);
+            await loadMachineData();
+            const searchTerm = machineSearchInput.value.toLowerCase();
+            if (searchTerm) {
+              const filteredData = allMachineData.filter(machine =>
+                machine.machine_name.toLowerCase().includes(searchTerm)
+              );
+              loadMachineData(filteredData);
+            }
+          } else {
+            showNotification(`❌ Gagal menghapus data: ${result.error}`, false);
+          }
+        } catch (error) {
+          console.error('Error deleting item:', error);
+          showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+        }
+      }
+    }
+
+    // Search functionality
+    machineSearchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const filteredData = allMachineData.filter(machine =>
+        machine.machine_name.toLowerCase().includes(searchTerm)
+      );
+      loadMachineData(filteredData);
+    });
+
+    // Initial load with delay to ensure DatabaseHelper is available
+    setTimeout(() => {
+      loadMachineData();
+    }, 1000);
+  });
+  </script>
+</body>
+<!-- [Body] end -->
+</html>

@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+<!-- [Head] start -->
+<head>
+  @@include('../layouts/head-page-meta.html', {'title': 'Input Nama Barang'})
+  @@include('../layouts/head-css.html')
+  <style>
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .data-table th, .data-table td {
+      border: 1px solid #e2e8f0;
+      padding: 0.75rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .data-table th {
+      background-color: #f8fafc;
+      font-weight: 600;
+      color: #4a5568;
+    }
+    .data-table tbody tr:nth-child(even) {
+      background-color: #f7fafc;
+    }
+    .data-table tbody tr:hover {
+      background-color: #edf2f7;
+    }
+    .table-container {
+      overflow-x: auto;
+    }
+    /* Custom Notification Styles */
+    #customNotification {
+      position: absolute; /* Changed from fixed to absolute */
+      top: 20px; /* Adjusted position relative to .pc-content */
+      right: 20px; /* Adjusted position relative to .pc-content */
+      padding: 12px 20px;
+      border-radius: 0.5rem; /* rounded-lg */
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-md */
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transition: opacity 0.5s ease-in-out, background-color 0.3s ease, color 0.3s ease; /* Added transitions for color/bg */
+      opacity: 0; /* Start hidden */
+    }
+    #customNotification.hidden {
+      display: none;
+    }
+    /* Specific styles for success and error */
+    #customNotification.success {
+      background-color: #d1fae5; /* green-100 */
+      color: #065f46; /* green-800 */
+    }
+    #customNotification.error {
+      background-color: #fee2e2; /* red-100 */
+      color: #991b1b; /* red-800 */
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      max-width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      transform: translateY(-20px);
+      transition: transform 0.3s ease-in-out;
+    }
+    .modal-overlay.show .modal-content {
+      transform: translateY(0);
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #4a5568;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.375rem;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+  </style>
+</head>
+<!-- [Head] end -->
+
+<!-- [Body] Start -->
+<body>
+  @@include('../layouts/loader.html')
+  @@include('../layouts/sidebar.html')
+  @@include('../layouts/topbar.html')
+
+  <!-- [ Main Content ] start -->
+  <div class="pc-container" data-page-role="Marketing,Direktur">
+    <div class="pc-content">
+      @@include('../layouts/breadcrumb.html', {'breadcrumb-item': 'Marketing', 'breadcrumb-item-active': 'Input Nama Barang', 'breadcrumb-item-href': '../pages/input-nama-barang.html'})
+
+      <!-- Custom Notification Element -->
+      <div id="customNotification" class="hidden">
+        <span id="notificationIcon"></span>
+        <span id="notificationMessage"></span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-x-6">
+        <div class="col-span-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Input Nama Barang</h5>
+            </div>
+            <div class="card-body">
+              <form id="itemForm" class="space-y-6">
+                <!-- Nama Part Assy -->
+                <div class="space-y-2">
+                  <label for="partAssyName" class="block text-sm font-medium text-gray-700">Nama Part Assy <span class="text-red-500">*</span></label>
+                  <input type="text" id="partAssyName" name="partAssyName" placeholder="Masukkan nama part assy" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                  <div id="partAssyNameError" class="text-red-500 text-sm hidden"></div>
+                </div>
+
+                <!-- Dynamic Part Single and Process Inputs -->
+                <div class="space-y-4">
+                  <label class="block text-sm font-medium text-gray-700">Detail Part Single & Proses</label>
+                  <div id="partSingleContainer" class="space-y-4">
+                    <!-- Initial row will be added by JavaScript -->
+                  </div>
+                  <button type="button" id="addPartSingleButton" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out flex items-center gap-2">
+                    <i data-feather="plus" class="size-5"></i>
+                    <span>Tambah Part Single</span>
+                  </button>
+                </div>
+
+                <div class="flex flex-col items-start gap-2">
+                  <button type="submit" id="submitButton" class="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out w-full md:w-auto">
+                    <span id="submitButtonText">Submit Data Barang</span>
+                    <span id="submitButtonLoader" class="hidden">
+                      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Menyimpan Data...
+                    </span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @@include('../layouts/footer-block.html')
+  @@include('../layouts/footer-js.html')
+
+  <!-- Include Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-config.js"></script>
+  <script src="../assets/js/role-based-menu.js"></script>
+
+  <script>
+    function showNotification(message, isSuccess = true) {
+      let notification = document.getElementById('customNotification');
+      const notificationIcon = document.getElementById('notificationIcon');
+      const notificationMessage = document.getElementById('notificationMessage');
+
+      if (!notification || !notificationIcon || !notificationMessage) {
+        console.error('Notification elements not found. Please ensure #customNotification, #notificationIcon, and #notificationMessage exist in the HTML.');
+        return;
+      }
+
+      notificationMessage.textContent = message;
+      notificationIcon.textContent = isSuccess ? '✅' : '❌';
+
+      // Remove previous state classes
+      notification.classList.remove('bg-green-600', 'bg-red-600', 'hidden', 'opacity-0', 'text-white');
+      
+      // Add new state classes
+      if (isSuccess) {
+        notification.classList.add('success');
+      } else {
+        notification.classList.add('error');
+      }
+      
+      // Make visible and fade in
+      notification.classList.remove('hidden');
+      setTimeout(() => {
+        notification.style.opacity = '1';
+      }, 10);
+
+      // Hide after 3 seconds
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          notification.classList.add('hidden');
+        }, 500);
+      }, 3000);
+    }
+
+    function setSubmitButtonState(isLoading) {
+      const submitButton = document.getElementById('submitButton');
+      const submitButtonText = document.getElementById('submitButtonText');
+      const submitButtonLoader = document.getElementById('submitButtonLoader');
+      
+      if (isLoading) {
+        submitButton.disabled = true;
+        submitButtonText.classList.add('hidden');
+        submitButtonLoader.classList.remove('hidden');
+        submitButton.classList.add('opacity-75', 'cursor-not-allowed');
+      } else {
+        submitButton.disabled = false;
+        submitButtonText.classList.remove('hidden');
+        submitButtonLoader.classList.add('hidden');
+        submitButton.classList.remove('opacity-75', 'cursor-not-allowed');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const partSingleContainer = document.getElementById('partSingleContainer');
+      const addPartSingleButton = document.getElementById('addPartSingleButton');
+      let partSingleCounter = 0;
+
+      function addProcessInput(processListContainer, initialValue = '') {
+        const processInputWrapper = document.createElement('div');
+        processInputWrapper.className = 'flex items-center gap-2 mb-2';
+        processInputWrapper.innerHTML = `
+          <input type="text" name="process" placeholder="Masukkan proses" value="${initialValue}" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+          <button type="button" class="delete-process-button text-red-500 hover:text-red-700 p-1 rounded-full bg-white shadow-sm" title="Hapus Proses">
+            <i data-feather="minus-circle" class="size-4"></i>
+          </button>
+        `;
+        processListContainer.appendChild(processInputWrapper);
+        feather.replace();
+
+        processInputWrapper.querySelector('.delete-process-button').addEventListener('click', function() {
+          processInputWrapper.remove();
+          if (processListContainer.children.length === 0) {
+            addProcessInput(processListContainer); // Ensure at least one process input remains
+          }
+        });
+      }
+
+      function addPartSingleRow() {
+        partSingleCounter++;
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-1 gap-4 items-end border p-4 rounded-md bg-gray-50 relative';
+        row.dataset.rowId = partSingleCounter;
+
+        row.innerHTML = `
+          <div class="space-y-2">
+            <label for="partSingleName-${partSingleCounter}" class="block text-sm font-medium text-gray-700">Nama Part Single <span class="text-red-500">*</span></label>
+            <input type="text" id="partSingleName-${partSingleCounter}" name="partSingleName" placeholder="Masukkan nama part single" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">Daftar Proses <span class="text-red-500">*</span></label>
+            <div class="process-list-container">
+              <!-- Process inputs will be added here -->
+            </div>
+            <button type="button" class="add-process-button bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-1 px-3 rounded-md shadow-sm transition duration-300 ease-in-out flex items-center gap-1 text-sm">
+              <i data-feather="plus" class="size-4"></i>
+              <span>Tambah Proses</span>
+            </button>
+          </div>
+          <button type="button" class="delete-part-single-button absolute top-2 right-2 text-red-500 hover:text-red-700 p-1 rounded-full bg-white shadow-sm" title="Hapus Part Single">
+            <i data-feather="x" class="size-4"></i>
+          </button>
+        `;
+        partSingleContainer.appendChild(row);
+        feather.replace();
+
+        const processListContainer = row.querySelector('.process-list-container');
+        addProcessInput(processListContainer); // Add initial process input
+
+        row.querySelector('.add-process-button').addEventListener('click', function() {
+          addProcessInput(processListContainer);
+        });
+
+        row.querySelector('.delete-part-single-button').addEventListener('click', function() {
+          row.remove();
+          if (partSingleContainer.children.length === 0) {
+            addPartSingleRow();
+          }
+        });
+      }
+
+      // Add initial row
+      addPartSingleRow();
+      
+      // Add new row button
+      addPartSingleButton.addEventListener('click', addPartSingleRow);
+
+      // Form submission
+      document.getElementById('itemForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        console.log('Form submitted');
+
+        // Clear previous validation messages
+        this.querySelectorAll('.validation-message').forEach(msg => msg.remove());
+        this.querySelectorAll('input, textarea').forEach(el => {
+          el.style.borderColor = '';
+          el.classList.remove('border-red-500');
+        });
+
+        let allFieldsFilled = true;
+        const formData = {};
+
+        // Validate Part Assy Name
+        const partAssyNameInput = document.getElementById('partAssyName');
+        if (!partAssyNameInput.value.trim()) {
+          partAssyNameInput.classList.add('border-red-500');
+          const errorMessage = document.createElement('div');
+          errorMessage.className = 'text-red-500 text-xs mt-1 validation-message';
+          errorMessage.textContent = 'Field ini wajib diisi';
+          partAssyNameInput.parentNode.insertBefore(errorMessage, partAssyNameInput.nextSibling);
+          allFieldsFilled = false;
+        }
+        formData.partAssyName = partAssyNameInput.value.trim();
+
+        // Validate Part Single rows
+        const partSingleRows = partSingleContainer.querySelectorAll('[data-row-id]');
+        const partDetails = [];
+        
+        if (partSingleRows.length === 0) {
+          showNotification("❌ Harap tambahkan setidaknya satu Part Single!", false);
+          return;
+        }
+
+        partSingleRows.forEach(row => {
+          const partSingleNameInput = row.querySelector('input[name="partSingleName"]');
+          const processInputs = row.querySelectorAll('.process-list-container input[name="process"]');
+          
+          let rowValid = true;
+          let processes = [];
+
+          if (!partSingleNameInput.value.trim()) {
+            partSingleNameInput.classList.add('border-red-500');
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'text-red-500 text-xs mt-1 validation-message';
+            errorMessage.textContent = 'Field ini wajib diisi';
+            partSingleNameInput.parentNode.insertBefore(errorMessage, partSingleNameInput.nextSibling);
+            allFieldsFilled = false;
+            rowValid = false;
+          }
+
+          if (processInputs.length === 0) {
+            // This case should ideally not happen if addProcessInput ensures at least one
+            rowValid = false;
+            allFieldsFilled = false;
+            showNotification("❌ Setiap Part Single harus memiliki setidaknya satu proses!", false);
+            return; // Stop processing this row
+          }
+
+          processInputs.forEach(input => {
+            if (!input.value.trim()) {
+              input.classList.add('border-red-500');
+              const errorMessage = document.createElement('div');
+              errorMessage.className = 'text-red-500 text-xs mt-1 validation-message';
+              errorMessage.textContent = 'Field ini wajib diisi';
+              input.parentNode.insertBefore(errorMessage, input.nextSibling);
+              allFieldsFilled = false;
+              rowValid = false;
+            } else {
+              processes.push(input.value.trim());
+            }
+          });
+
+          if (rowValid) {
+            partDetails.push({
+              partSingleName: partSingleNameInput.value.trim(),
+              processes: processes // Store as an array of processes
+            });
+          }
+        });
+
+        if (!allFieldsFilled) {
+          showNotification("❌ Harap isi semua kolom yang wajib diisi!", false);
+          return;
+        }
+
+        if (partDetails.length === 0 || partDetails.some(pd => pd.processes.length === 0)) {
+          showNotification("❌ Harap tambahkan setidaknya satu Part Single dengan proses yang valid!", false);
+          return;
+        }
+
+        setSubmitButtonState(true);
+
+        try {
+          console.log('Checking existing items...');
+          
+          // Wait for DatabaseHelper to be available
+          if (typeof window.DatabaseHelper === 'undefined') {
+            throw new Error('Database connection not available. Please refresh the page.');
+          }
+
+          const existingItemsResult = await window.DatabaseHelper.getItems();
+          if (existingItemsResult.success) {
+            const existingItem = existingItemsResult.data.find(item => 
+              item.part_assy_name.toLowerCase() === formData.partAssyName.toLowerCase()
+            );
+            
+            if (existingItem) {
+              setSubmitButtonState(false);
+              partAssyNameInput.classList.add('border-red-500');
+              const errorMessage = document.createElement('div');
+              errorMessage.className = 'text-red-500 text-xs mt-1 validation-message';
+              errorMessage.textContent = 'Nama Part Assy sudah terdaftar';
+              partAssyNameInput.parentNode.insertBefore(errorMessage, partAssyNameInput.nextSibling);
+              showNotification("❌ Nama Part Assy sudah terdaftar!", false);
+              return;
+            }
+          }
+
+          // Prepare data for database
+          const itemData = {
+            part_assy_name: formData.partAssyName,
+            part_details: partDetails, // This now contains nested processes
+            created_at: new Date().toISOString()
+          };
+
+          console.log('Saving item data:', itemData);
+
+          // Save to database
+          const result = await window.DatabaseHelper.saveItem(itemData);
+          
+          console.log('Save result:', result);
+          
+          if (result.success) {
+            showNotification("✅ Data barang berhasil disimpan ke database!");
+            
+            // Reset form
+            document.getElementById('itemForm').reset();
+            partSingleContainer.innerHTML = '';
+            partSingleCounter = 0;
+            addPartSingleRow();
+          } else {
+            showNotification(`❌ Gagal menyimpan data: ${result.error}`, false);
+          }
+        } catch (error) {
+          console.error('Error in form submission:', error);
+          showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+        } finally {
+          setSubmitButtonState(false);
+        }
+      });
+
+      // Enter key navigation
+      document.getElementById('itemForm').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && event.target.tagName !== 'BUTTON') {
+          event.preventDefault();
+          const formElements = Array.from(this.querySelectorAll('input:not([type="button"]):not(.delete-part-single-button):not(.delete-process-button)'));
+          const currentIndex = formElements.indexOf(document.activeElement);
+          if (currentIndex > -1 && currentIndex < formElements.length - 1) {
+            formElements[currentIndex + 1].focus();
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+<!-- [Body] end -->
+</html>

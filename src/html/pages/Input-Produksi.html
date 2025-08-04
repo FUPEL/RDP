@@ -1,0 +1,1033 @@
+<!doctype html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+<head>
+@@include('../layouts/head-page-meta.html', {'title': 'Input Produksi'})
+@@include('../layouts/head-css.html')
+<style>
+  /* Custom styles for notification */
+  #customNotification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4CAF50; /* Default success color */
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    transform: translateY(-20px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #customNotification.success {
+    background-color: #4CAF50; /* Green */
+  }
+
+  #customNotification.error {
+    background-color: #f44336; /* Red */
+  }
+
+  #customNotification.hidden {
+    display: none;
+  }
+
+  #customNotification.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Styles for auto-suggest containers */
+  .auto-suggest-container {
+    position: absolute;
+    z-index: 10;
+    /* width: 100%; REMOVED - width will be set by JS */
+    background-color: white;
+    border: 1px solid #e2e8f0; /* border-gray-300 */
+    border-radius: 0.375rem; /* rounded-md */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-lg */
+    margin-top: 0.25rem; /* mt-1 */
+    max-height: 15rem; /* max-h-60 */
+    overflow-y: auto;
+  }
+
+  .auto-suggest-item {
+    padding: 0.5rem 0.75rem; /* p-2 */
+    cursor: pointer;
+    color: #4a5568; /* text-gray-800 */
+  }
+
+  .auto-suggest-item:hover {
+    background-color: #f7fafc; /* hover:bg-gray-100 */
+  }
+</style>
+</head>
+<body>
+@@include('../layouts/loader.html')
+@@include('../layouts/sidebar.html')
+@@include('../layouts/topbar.html')
+
+<div class="pc-container" data-page-role="Produksi,Direktur">
+  <div class="pc-content">
+    @@include('../layouts/breadcrumb.html', {'breadcrumb-item': 'Produksi', 'breadcrumb-item-active': 'Input Produksi', 'breadcrumb-item-href': '../pages/history-produksi.html'})
+    <div class="grid grid-cols-12 gap-x-6" data-page-role="Produksi,Direktur">
+      <div class="col-span-12">
+        <div class="card">
+          <div class="card-header">
+            <h5>Input Produksi</h5>
+          </div>
+          <div class="card-body">
+            <form id="productionForm" class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Tanggal -->
+                <div class="space-y-2">
+                  <label for="date" class="block text-sm font-medium text-gray-700">Tanggal</label>
+                  <input type="date" id="date" name="date" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                </div>
+
+                <!-- Jenis Bagian -->
+                <div class="space-y-2">
+                  <label for="sectionType" class="block text-sm font-medium text-gray-700">Jenis Bagian</label>
+                  <select id="sectionType" name="sectionType" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off">
+                    <option value="">Pilih Jenis Bagian</option>
+                    <option value="Stamping">Stamping</option>
+                    <option value="Welding">Welding</option>
+                  </select>
+                </div>
+
+                <!-- Nama Operator -->
+                <div class="space-y-2 relative">
+                  <label for="operatorName" class="block text-sm font-medium text-gray-700">Nama Operator</label>
+                  <input type="text" id="operatorName" name="operatorName" placeholder="Masukkan nama operator" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                  <div id="operatorSuggestionsContainer" class="auto-suggest-container hidden"></div>
+                </div>
+
+                <!-- Nama Part Assy -->
+                <div class="space-y-2 relative">
+                  <label for="namaPartAssy" class="block text-sm font-medium text-gray-700">Nama Part Assy</label>
+                  <input type="text" id="namaPartAssy" name="namaPartAssy" placeholder="Cari atau masukkan Nama Part Assy" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                  <div id="partAssySuggestionsContainer" class="auto-suggest-container hidden"></div>
+                </div>
+
+                <!-- Part Name -->
+                <div class="space-y-2 relative" id="partNameField">
+                  <label for="partName" id="partNameLabel" class="block text-sm font-medium text-gray-700">Part Name</label>
+                  <textarea id="partName" name="partName" rows="1" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none overflow-hidden" autocomplete="off"></textarea>
+                  <div id="partNameSuggestionsContainer" class="auto-suggest-container hidden"></div>
+                </div>
+
+                <!-- Process -->
+                <div class="space-y-2" id="processFieldDiv">
+                  <label for="process" class="block text-sm font-medium text-gray-700">Process</label>
+                  <input type="text" id="process" name="process" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" readonly autocomplete="off" />
+                </div>
+
+                <!-- Mesin -->
+                <div class="space-y-2 relative">
+                  <label for="machine" class="block text-sm font-medium text-gray-700">Mesin</label>
+                  <input type="text" id="machine" name="machine" placeholder="Masukkan nama mesin" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                  <div id="machineSuggestionsContainer" class="auto-suggest-container hidden"></div>
+                </div>
+
+                <!-- Shift -->
+                <div class="space-y-2">
+                  <label for="shift" class="block text-sm font-medium text-gray-700">Shift</label>
+                  <select id="shift" name="shift" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off">
+                    <option value="">Pilih Shift</option>
+                    <option value="Shift 1">Shift 1</option>
+                    <option value="Shift 2">Shift 2</option>
+                  </select>
+                </div>
+
+                <!-- Start -->
+                <div class="space-y-2">
+                  <label for="start" class="block text-sm font-medium text-gray-700">Start</label>
+                  <input type="time" id="start" name="start" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                </div>
+
+                <!-- Finish -->
+                <div class="space-y-2">
+                  <label for="finish" class="block text-sm font-medium text-gray-700">Finish</label>
+                  <input type="time" id="finish" name="finish" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                </div>
+
+                <!-- Break (menit) -->
+                <div class="space-y-2">
+                  <label for="breakTime" class="block text-sm font-medium text-gray-700">Break (menit)</label>
+                  <input type="number" id="breakTime" name="breakTime" placeholder="Durasi istirahat" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                </div>
+
+                <!-- Duration -->
+                <div class="space-y-2">
+                  <label for="duration" class="block text-sm font-medium text-gray-700">Duration</label>
+                  <input type="text" id="duration" name="duration" placeholder="Durasi kerja" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" readonly autocomplete="off" />
+                </div>
+
+                <!-- OK -->
+                <div class="space-y-2">
+                  <label for="ok" class="block text-sm font-medium text-gray-700">OK</label>
+                  <input type="number" id="ok" name="ok" placeholder="Jumlah OK" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                </div>
+
+                <!-- NG -->
+                <div class="space-y-2">
+                  <label for="ng" class="block text-sm font-medium text-gray-700">NG</label>
+                  <input type="number" id="ng" name="ng" placeholder="Jumlah NG" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" required autocomplete="off" />
+                </div>
+
+                <!-- QC Line -->
+                <div class="space-y-2">
+                  <label for="qcLine" class="block text-sm font-medium text-gray-700">QC Line</label>
+                  <input type="text" id="qcLine" name="qcLine" placeholder="Masukkan QC Line" class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" list="qcLineSuggestions" required autocomplete="off" />
+                  <datalist id="qcLineSuggestions"></datalist>
+                </div>
+              </div>
+
+              <!-- Note -->
+              <div class="space-y-2">
+                <label for="note" class="block text-sm font-medium text-gray-700">Note</label>
+                <textarea id="note" name="note" rows="4" placeholder="Tambahkan catatan..." class="form-input block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" autocomplete="off"></textarea>
+              </div>
+
+              <div class="flex flex-col items-start gap-2">
+                <button type="submit" class="bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out w-full md:w-auto" id="submitBtn">
+                  <span id="submitText">Submit Data</span>
+                  <span id="submitLoader" class="hidden">
+                    <i class="fas fa-spinner fa-spin me-2"></i>Menyimpan...
+                  </span>
+                </button>
+              </div>
+            </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="globalErrorDisplay" class="fixed top-4 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded-lg shadow-xl z-50 hidden opacity-0 transition-opacity duration-500">
+  Terjadi kesalahan fatal. Mohon coba lagi atau hubungi administrator.
+</div>
+
+<div id="customNotification" class="fixed top-4 right-4 px-6 py-4 rounded-lg shadow-xl z-50 hidden opacity-0 transition-opacity duration-500 flex items-center gap-3">
+  <span id="notificationIcon" class="text-2xl"></span>
+  <span id="notificationMessage" class="font-semibold"></span>
+</div>
+
+@@include('../layouts/footer-block.html')
+@@include('../layouts/footer-js.html')
+
+<script>
+layout_change('false');
+</script>
+ 
+<script>
+layout_theme_sidebar_change('dark');
+</script>
+
+<script>
+change_box_container('false');
+</script>
+ 
+<script>
+layout_caption_change('true');
+</script>
+ 
+<script>
+layout_rtl_change('false');
+</script>
+ 
+<script>
+preset_change('preset-1');
+</script>
+ 
+<script>
+main_layout_change('vertical');
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/js/supabase-config.js"></script>
+<script src="../assets/js/role-based-menu.js"></script>
+
+<script>
+console.log('Input-Produksi.html: Inline script started.');
+
+// Cached data for auto-suggestion
+let cachedItems = [];
+let cachedOperators = [];
+let cachedMachines = [];
+let cachedQCLines = [];
+let currentSelectedPartAssyItem = null; // To store the full item object for the selected Part Assy
+
+// Function to show a temporary notification
+function showNotification(message, isSuccess = true) {
+  let notification = document.getElementById('customNotification');
+  if (!notification) {
+    notification = document.createElement('div');
+    notification.id = 'customNotification';
+    notification.className = 'px-6 py-4 rounded-lg shadow-xl z-50 hidden opacity-0 transition-opacity duration-500 flex items-center gap-3';
+    document.querySelector('.pc-content').appendChild(notification);
+
+    const iconSpan = document.createElement('span');
+    iconSpan.id = 'notificationIcon';
+    iconSpan.className = 'text-2xl';
+    notification.appendChild(iconSpan);
+
+    const messageSpan = document.createElement('span');
+    messageSpan.id = 'notificationMessage';
+    messageSpan.className = 'font-semibold';
+    notification.appendChild(messageSpan);
+  }
+
+  const notificationIcon = document.getElementById('notificationIcon');
+  const notificationMessage = document.getElementById('notificationMessage');
+
+  if (!notification || !notificationIcon || !notificationMessage) {
+    console.error('Notification elements not found. Please ensure #customNotification, #notificationIcon, and #notificationMessage exist in the HTML or are correctly created by JS.');
+    return;
+  }
+
+  notificationMessage.textContent = message;
+  notificationIcon.textContent = isSuccess ? '✅' : '❌';
+
+  // Remove previous state classes
+  notification.classList.remove('success', 'error', 'hidden', 'opacity-0');
+
+  // Add new state classes
+  if (isSuccess) {
+    notification.classList.add('success');
+  } else {
+    notification.classList.add('error');
+  }
+
+  // Make visible and fade in
+  notification.classList.remove('hidden');
+  setTimeout(() => {
+    notification.style.opacity = '1';
+  }, 10);
+
+  // Hide after 3 seconds
+  setTimeout(() => {
+    notification.style.opacity = '0';
+    setTimeout(() => {
+      notification.classList.add('hidden');
+    }, 500);
+  }, 3000);
+}
+
+// Function to show a persistent global error message (used by script.js error handler)
+function showGlobalError() {
+  const errorDisplay = document.getElementById('globalErrorDisplay');
+  if (errorDisplay) {
+    errorDisplay.classList.remove('hidden', 'opacity-0');
+    errorDisplay.style.opacity = '1';
+    console.error('Global error display shown.');
+  }
+}
+
+// Function to set the state of the submit button (loading/normal)
+function setSubmitButtonState(isLoading) {
+  const submitBtn = document.getElementById('submitBtn');
+  const submitText = document.getElementById('submitText');
+  const submitLoader = document.getElementById('submitLoader');
+
+  if (submitBtn && submitText && submitLoader) {
+    if (isLoading) {
+      submitBtn.disabled = true;
+      submitText.classList.add('hidden');
+      submitLoader.classList.remove('hidden');
+      console.log('Submit button state: Loading');
+    } else {
+      submitBtn.disabled = false;
+      submitText.classList.remove('hidden');
+      submitLoader.classList.add('hidden');
+      console.log('Submit button state: Normal');
+    }
+  }
+}
+
+// NEW: Duration calculation logic
+const dateInput = document.getElementById('date');
+const startTimeInput = document.getElementById('start');
+const finishTimeInput = document.getElementById('finish');
+const breakTimeInput = document.getElementById('breakTime');
+const durationInput = document.getElementById('duration');
+
+function calculateDuration() {
+    const date = dateInput.value;
+    const start = startTimeInput.value;
+    const finish = finishTimeInput.value;
+    const breakMinutes = parseInt(breakTimeInput.value) || 0;
+
+    if (date && start && finish) {
+        let startDateTime = new Date(`${date}T${start}:00`);
+        let finishDateTime = new Date(`${date}T${finish}:00`);
+
+        // If finish time is earlier than start time, assume it's the next day
+        if (finishDateTime < startDateTime) {
+            finishDateTime.setDate(finishDateTime.getDate() + 1);
+        }
+
+        const diffMs = finishDateTime - startDateTime; // Difference in milliseconds
+        let totalMinutes = Math.floor(diffMs / (1000 * 60)); // Convert milliseconds to minutes
+
+        // Subtract break time
+        totalMinutes -= breakMinutes;
+
+        // Ensure duration is not negative
+        if (totalMinutes < 0) {
+            totalMinutes = 0;
+        }
+
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        durationInput.value = `${hours.toString().padStart(2, '0')} jam ${minutes.toString().padStart(2, '0')} menit`;
+    } else {
+        durationInput.value = '';
+    }
+}
+
+// Add event listeners for duration calculation
+dateInput.addEventListener('change', calculateDuration);
+startTimeInput.addEventListener('change', calculateDuration);
+finishTimeInput.addEventListener('change', calculateDuration);
+breakTimeInput.addEventListener('input', calculateDuration); // Use 'input' for number fields
+
+// NEW: Auto-suggestion and auto-fill logic for Part Assy, Part Name, Process
+const namaPartAssyInput = document.getElementById('namaPartAssy');
+const partAssySuggestionsContainer = document.getElementById('partAssySuggestionsContainer');
+const partNameInput = document.getElementById('partName');
+const partNameLabel = document.getElementById('partNameLabel');
+const partNameSuggestionsContainer = document.getElementById('partNameSuggestionsContainer');
+const processInput = document.getElementById('process');
+const sectionTypeSelect = document.getElementById('sectionType'); 
+const processFieldDiv = document.getElementById('processFieldDiv');
+
+// Auto-suggest elements for Operator and Machine
+const operatorNameInput = document.getElementById('operatorName');
+const operatorSuggestionsContainer = document.getElementById('operatorSuggestionsContainer');
+const machineInput = document.getElementById('machine');
+const machineSuggestionsContainer = document.getElementById('machineSuggestionsContainer');
+
+
+// Generic function to populate auto-suggest container
+function populateSuggestions(inputElement, containerElement, dataArray, fieldName, sectionFilter = null) {
+  const inputValue = inputElement.value.toLowerCase();
+  containerElement.innerHTML = ''; // Clear previous suggestions
+
+  let filteredData = dataArray;
+
+  // Apply section filter if provided and not empty (e.g., for operators)
+  if (sectionFilter && sectionFilter !== '') {
+    // Confirmed 'section_type' is the correct column name from your screenshot.
+    filteredData = filteredData.filter(item => {
+      return item.section_type && item.section_type.toLowerCase() === sectionFilter.toLowerCase();
+    });
+  }
+
+  const suggestionsToShow = inputValue.length > 0
+    ? filteredData.filter(item => item[fieldName].toLowerCase().includes(inputValue))
+    : filteredData; // If input is empty, show all filtered items
+
+  if (suggestionsToShow.length > 0) {
+    // Set the width of the container to match the input element's width
+    const inputWidth = inputElement.offsetWidth;
+    containerElement.style.width = `${inputWidth}px`;
+
+    suggestionsToShow.forEach(item => {
+      const suggestionDiv = document.createElement('div');
+      suggestionDiv.classList.add('auto-suggest-item');
+      suggestionDiv.textContent = item[fieldName];
+      suggestionDiv.addEventListener('click', () => {
+        inputElement.value = item[fieldName];
+        containerElement.classList.add('hidden');
+        // Trigger change event if needed for other logic
+        inputElement.dispatchEvent(new Event('change'));
+      });
+      containerElement.appendChild(suggestionDiv);
+    });
+    containerElement.classList.remove('hidden');
+  } else {
+    containerElement.classList.add('hidden');
+    containerElement.style.width = ''; // Clear width if no suggestions
+  }
+}
+
+// Fetch and cache data for auto-suggestions
+async function fetchAndCacheItems() {
+  if (typeof window.DatabaseHelper === 'undefined' || !window.DatabaseHelper._getSupabaseClient()) {
+    console.warn('DatabaseHelper or Supabase client not ready for fetching items.');
+    return;
+  }
+  const { data, error } = await window.DatabaseHelper.getItems();
+  if (error) {
+    console.error('Error fetching items:', error);
+    showNotification('Gagal memuat daftar Part Assy.', false);
+  } else {
+    cachedItems = data;
+    console.log('Items cached:', cachedItems);
+  }
+}
+
+async function fetchAndCacheOperators() {
+  if (typeof window.DatabaseHelper === 'undefined' || !window.DatabaseHelper._getSupabaseClient()) {
+    console.warn('DatabaseHelper or Supabase client not ready for fetching operators.');
+    return;
+  }
+  // Using getOperators to get full operator objects, assuming they include a 'section_type' field
+  const { data, error } = await window.DatabaseHelper.getOperators();
+  if (error) {
+    console.error('Error fetching operators:', error);
+    showNotification('Gagal memuat daftar Operator.', false);
+  } else {
+    cachedOperators = data;
+    console.log('Operators cached:', cachedOperators);
+  }
+}
+
+async function fetchAndCacheMachines() {
+  if (typeof window.DatabaseHelper === 'undefined' || !window.DatabaseHelper._getSupabaseClient()) {
+    console.warn('DatabaseHelper or Supabase client not ready for fetching machines.');
+    return;
+  }
+  // Using getMachines to get full machine objects, not just distinct names
+  const { data, error } = await window.DatabaseHelper.getMachines();
+  if (error) {
+    console.error('Error fetching machines:', error);
+    showNotification('Gagal memuat daftar Mesin.', false);
+  } else {
+    cachedMachines = data;
+    console.log('Machines cached:', cachedMachines);
+  }
+}
+
+async function fetchAndCacheQCLines() {
+  if (typeof window.DatabaseHelper === 'undefined' || !window.DatabaseHelper._getSupabaseClient()) {
+    console.warn('DatabaseHelper or Supabase client not ready for fetching QC Lines.');
+    return;
+  }
+  const { data, error } = await window.DatabaseHelper.getDistinctQCLines();
+  if (error) {
+    console.error('Error fetching QC Lines:', error);
+  } else {
+    cachedQCLines = data;
+    // For QC Line, we can still use datalist as it's a simple text input
+    const datalist = document.getElementById('qcLineSuggestions');
+    if (datalist) {
+      datalist.innerHTML = '';
+      cachedQCLines.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item;
+        datalist.appendChild(option);
+      });
+    }
+    console.log('QC Lines cached:', cachedQCLines);
+  }
+}
+
+// Function to automatically resize a textarea based on its content
+function autoResizeTextarea(textarea) {
+  if (textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
+  }
+}
+
+// Function to update Part Name and Process based on selected Part Assy and Part Name input
+function updatePartNameAndProcess() {
+  const selectedPartName = partNameInput.value.trim();
+  processInput.value = '';
+
+  if (currentSelectedPartAssyItem && Array.isArray(currentSelectedPartAssyItem.part_details)) {
+    if (sectionTypeSelect.value === 'Welding') {
+      const formattedPartDetails = currentSelectedPartAssyItem.part_details.map(detail => {
+          const processes = Array.isArray(detail.processes) ? detail.processes.join(', ') : '';
+          return `• ${detail.partSingleName} -> ${processes}`;
+      }).join('\n');
+
+      const allProcessesForAssy = [...new Set(currentSelectedPartAssyItem.part_details.flatMap(detail => detail.processes))].join(', ');
+
+      partNameInput.value = formattedPartDetails;
+      autoResizeTextarea(partNameInput);
+      processInput.value = allProcessesForAssy;
+      console.log('Welding mode: Updated Part Name and Process with bulleted list format.');
+    } else {
+      const foundPartDetail = currentSelectedPartAssyItem.part_details.find(partDetail =>
+        partDetail.partSingleName.toLowerCase() === selectedPartName.toLowerCase()
+      );
+
+      if (foundPartDetail) {
+        partNameInput.value = foundPartDetail.partSingleName;
+        processInput.value = Array.isArray(foundPartDetail.processes) ? foundPartDetail.processes.join(', ') : '';
+        console.log('Stamping mode: Updated Process for Part Name:', selectedPartName, 'Process:', processInput.value);
+      } else {
+        console.log('Stamping mode: Part Name not found in selected Part Assy details, Process cleared.');
+        partNameInput.value = '';
+        processInput.value = '';
+      }
+    }
+  } else {
+    console.log('No Part Assy selected or part_details invalid, Part Name and Process cleared.');
+    partNameInput.value = '';
+    processInput.value = '';
+  }
+}
+
+// Handle Nama Part Assy input change for auto-fill of Part Name suggestions
+function handlePartAssyChange() {
+  const selectedPartAssyName = namaPartAssyInput.value.trim();
+  console.log('handlePartAssyChange triggered. Input value:', selectedPartAssyName);
+
+  partNameInput.value = '';
+  processInput.value = '';
+  partNameSuggestionsContainer.innerHTML = '';
+  partNameSuggestionsContainer.classList.add('hidden');
+
+  currentSelectedPartAssyItem = cachedItems.find(item => item.part_assy_name.toLowerCase() === selectedPartAssyName.toLowerCase());
+
+  updatePartNameAndProcess();
+}
+
+// Handle Jenis Bagian change for conditional display of Part Name and Process
+function handleSectionTypeChange() {
+  if (sectionTypeSelect.value === 'Welding') {
+    namaPartAssyInput.readOnly = false; 
+    partNameInput.readOnly = true;
+    processFieldDiv.classList.add('hidden');
+    partNameLabel.textContent = 'Partname & Process';
+
+    partNameSuggestionsContainer.classList.add('hidden');
+
+    partNameInput.value = '';
+    processInput.value = '';
+
+    handlePartAssyChange();
+
+    console.log('Jenis Bagian is Welding. Nama Part Assy is editable. Part Name is read-only. Process field is hidden.');
+  } else {
+    namaPartAssyInput.readOnly = false;
+    partNameInput.readOnly = false;
+    processFieldDiv.classList.remove('hidden');
+    partNameLabel.textContent = 'Part Name';
+
+    namaPartAssyInput.value = '';
+    partNameInput.value = '';
+    autoResizeTextarea(partNameInput);
+    processInput.value = '';
+    currentSelectedPartAssyItem = null;
+
+    partNameSuggestionsContainer.classList.remove('hidden');
+
+    handlePartAssyChange();
+
+    console.log('Jenis Bagian is not Welding. All Part fields are editable.');
+  }
+
+  // Clear operator input and explicitly hide suggestions based on new section type
+  operatorNameInput.value = ''; // Clear operator input
+  operatorSuggestionsContainer.classList.add('hidden'); // Explicitly hide the suggestions
+  console.log('Jenis Bagian changed. Operator input cleared and suggestions hidden.');
+}
+
+// Setup custom autocomplete for Nama Part Assy
+function setupPartAssyAutocomplete() {
+  const showOrFilterSuggestions = (inputValue) => {
+    const suggestionsToShow = inputValue.length > 0
+      ? cachedItems.filter(item => item.part_assy_name.toLowerCase().includes(inputValue))
+      : cachedItems; // If input is empty, show all items
+
+    partAssySuggestionsContainer.innerHTML = ''; // Clear previous suggestions
+    if (suggestionsToShow.length > 0) {
+      // Set the width of the container to match the input element's width
+      partAssySuggestionsContainer.style.width = `${namaPartAssyInput.offsetWidth}px`;
+
+      suggestionsToShow.forEach(item => {
+        const suggestionDiv = document.createElement('div');
+        suggestionDiv.classList.add('auto-suggest-item');
+        suggestionDiv.textContent = item.part_assy_name;
+        suggestionDiv.addEventListener('click', () => {
+          namaPartAssyInput.value = item.part_assy_name;
+          partAssySuggestionsContainer.classList.add('hidden');
+          handlePartAssyChange(); // Sync form state after selection
+        });
+        partAssySuggestionsContainer.appendChild(suggestionDiv);
+      });
+      partAssySuggestionsContainer.classList.remove('hidden');
+    } else {
+      partAssySuggestionsContainer.classList.add('hidden');
+      partAssySuggestionsContainer.style.width = ''; // Clear width
+    }
+  };
+
+  namaPartAssyInput.addEventListener('input', () => {
+    // Show suggestions based on current input
+    showOrFilterSuggestions(namaPartAssyInput.value.toLowerCase());
+    
+    // Clear dependent fields if the current text is not a valid selection
+    const isMatch = cachedItems.some(item => item.part_assy_name.toLowerCase() === namaPartAssyInput.value.trim().toLowerCase());
+    if (!isMatch) {
+      currentSelectedPartAssyItem = null;
+      updatePartNameAndProcess();
+    }
+  });
+
+  namaPartAssyInput.addEventListener('focus', () => {
+    showOrFilterSuggestions(namaPartAssyInput.value.toLowerCase());
+  });
+
+  namaPartAssyInput.addEventListener('blur', (event) => {
+    // Delay to allow click on suggestion to register
+    setTimeout(() => {
+      partAssySuggestionsContainer.classList.add('hidden');
+      partAssySuggestionsContainer.style.width = ''; // Clear width on blur
+      // On blur, if the value is not a valid item, clear the input
+      const enteredValue = namaPartAssyInput.value.trim();
+      const foundPartAssy = cachedItems.find(item => item.part_assy_name.toLowerCase() === enteredValue.toLowerCase());
+      if (!foundPartAssy) {
+        namaPartAssyInput.value = '';
+      }
+      // Final sync of the form state
+      handlePartAssyChange();
+    }, 150); 
+  });
+}
+
+// Setup custom autocomplete for Part Name
+function setupPartNameAutocomplete() {
+  partNameInput.addEventListener('input', () => {
+    if (partNameInput.readOnly) return;
+    const inputValue = partNameInput.value.toLowerCase();
+    partNameSuggestionsContainer.innerHTML = '';
+    partNameSuggestionsContainer.classList.add('hidden');
+
+    updatePartNameAndProcess();
+
+    if (!currentSelectedPartAssyItem || !Array.isArray(currentSelectedPartAssyItem.part_details)) {
+      return;
+    }
+
+    const filteredPartDetails = currentSelectedPartAssyItem.part_details.filter(partDetail =>
+      partDetail.partSingleName.toLowerCase().includes(inputValue)
+    );
+
+    if (filteredPartDetails.length > 0) {
+      // Set the width of the container to match the input element's width
+      partNameSuggestionsContainer.style.width = `${partNameInput.offsetWidth}px`;
+
+      filteredPartDetails.forEach(partDetail => {
+        const suggestionDiv = document.createElement('div');
+        suggestionDiv.classList.add('auto-suggest-item');
+        suggestionDiv.textContent = partDetail.partSingleName;
+        suggestionDiv.addEventListener('click', () => {
+          partNameInput.value = partDetail.partSingleName;
+          updatePartNameAndProcess();
+          partNameSuggestionsContainer.classList.add('hidden');
+        });
+        partNameSuggestionsContainer.appendChild(suggestionDiv);
+      });
+      partNameSuggestionsContainer.classList.remove('hidden');
+    }
+  });
+
+  partNameInput.addEventListener('focus', () => {
+    if (partNameInput.readOnly) return;
+    if (currentSelectedPartAssyItem && Array.isArray(currentSelectedPartAssyItem.part_details)) {
+      const inputValue = partNameInput.value.toLowerCase();
+      const suggestionsToShow = inputValue.length > 0
+          ? currentSelectedPartAssyItem.part_details.filter(partDetail => partDetail.partSingleName.toLowerCase().includes(inputValue))
+          : currentSelectedPartAssyItem.part_details;
+
+      partNameSuggestionsContainer.innerHTML = '';
+      if (suggestionsToShow.length > 0) {
+        // Set the width of the container to match the input element's width
+        partNameSuggestionsContainer.style.width = `${partNameInput.offsetWidth}px`;
+
+        suggestionsToShow.forEach(partDetail => {
+          const suggestionDiv = document.createElement('div');
+          suggestionDiv.classList.add('auto-suggest-item');
+          suggestionDiv.textContent = partDetail.partSingleName;
+          suggestionDiv.addEventListener('click', () => {
+            partNameInput.value = partDetail.partSingleName;
+            updatePartNameAndProcess();
+            partNameSuggestionsContainer.classList.add('hidden');
+          });
+          partNameSuggestionsContainer.appendChild(suggestionDiv);
+        });
+        partNameSuggestionsContainer.classList.remove('hidden');
+      }
+    }
+  });
+
+  partNameInput.addEventListener('blur', () => {
+    if (partNameInput.readOnly) return;
+    setTimeout(() => {
+      partNameSuggestionsContainer.classList.add('hidden');
+      partNameSuggestionsContainer.style.width = ''; // Clear width on blur
+      updatePartNameAndProcess();
+    }, 150);
+  });
+}
+
+// Setup auto-suggest for Operator Name
+function setupOperatorAutocomplete() {
+  operatorNameInput.addEventListener('input', () => {
+    const currentSectionType = sectionTypeSelect.value; // Get current section type dynamically
+    populateSuggestions(operatorNameInput, operatorSuggestionsContainer, cachedOperators, 'operator_name', currentSectionType);
+  });
+
+  operatorNameInput.addEventListener('focus', () => {
+    const currentSectionType = sectionTypeSelect.value; // Get current section type dynamically
+    populateSuggestions(operatorNameInput, operatorSuggestionsContainer, cachedOperators, 'operator_name', currentSectionType);
+  });
+
+  operatorNameInput.addEventListener('blur', () => {
+    setTimeout(() => {
+      operatorSuggestionsContainer.classList.add('hidden');
+      operatorSuggestionsContainer.style.width = ''; // Clear width on blur
+      const enteredValue = operatorNameInput.value.trim();
+      const currentSectionType = sectionTypeSelect.value; // Get current section type dynamically
+      const foundOperator = cachedOperators.some(op => 
+        op.operator_name.toLowerCase() === enteredValue.toLowerCase() &&
+        (currentSectionType === '' || (op.section_type && op.section_type.toLowerCase() === currentSectionType.toLowerCase()))
+      );
+      if (!foundOperator) {
+        operatorNameInput.value = '';
+      }
+    }, 150);
+  });
+}
+
+// Setup auto-suggest for Machine
+function setupMachineAutocomplete() {
+  machineInput.addEventListener('input', () => {
+    populateSuggestions(machineInput, machineSuggestionsContainer, cachedMachines, 'machine_name');
+  });
+
+  machineInput.addEventListener('focus', () => {
+    populateSuggestions(machineInput, machineSuggestionsContainer, cachedMachines, 'machine_name');
+  });
+
+  machineInput.addEventListener('blur', () => {
+    setTimeout(() => {
+      machineSuggestionsContainer.classList.add('hidden');
+      machineSuggestionsContainer.style.width = ''; // Clear width on blur
+      // Optional: Clear input if no valid machine is selected
+      const enteredValue = machineInput.value.trim();
+      const foundMachine = cachedMachines.some(m => m.machine_name.toLowerCase() === enteredValue.toLowerCase());
+      if (!foundMachine) {
+        machineInput.value = '';
+      }
+    }, 150);
+  });
+}
+
+
+document.addEventListener('DOMContentLoaded', async function() {
+  console.log('Input-Produksi.html: DOMContentLoaded fired.');
+
+  const loader = document.querySelector(".loader-bg");
+  if (loader) {
+    loader.style.display = 'none';
+    loader.style.opacity = '0';
+    loader.remove();
+    console.log('Input-Produksi.html: Loader hidden immediately on DOMContentLoaded.');
+  }
+
+  if (dateInput) {
+    dateInput.value = new Date().toISOString().split('T')[0];
+    console.log('Production date initialized.');
+  }
+
+  calculateDuration();
+  handleSectionTypeChange(); // Initial call to set up state and refresh operator suggestions
+
+  await fetchAndCacheItems();
+  await fetchAndCacheOperators();
+  await fetchAndCacheMachines();
+  await fetchAndCacheQCLines();
+
+  setupPartAssyAutocomplete();
+  setupPartNameAutocomplete();
+  setupOperatorAutocomplete(); // Initialize operator autocomplete
+  setupMachineAutocomplete();   // Initialize machine autocomplete
+
+  partNameInput.addEventListener('input', () => autoResizeTextarea(partNameInput));
+
+  sectionTypeSelect.addEventListener('change', handleSectionTypeChange);
+
+  const form = document.getElementById('productionForm');
+  if (form) {
+    console.log("Input-Produksi.html: Attaching form submit listener.");
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      console.log('Form submission prevented default.');
+
+      this.querySelectorAll('.validation-message').forEach(msg => msg.remove());
+      this.querySelectorAll('input, select, textarea').forEach(el => el.style.borderColor = '');
+
+      let allFieldsFilled = true;
+      const requiredFields = [
+        'date', 'operatorName', 'shift', 'sectionType',
+        'machine', 'start', 'finish', 'breakTime', 'ok', 'ng', 'qcLine'
+      ];
+
+      requiredFields.push('namaPartAssy');
+      
+      const formData = {};
+
+      requiredFields.forEach(fieldId => {
+        const element = document.getElementById(fieldId);
+        if (element) {
+          const value = element.value.trim();
+          if (!value) {
+            element.style.borderColor = 'red';
+            allFieldsFilled = false;
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'text-red-500 text-xs mt-1 validation-message';
+            errorMessage.textContent = 'Harap di isi';
+            element.parentNode.insertBefore(errorMessage, element.nextSibling);
+          }
+          formData[fieldId] = value;
+        }
+      });
+
+      if (sectionTypeSelect.value !== 'Welding') {
+          const enteredPartAssyName = namaPartAssyInput.value.trim();
+          const foundPartAssy = cachedItems.find(item => item.part_assy_name.toLowerCase() === enteredPartAssyName.toLowerCase());
+
+          if (!enteredPartAssyName) {
+              namaPartAssyInput.style.borderColor = 'red';
+              allFieldsFilled = false;
+              const errorMessage = document.createElement('div');
+              errorMessage.className = 'text-red-500 text-xs mt-1 validation-message';
+              errorMessage.textContent = 'Nama Part Assy harus diisi.';
+              namaPartAssyInput.parentNode.insertBefore(errorMessage, namaPartAssyInput.nextSibling);
+          } else if (!foundPartAssy) {
+              namaPartAssyInput.style.borderColor = 'red';
+              allFieldsFilled = false;
+              const errorMessage = document.createElement('div');
+              errorMessage.className = 'text-red-500 text-xs mt-1 validation-message';
+              errorMessage.textContent = 'Nama Part Assy tidak valid atau tidak ditemukan.';
+              namaPartAssyInput.parentNode.insertBefore(errorMessage, namaPartAssyInput.nextSibling);
+          }
+
+          if (!partNameInput.value.trim()) {
+              partNameInput.style.borderColor = 'red';
+              allFieldsFilled = false;
+              const errorMessage = document.createElement('div');
+              errorMessage.className = 'text-red-500 text-xs mt-1 validation-message';
+              errorMessage.textContent = 'Part Name harus dipilih atau diisi dari saran.';
+              partNameInput.parentNode.insertBefore(errorMessage, partNameInput.nextSibling);
+          }
+          if (!processInput.value.trim()) {
+              processInput.style.borderColor = 'red';
+              allFieldsFilled = false;
+              const errorMessage = document.createElement('div');
+              errorMessage.className = 'text-red-500 text-xs mt-1 validation-message';
+              errorMessage.textContent = 'Process harus terisi otomatis setelah memilih Part Name.';
+              processInput.parentNode.insertBefore(errorMessage, processInput.nextSibling);
+          }
+      }
+
+      formData.partName = partNameInput.value.trim();
+      formData.process = processInput.value.trim();
+      formData.namaPartAssy = namaPartAssyInput.value.trim();
+      formData.duration = durationInput.value.trim();
+      formData.note = document.getElementById('note').value.trim();
+
+      if (!allFieldsFilled) {
+        showNotification("❌ Harap isi semua kolom yang wajib diisi dan pastikan data valid!", false);
+        return;
+      }
+
+      const okValue = parseInt(formData.ok) || 0;
+      const ngValue = parseInt(formData.ng) || 0;
+      const breakTimeValue = parseInt(formData.breakTime) || 0;
+
+      if (okValue < 0 || ngValue < 0 || breakTimeValue < 0) {
+        showNotification('Nilai OK, NG, dan Break tidak boleh negatif!', false);
+        return;
+      }
+
+      setSubmitButtonState(true);
+
+      try {
+        const startDateTimeISO = new Date(`${formData.date}T${formData.start}:00`).toISOString();
+        let finishDateTimeISO = new Date(`${formData.date}T${formData.finish}:00`).toISOString();
+
+        const startDateTime = new Date(`${formData.date}T${formData.start}:00`);
+        const finishDateTime = new Date(`${formData.date}T${formData.finish}:00`);
+        if (finishDateTime < startDateTime) {
+            finishDateTime.setDate(finishDateTime.getDate() + 1);
+            finishDateTimeISO = finishDateTime.toISOString();
+        }
+
+        const dataToSave = {
+          tanggal: formData.date,
+          shift: formData.shift,
+          part_name: formData.partName,
+          nama_operator: formData.operatorName,
+          mesin: formData.machine,
+          note: formData.note,
+          jenis_proses: formData.sectionType,
+          process: formData.process,
+          start_time: startDateTimeISO,
+          finish_time: finishDateTimeISO,
+          break_menit: breakTimeValue,
+          duration: formData.duration,
+          ok: okValue,
+          ng: ngValue,
+          qc_line: formData.qcLine,
+        };
+
+        console.log('Saving production data:', dataToSave);
+        const result = await window.DatabaseHelper.saveProductionData(dataToSave);
+
+        if (result.success) {
+          showNotification('Data produksi berhasil disimpan!', true);
+          form.reset();
+          durationInput.value = '';
+          dateInput.value = new Date().toISOString().split('T')[0];
+          handleSectionTypeChange(); // Re-trigger to reset and filter operator suggestions
+          partNameInput.value = '';
+          processInput.value = '';
+          currentSelectedPartAssyItem = null;
+          console.log('Production data saved successfully and form reset.');
+        } else {
+          console.error('Error saat menyimpan:', result.error);
+          showNotification(`Gagal menyimpan data: ${result.error}`, false);
+          showGlobalError();
+        }
+      } catch (error) {
+        console.error('Pengecualian saat menyimpan:', error);
+        showNotification(`Terjadi kesalahan: ${error.message}`, false);
+        showGlobalError();
+      } finally {
+        setSubmitButtonState(false);
+        console.log('Proses pengiriman formulir selesai.');
+      }
+    });
+  } else {
+    console.error("Formulir dengan ID 'productionForm' tidak ditemukan.");
+    showGlobalError();
+  }
+
+  form.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+
+      const formElements = Array.from(this.querySelectorAll('input, select, textarea'));
+      const currentIndex = formElements.indexOf(document.activeElement);
+
+      if (currentIndex > -1 && currentIndex < formElements.length - 1) {
+        formElements[currentIndex + 1].focus();
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+<!-- [Head] start -->
+<head>
+  @@include('../layouts/head-page-meta.html', {'title': 'Kelola Data Customer'})
+  @@include('../layouts/head-css.html')
+  <style>
+    .editable-cell {
+      cursor: pointer;
+    }
+    .editable-cell input {
+      width: 100%;
+      border: 1px solid #ccc;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+    }
+    .action-buttons button {
+      margin-right: 0.5rem;
+    }
+    .validation-message {
+      color: #ef4444;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+    /* Custom Notification Styles */
+    #customNotification {
+      position: absolute; /* Changed from fixed to absolute */
+      top: 20px; /* Adjusted position relative to .pc-content */
+      right: 20px; /* Adjusted position relative to .pc-content */
+      padding: 12px 20px;
+      border-radius: 0.5rem; /* rounded-lg */
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-md */
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transition: opacity 0.5s ease-in-out, background-color 0.3s ease, color 0.3s ease; /* Added transitions for color/bg */
+      opacity: 0; /* Start hidden */
+    }
+    #customNotification.hidden {
+      display: none;
+    }
+    /* Specific styles for success and error */
+    #customNotification.success {
+      background-color: #d1fae5; /* green-100 */
+      color: #065f46; /* green-800 */
+    }
+    #customNotification.error {
+      background-color: #fee2e2; /* red-100 */
+      color: #991b1b; /* red-800 */
+    }
+  </style>
+</head>
+<!-- [Head] end -->
+
+<!-- [Body] Start -->
+<body>
+  @@include('../layouts/loader.html')
+  @@include('../layouts/sidebar.html')
+  @@include('../layouts/topbar.html')
+
+  <!-- [ Main Content ] start -->
+  <div class="pc-container">
+    <div class="pc-content">
+      @@include('../layouts/breadcrumb.html', {'breadcrumb-item': 'Marketing', 'breadcrumb-item-href': '../pages/Marketing.html', 'breadcrumb-item-active': 'Kelola Data Customer'})
+
+      <!-- Custom Notification Element - Moved here -->
+      <div id="customNotification" class="hidden">
+        <span id="notificationIcon"></span>
+        <span id="notificationMessage"></span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-x-6">
+        <div class="col-span-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Data Pelanggan</h5>
+              <!-- Tombol Refresh Data dihapus -->
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <input type="text" id="customerSearchInput" placeholder="Cari Nama Customer..." class="form-control block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              </div>
+              
+              <!-- Notifikasi "Memuat data..." dihapus -->
+              
+              <div class="table-responsive">
+                <table class="table table-hover" id="customerDataTable">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Nama Customer</th>
+                      <th>Initial Customer</th>
+                      <th>Nama PIC</th>
+                      <th>No. Telepon</th>
+                      <th>Alamat</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="customerTableBody">
+                    <!-- Konten awal akan kosong atau diisi oleh JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @@include('../layouts/footer-block.html')
+  @@include('../layouts/footer-js.html')
+
+  <!-- Include Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-config.js"></script>
+  <script src="../assets/js/role-based-menu.js"></script>
+
+  <script>
+    function showNotification(message, isSuccess = true) {
+      let notification = document.getElementById('customNotification');
+      if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'customNotification';
+        // Removed fixed bottom-4 right-4 from className
+        notification.className = 'px-6 py-4 rounded-lg shadow-xl z-50 hidden opacity-0 transition-opacity duration-500 flex items-center gap-3';
+        // Changed appendChild target to .pc-content
+        document.querySelector('.pc-content').appendChild(notification);
+
+        const iconSpan = document.createElement('span');
+        iconSpan.id = 'notificationIcon';
+        iconSpan.className = 'text-2xl';
+        notification.appendChild(iconSpan);
+
+        const messageSpan = document.createElement('span');
+        messageSpan.id = 'notificationMessage';
+        messageSpan.className = 'font-semibold';
+        notification.appendChild(messageSpan);
+      }
+
+      const notificationIcon = notification.querySelector('#notificationIcon');
+      const notificationMessage = notification.querySelector('#notificationMessage');
+
+      notificationMessage.textContent = message;
+      notificationIcon.textContent = isSuccess ? '✔' : '✖';
+
+      // Removed bg-green-600, bg-red-600, text-white
+      notification.classList.remove('bg-green-600', 'bg-red-600', 'hidden', 'opacity-0', 'text-white');
+      // Added new success/error classes
+      if (isSuccess) {
+        notification.classList.add('success');
+      } else {
+        notification.classList.add('error');
+      }
+      
+      notification.style.opacity = '1';
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          notification.classList.add('hidden');
+        }, 500);
+      }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      const customerDataTableBody = document.getElementById('customerTableBody');
+      const customerSearchInput = document.getElementById('customerSearchInput');
+      let allCustomerData = [];
+
+      async function loadCustomerData(dataToDisplay = null) {
+        // Baris ini yang menyebabkan notifikasi "Memuat data..."
+        // Telah dihapus sepenuhnya.
+        
+        try {
+          if (typeof window.DatabaseHelper === 'undefined') {
+            throw new Error('Database connection not available. Please refresh the page.');
+          }
+
+          if (!dataToDisplay) {
+            console.log('Loading customer data...');
+            const result = await window.DatabaseHelper.getCustomers();
+            
+            console.log('Customer data result:', result);
+            
+            if (result.success) {
+              allCustomerData = result.data || [];
+            } else {
+              console.error('Failed to load customers:', result.error);
+              showNotification(`❌ Gagal memuat data: ${result.error}`, false);
+              customerDataTableBody.innerHTML = '<tr><td colspan="7" class="text-center text-red-500">Gagal memuat data</td></tr>';
+              return;
+            }
+          }
+
+          const data = dataToDisplay || allCustomerData;
+
+          customerDataTableBody.innerHTML = '';
+
+          if (data.length === 0) {
+            customerDataTableBody.innerHTML = '<tr><td colspan="7" class="text-center">Tidak ada data pelanggan.</td></tr>';
+            return;
+          }
+
+          data.forEach((customer, index) => {
+            const row = customerDataTableBody.insertRow();
+            row.dataset.id = customer.id;
+
+            row.innerHTML = `
+              <td>${index + 1}</td>
+              <td data-field="customer_name" class="editable-cell">${customer.customer_name || '-'}</td>
+              <td data-field="initial_customer" class="editable-cell">${customer.initial_customer || '-'}</td>
+              <td data-field="pic_name" class="editable-cell">${customer.pic_name || '-'}</td>
+              <td data-field="phone_number" class="editable-cell">${customer.phone_number || '-'}</td>
+              <td data-field="address" class="editable-cell">${customer.address || '-'}</td>
+              <td class="action-buttons">
+                <button class="btn btn-sm btn-primary edit-btn">Edit</button>
+                <button class="btn btn-sm btn-danger delete-btn">Hapus</button>
+              </td>
+            `;
+          });
+
+          addEventListeners();
+          showNotification(`✅ Data berhasil dimuat (${data.length} customer)`, true);
+        } catch (error) {
+          console.error('Exception loading customer data:', error);
+          showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+          customerDataTableBody.innerHTML = '<tr><td colspan="7" class="text-center text-red-500">Terjadi kesalahan saat memuat data</td></tr>';
+        }
+      }
+
+      function addEventListeners() {
+        customerDataTableBody.querySelectorAll('.edit-btn').forEach(button => {
+          button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            toggleEditMode(row, true);
+          });
+        });
+
+        customerDataTableBody.querySelectorAll('.delete-btn').forEach(button => {
+          button.addEventListener('click', async function() {
+            const row = this.closest('tr');
+            const id = parseInt(row.dataset.id);
+            await deleteCustomer(id);
+          });
+        });
+      }
+
+      function toggleEditMode(row, isEditing) {
+        const cells = row.querySelectorAll('.editable-cell');
+        const actionButtonsCell = row.querySelector('.action-buttons');
+        const id = parseInt(row.dataset.id);
+        const originalData = allCustomerData.find(customer => customer.id === id);
+
+        if (isEditing) {
+          cells.forEach(cell => {
+            const field = cell.dataset.field;
+            const originalValue = cell.textContent;
+            cell.innerHTML = `<input type="text" value="${originalValue}" data-original-value="${originalValue}" />`;
+          });
+          actionButtonsCell.innerHTML = `
+            <button class="btn btn-sm btn-success save-btn">Simpan</button>
+            <button class="btn btn-sm btn-secondary cancel-btn">Batal</button>
+          `;
+          actionButtonsCell.querySelector('.save-btn').addEventListener('click', async function() {
+            await saveCustomer(row, id);
+          });
+          actionButtonsCell.querySelector('.cancel-btn').addEventListener('click', function() {
+            toggleEditMode(row, false);
+          });
+        } else {
+          cells.forEach(cell => {
+            const field = cell.dataset.field;
+            cell.textContent = originalData[field] || '-';
+          });
+          actionButtonsCell.innerHTML = `
+            <button class="btn btn-sm btn-primary edit-btn">Edit</button>
+            <button class="btn btn-sm btn-danger delete-btn">Hapus</button>
+          `;
+          addEventListeners();
+        }
+      }
+
+      async function saveCustomer(row, id) {
+        const updatedCustomer = {};
+        let isValid = true;
+
+        row.querySelectorAll('.editable-cell input').forEach(input => {
+          const field = input.parentNode.dataset.field;
+          const value = input.value.trim();
+          if (!value) {
+            input.classList.add('border-red-500');
+            isValid = false;
+          } else {
+            input.classList.remove('border-red-500');
+          }
+          updatedCustomer[field] = value;
+        });
+
+        if (!isValid) {
+          showNotification("❌ Harap isi semua kolom yang wajib diisi!", false);
+          return;
+        }
+
+        try {
+          if (typeof window.DatabaseHelper === 'undefined') {
+            throw new Error('Database connection not available');
+          }
+
+          console.log('Updating customer:', { id, updatedCustomer });
+          const result = await window.DatabaseHelper.updateCustomer(id, updatedCustomer);
+          
+          if (result.success) {
+            showNotification("✅ Data pelanggan berhasil diperbarui!", true);
+            await loadCustomerData();
+            const searchTerm = customerSearchInput.value.toLowerCase();
+            if (searchTerm) {
+              const filteredData = allCustomerData.filter(customer =>
+                customer.customer_name.toLowerCase().includes(searchTerm)
+              );
+              loadCustomerData(filteredData);
+            }
+          } else {
+            showNotification(`❌ Gagal memperbarui data: ${result.error}`, false);
+          }
+        } catch (error) {
+          console.error('Error updating customer:', error);
+          showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+        }
+      }
+
+      async function deleteCustomer(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus data pelanggan ini?')) {
+          try {
+            if (typeof window.DatabaseHelper === 'undefined') {
+              throw new Error('Database connection not available');
+            }
+
+            console.log('Deleting item:', id);
+            const result = await window.DatabaseHelper.deleteCustomer(id);
+            
+            if (result.success) {
+              showNotification("✅ Data pelanggan berhasil dihapus!", true);
+              await loadCustomerData();
+              const searchTerm = customerSearchInput.value.toLowerCase();
+              if (searchTerm) {
+                const filteredData = allCustomerData.filter(customer =>
+                  customer.customer_name.toLowerCase().includes(searchTerm)
+                );
+                loadCustomerData(filteredData);
+              }
+            } else {
+              showNotification(`❌ Gagal menghapus data: ${result.error}`, false);
+            }
+          } catch (error) {
+            console.error('Error deleting item:', error);
+            showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+          }
+        }
+      }
+
+      // Search functionality
+      customerSearchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const filteredData = allCustomerData.filter(customer =>
+          customer.customer_name.toLowerCase().includes(searchTerm)
+        );
+        loadCustomerData(filteredData);
+      });
+
+      // Initial load with delay to ensure DatabaseHelper is available
+      setTimeout(() => {
+        loadCustomerData();
+      }, 1000);
+    });
+  </script>
+</body>
+<!-- [Body] end -->
+</html>

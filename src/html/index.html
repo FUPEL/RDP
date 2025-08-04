@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Redirecting...</title>
+  <!-- [Meta] -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description"
+    content=" Download Datta Able Tailwind CSS Template, a premium Tailwind CSS Admin Template developed by CodedThemes." />
+  <meta name="keywords"
+    content="tailwind admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard" />
+  <meta name="author" content="CodedThemes" />
+
+  <!-- [Favicon] icon -->
+  <link rel="icon" href="assets/images/favicon.svg" type="image/x-icon" />
+
+  <!-- [Page specific CSS] start -->
+  <link href="assets/css/plugins/animate.min.css" rel="stylesheet" type="text/css" />
+  <link href="assets/css/plugins/swiper-bundle.css" rel="stylesheet" />
+  <!-- [Page specific CSS] end -->
+  <!-- [Font] Family -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- [phosphor Icons] https://phosphoricons.com/ -->
+  <link rel="stylesheet" href="assets/fonts/phosphor/duotone/style.css" />
+  <!-- [Tabler Icons] https://tablericons.com -->
+  <link rel="stylesheet" href="assets/fonts/tabler-icons.min.css" />
+  <!-- [Feather Icons] https://feathericons.com -->
+  <link rel="stylesheet" href="assets/fonts/feather.css" />
+  <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+  <link rel="stylesheet" href="assets/fonts/fontawesome.css" />
+  <!-- [Material Icons] https://fonts.google.com/icons -->
+  <link rel="stylesheet" href="assets/fonts/material.css" />
+  <!-- [Template CSS Files] -->
+  <link rel="stylesheet" href="assets/css/style.css" id="main-style-link" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Open Sans', sans-serif;
+    }
+    .loader {
+      text-align: center;
+      color: white;
+    }
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 4px solid white;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="loader">
+    <div class="spinner"></div>
+    <p>Redirecting to login...</p>
+  </div>
+
+  <!-- [ Pre-loader ] start -->
+  <!-- [ Pre-loader ] End -->
+  <!-- [ Header ] start -->
+  <!-- [ Header ] End -->
+  <!-- [ Main Content ] end -->
+  <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+  <!-- Required Js -->
+  <script src="assets/js/plugins/simplebar.min.js"></script>
+  <script src="assets/js/plugins/popper.min.js"></script>
+  <script src="assets/js/icon/custom-icon.js"></script>
+  <script src="assets/js/plugins/feather.min.js"></script>
+  <script src="assets/js/component.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/script.js"></script>
+  <!-- [Page Specific JS] start -->
+  <script src="assets/js/plugins/wow.min.js"></script>
+  <script>
+    // Redirect to login page immediately
+    window.location.href = './pages/login-v1.html';
+
+    // Start [ Menu hide/show on scroll ]
+    let ost = 0;
+    document.addEventListener('scroll', function () {
+      let cOst = document.documentElement.scrollTop;
+      if (cOst == 0) {
+        document.querySelector('.navbar').classList.add('!bg-transparent');
+      } else if (cOst > ost) {
+        document.querySelector('.navbar').classList.add('top-nav-collapse');
+        document.querySelector('.navbar').classList.remove('default');
+        document.querySelector('.navbar').classList.remove('!bg-transparent');
+      } else {
+        document.querySelector('.navbar').classList.add('default');
+        document.querySelector('.navbar').classList.remove('top-nav-collapse');
+        document.querySelector('.navbar').classList.remove('!bg-transparent');
+      }
+      ost = cOst;
+    });
+    // End [ Menu hide/show on scroll ]
+    var wow = new WOW({
+      animateClass: 'animate__animated'
+    });
+    wow.init();
+  </script>
+  <!-- [Page Specific JS] end -->
+</body>
+
+</html>

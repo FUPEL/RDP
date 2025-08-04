@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+<!-- [Head] start -->
+<head>
+  @@include('../layouts/head-page-meta.html', {'title': 'Kelola Operator'})
+  @@include('../layouts/head-css.html')
+  <style>
+    .editable-cell {
+      cursor: pointer;
+    }
+    .editable-cell input, .editable-cell select { /* Added select to styling */
+      width: 100%;
+      border: 1px solid #ccc;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+    }
+    .action-buttons button {
+      margin-right: 0.5rem;
+    }
+    .validation-message {
+      color: #ef4444;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+    /* Custom Notification Styles */
+    #customNotification {
+      position: absolute; /* Changed from fixed to absolute */
+      top: 20px; /* Adjusted position relative to .pc-content */
+      right: 20px; /* Adjusted position relative to .pc-content */
+      padding: 12px 20px;
+      border-radius: 0.5rem; /* rounded-lg */
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-md */
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transition: opacity 0.5s ease-in-out, background-color 0.3s ease, color 0.3s ease; /* Added transitions for color/bg */
+      opacity: 0; /* Start hidden */
+    }
+    #customNotification.hidden {
+      display: none;
+    }
+    /* Specific styles for success and error */
+    #customNotification.success {
+      background-color: #d1fae5; /* green-100 */
+      color: #065f46; /* green-800 */
+    }
+    #customNotification.error {
+      background-color: #fee2e2; /* red-100 */
+      color: #991b1b; /* red-800 */
+    }
+  </style>
+</head>
+<!-- [Head] end -->
+
+<!-- [Body] Start -->
+<body>
+  @@include('../layouts/loader.html')
+  @@include('../layouts/sidebar.html')
+  @@include('../layouts/topbar.html')
+
+  <!-- [ Main Content ] start -->
+  <div class="pc-container" data-page-role="Direktur,Produksi">
+    <div class="pc-content">
+      @@include('../layouts/breadcrumb.html', { "breadcrumb-item-active": "Kelola Operator", "breadcrumb-item": "Data Master", "breadcrumb-item-href": "#" })
+
+      <!-- Custom Notification Element -->
+      <div id="customNotification" class="hidden">
+        <span id="notificationIcon"></span>
+        <span id="notificationMessage"></span>
+      </div>
+
+      <!-- [ Page Content ] start -->
+      <div class="grid grid-cols-12 gap-x-6">
+        <div class="col-span-12">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5>Daftar Operator</h5>
+              <a href="../pages/input-operator.html" class="btn btn-primary">Tambah Operator Baru</a>
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <input type="text" id="operatorSearchInput" placeholder="Cari Nama Operator..." class="form-control block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover" id="operatorsTable">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Nama Operator</th>
+                      <th>Jenis Bagian</th>
+                      <th>Dibuat Pada</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="operatorTableBody">
+                    <!-- Data operator akan dimuat di sini -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- [ Page Content ] end -->
+    </div>
+  </div>
+  <!-- [ Main Content ] end -->
+
+  @@include('../layouts/footer-block.html')
+  @@include('../layouts/footer-js.html')
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-config.js"></script>
+  <script src="../assets/js/role-based-menu.js"></script>
+
+  <script>
+    function showNotification(message, isSuccess = true) {
+      let notification = document.getElementById('customNotification');
+      if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'customNotification';
+        notification.className = 'px-6 py-4 rounded-lg shadow-xl z-50 hidden opacity-0 transition-opacity duration-500 flex items-center gap-3';
+        document.querySelector('.pc-content').appendChild(notification);
+
+        const iconSpan = document.createElement('span');
+        iconSpan.id = 'notificationIcon';
+        iconSpan.className = 'text-2xl';
+        notification.appendChild(iconSpan);
+
+        const messageSpan = document.createElement('span');
+        messageSpan.id = 'notificationMessage';
+        messageSpan.className = 'font-semibold';
+        notification.appendChild(messageSpan);
+      }
+
+      const notificationIcon = notification.querySelector('#notificationIcon');
+      const notificationMessage = notification.querySelector('#notificationMessage');
+
+      notificationMessage.textContent = message;
+      notificationIcon.textContent = isSuccess ? '✔' : '✖';
+
+      notification.classList.remove('hidden', 'opacity-0', 'success', 'error');
+      if (isSuccess) {
+        notification.classList.add('success');
+      } else {
+        notification.classList.add('error');
+      }
+      
+      notification.style.opacity = '1';
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          notification.classList.add('hidden');
+        }, 500);
+      }, 3000);
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const operatorTableBody = document.getElementById('operatorTableBody');
+      const operatorSearchInput = document.getElementById('operatorSearchInput');
+      let allOperatorData = [];
+
+      async function loadOperatorData(dataToDisplay = null) {
+        try {
+          if (typeof window.DatabaseHelper === 'undefined') {
+            throw new Error('Database connection not available. Please refresh the page.');
+          }
+
+          if (!dataToDisplay) {
+            console.log('Loading operator data...');
+            const result = await window.DatabaseHelper.getOperators();
+            
+            if (result.error) {
+              console.error('Failed to load operators:', result.error);
+              showNotification(`❌ Gagal memuat data: ${result.error}`, false);
+              operatorTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-red-500">Gagal memuat data</td></tr>';
+              return;
+            }
+            allOperatorData = result.data || [];
+          }
+
+          const data = dataToDisplay || allOperatorData;
+          operatorTableBody.innerHTML = '';
+
+          if (data.length === 0) {
+            operatorTableBody.innerHTML = '<tr><td colspan="5" class="text-center">Tidak ada data operator.</td></tr>';
+            return;
+          }
+
+          // Group operators by section_type
+          const groupedOperators = data.reduce((acc, operator) => {
+            const sectionType = operator.section_type || 'Tidak Dikategorikan';
+            if (!acc[sectionType]) {
+              acc[sectionType] = [];
+            }
+            acc[sectionType].push(operator);
+            return acc;
+          }, {});
+
+          let rowNum = 1;
+          for (const sectionType in groupedOperators) {
+            // Add a header row for each group
+            const groupHeaderRow = operatorTableBody.insertRow();
+            groupHeaderRow.innerHTML = `<td colspan="5" class="font-bold bg-gray-100">${sectionType}</td>`;
+
+            groupedOperators[sectionType].forEach((operator) => {
+              const row = operatorTableBody.insertRow();
+              row.dataset.id = operator.id; // Store the UUID string directly
+
+              row.innerHTML = `
+                <td>${rowNum++}</td>
+                <td data-field="operator_name" class="editable-cell">${operator.operator_name || '-'}</td>
+                <td data-field="section_type" class="editable-cell">${operator.section_type || '-'}</td>
+                <td>${new Date(operator.created_at).toLocaleString()}</td>
+                <td class="action-buttons">
+                  <button class="btn btn-sm btn-primary edit-btn">Edit</button>
+                  <button class="btn btn-sm btn-danger delete-btn">Hapus</button>
+                </td>
+              `;
+            });
+          }
+
+          addEventListeners();
+          showNotification(`✅ Data berhasil dimuat (${data.length} operator)`, true);
+        } catch (error) {
+          console.error('Exception loading operator data:', error);
+          showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+          operatorTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-red-500">Terjadi kesalahan saat memuat data</td></tr>';
+        }
+      }
+
+      function addEventListeners() {
+        operatorTableBody.querySelectorAll('.edit-btn').forEach(button => {
+          button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            toggleEditMode(row, true);
+          });
+        });
+
+        operatorTableBody.querySelectorAll('.delete-btn').forEach(button => {
+          button.addEventListener('click', async function() {
+            const row = this.closest('tr');
+            const id = row.dataset.id;
+            await deleteOperator(id);
+          });
+        });
+      }
+
+      function toggleEditMode(row, isEditing) {
+        const fields = ['operator_name', 'section_type'];
+        const actionButtonsCell = row.querySelector('.action-buttons');
+        const id = row.dataset.id;
+        const originalData = allOperatorData.find(operator => operator.id === id);
+
+        if (isEditing) {
+          fields.forEach(field => {
+            const cell = row.querySelector(`[data-field="${field}"]`);
+            const originalValue = cell.textContent;
+
+            if (field === 'section_type') {
+              cell.innerHTML = `
+                <select data-original-value="${originalValue}" class="form-control">
+                  <option value="stamping" ${originalValue === 'stamping' ? 'selected' : ''}>Stamping</option>
+                  <option value="welding" ${originalValue === 'welding' ? 'selected' : ''}>Welding</option>
+                </select>
+              `;
+            } else {
+              cell.innerHTML = `<input type="text" value="${originalValue}" data-original-value="${originalValue}" class="form-control" />`;
+            }
+          });
+
+          actionButtonsCell.innerHTML = `
+            <button class="btn btn-sm btn-success save-btn">Simpan</button>
+            <button class="btn btn-sm btn-secondary cancel-btn">Batal</button>
+          `;
+          actionButtonsCell.querySelector('.save-btn').addEventListener('click', async function() {
+            await saveOperator(row, id);
+          });
+          actionButtonsCell.querySelector('.cancel-btn').addEventListener('click', function() {
+            toggleEditMode(row, false);
+          });
+        } else {
+          fields.forEach(field => {
+            const cell = row.querySelector(`[data-field="${field}"]`);
+            cell.textContent = originalData[field] || '-';
+          });
+          actionButtonsCell.innerHTML = `
+            <button class="btn btn-sm btn-primary edit-btn">Edit</button>
+            <button class="btn btn-sm btn-danger delete-btn">Hapus</button>
+          `;
+          addEventListeners();
+        }
+      }
+
+      async function saveOperator(row, id) {
+        const operatorNameInput = row.querySelector('[data-field="operator_name"] input');
+        const sectionTypeInput = row.querySelector('[data-field="section_type"] select');
+
+        const newOperatorName = operatorNameInput.value.trim();
+        const newSectionType = sectionTypeInput.value.trim();
+
+        if (!newOperatorName) {
+          operatorNameInput.classList.add('border-red-500');
+          showNotification("❌ Nama Operator tidak boleh kosong!", false);
+          return;
+        } else {
+          operatorNameInput.classList.remove('border-red-500');
+        }
+
+        try {
+          if (typeof window.DatabaseHelper === 'undefined' || typeof window.DatabaseHelper.updateData === 'undefined') {
+            throw new Error('Database connection or updateData function not available');
+          }
+
+          const updatedOperator = { 
+            operator_name: newOperatorName,
+            section_type: newSectionType
+          };
+          
+          const result = await window.DatabaseHelper.updateData('operators', id, updatedOperator);
+          
+          if (result.success) {
+            showNotification("✅ Data operator berhasil diperbarui!", true);
+            await loadOperatorData();
+            const searchTerm = operatorSearchInput.value.toLowerCase();
+            if (searchTerm) {
+              const filteredData = allOperatorData.filter(operator =>
+                operator.operator_name.toLowerCase().includes(searchTerm) ||
+                (operator.section_type && operator.section_type.toLowerCase().includes(searchTerm))
+              );
+              loadOperatorData(filteredData);
+            }
+          } else {
+            showNotification(`❌ Gagal memperbarui data: ${result.error}`, false);
+          }
+        } catch (error) {
+          console.error('Error updating operator:', error);
+          showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+        }
+      }
+
+      async function deleteOperator(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus data operator ini?')) {
+          try {
+            if (typeof window.DatabaseHelper === 'undefined' || typeof window.DatabaseHelper.deleteData === 'undefined') {
+              throw new Error('Database connection or deleteData function not available');
+            }
+
+            const result = await window.DatabaseHelper.deleteData('operators', id);
+            
+            if (result.success) {
+              showNotification("✅ Data operator berhasil dihapus!", true);
+              await loadOperatorData();
+              const searchTerm = operatorSearchInput.value.toLowerCase();
+              if (searchTerm) {
+                const filteredData = allOperatorData.filter(operator =>
+                  operator.operator_name.toLowerCase().includes(searchTerm) ||
+                  (operator.section_type && operator.section_type.toLowerCase().includes(searchTerm))
+                );
+                loadOperatorData(filteredData);
+              }
+            } else {
+              showNotification(`❌ Gagal menghapus data: ${result.error}`, false);
+            }
+          } catch (error) {
+            console.error('Error deleting operator:', error);
+            showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+          }
+        }
+      }
+
+      // Search functionality
+      operatorSearchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const filteredData = allOperatorData.filter(operator =>
+          operator.operator_name.toLowerCase().includes(searchTerm) ||
+          (operator.section_type && operator.section_type.toLowerCase().includes(searchTerm))
+        );
+        loadOperatorData(filteredData);
+      });
+
+      // Initial load with delay to ensure DatabaseHelper is available
+      setTimeout(() => {
+        loadOperatorData();
+      }, 1000);
+    });
+  </script>
+</body>
+<!-- [Body] end -->
+</html>

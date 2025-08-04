@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+<!-- [Head] start -->
+<head>
+@@include('../layouts/head-page-meta.html', {'title': 'Laporan PO'})
+@@include('../layouts/head-css.html')
+<style>
+  .filter-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .filter-controls .form-group {
+    flex: 1;
+    min-width: 150px;
+  }
+  .filter-controls label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4a5568;
+  }
+  .filter-controls input[type="date"],
+  .filter-controls input[type="text"] { /* Added text input for sales filter */
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    width: 100%;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  .filter-controls input[type="date"]:focus,
+  .filter-controls input[type="text"]:focus { /* Added text input for sales filter */
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    outline: none;
+  }
+  .filter-controls button {
+    padding: 0.5rem 1rem;
+    height: 42px;
+  }
+
+  /* Custom Notification Styles */
+  #customNotification {
+    position: absolute; /* Changed from fixed to absolute */
+    top: 20px; /* Adjusted position relative to .pc-content */
+    right: 20px; /* Adjusted position relative to .pc-content */
+    padding: 12px 20px;
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-md */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    transition: opacity 0.5s ease-in-out, background-color 0.3s ease, color 0.3s ease; /* Added transitions for color/bg */
+    opacity: 0; /* Start hidden */
+  }
+  #customNotification.hidden {
+    display: none;
+  }
+  /* Specific styles for success and error */
+  #customNotification.success {
+    background-color: #d1fae5; /* green-100 */
+    color: #065f46; /* green-800 */
+  }
+  #customNotification.error {
+    background-color: #fee2e2; /* red-100 */
+    color: #991b1b; /* red-800 */
+  }
+
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+  }
+  .modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  .modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease-in-out;
+  }
+  .modal-overlay.show .modal-content {
+    transform: translateY(0);
+  }
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4a5568;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  /* Autocomplete specific styles */
+  .autocomplete-container {
+    position: relative;
+  }
+  .autocomplete-suggestions {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+    max-height: 150px;
+    overflow-y: auto;
+    display: none; /* Hidden by default */
+  }
+  .autocomplete-suggestions.show {
+    display: block;
+  }
+  .autocomplete-suggestion-item {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+  }
+  .autocomplete-suggestion-item:hover {
+    background-color: #f7fafc; /* gray-50 */
+  }
+  /* Validation styles */
+  input.border-red-500 {
+    border-color: #ef4444; /* red-500 */
+  }
+  .validation-message {
+    color: #ef4444; /* red-500 */
+    font-size: 0.75rem; /* text-xs */
+    margin-top: 0.25rem;
+  }
+</style>
+</head>
+<!-- [Head] end -->
+
+<!-- [Body] Start -->
+<body>
+@@include('../layouts/loader.html')
+@@include('../layouts/sidebar.html')
+@@include('../layouts/topbar.html')
+
+<!-- [ Main Content ] start -->
+<div class="pc-container" data-page-role="Marketing,Direktur,Sales">
+  <div class="pc-content">
+    <!-- [ breadcrumb ] start -->
+    @@include('../layouts/breadcrumb.html', {'breadcrumb-item': 'Marketing', 'breadcrumb-item-active': 'Laporan PO', 'breadcrumb-item-href': '../pages/Marketing.html'})
+    <!-- [ breadcrumb ] end -->
+
+    <div class="grid grid-cols-12 gap-x-6">
+      <div class="col-span-12">
+        <div class="card">
+          <div class="card-header">
+            <h5>Laporan Purchase Order</h5>
+          </div>
+          <div class="card-body">
+            <!-- Date Filter Controls -->
+            <div class="filter-controls">
+              <div class="form-group">
+                <label for="startDate">Tanggal Mulai:</label>
+                <input type="date" id="startDate" class="form-control" />
+              </div>
+              <div class="form-group">
+                <label for="endDate">Tanggal Akhir:</label>
+                <input type="date" id="endDate" class="form-control" />
+              </div>
+              <!-- Sales Filter Field with Autocomplete - Hidden for Sales role -->
+              <div class="form-group autocomplete-container" id="salesFilterContainer" data-filter-role="Marketing,Direktur">
+                <label for="salesNameFilter">Nama Sales:</label>
+                <input type="text" id="salesNameFilter" class="form-control" placeholder="Cari Nama Sales" autocomplete="off" />
+                <div id="salesSuggestionsList" class="autocomplete-suggestions"></div>
+              </div>
+              <button id="filterButton" class="btn btn-primary">
+                <span id="filterIcon">🔍</span> Filter
+              </button>
+              <button id="resetFilterButton" class="btn btn-secondary">Reset Filter</button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover" id="poDataTable">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>No PO</th>
+                    <th>Tanggal PO</th>
+                    <th>Nama Customer</th>
+                    <th>Nama Sales</th>
+                    <th>Nama ASSY</th>
+                    <th>Qty</th>
+                    <th>Harga</th>
+                    <th>PPN 11%</th>
+                    <th>Total Harga</th>
+                    <th>Dibuat Oleh</th> <!-- New column header -->
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="poTableBody">
+                  <!-- Konten awal akan kosong atau diisi oleh JS setelah data dimuat -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit PO Modal -->
+<div id="editPoModal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <h3 class="text-xl font-semibold mb-4">Edit Data Purchase Order</h3>
+    <form id="editPoForm">
+      <input type="hidden" id="editPoId">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="form-group">
+          <label for="editNoPo">No PO</label>
+          <input type="text" id="editNoPo" required>
+        </div>
+        <div class="form-group">
+          <label for="editPoDate">Tanggal PO</label>
+          <input type="date" id="editPoDate" required>
+        </div>
+        <div class="form-group autocomplete-container">
+          <label for="editCustomerName">Nama Customer</label>
+          <input type="text" id="editCustomerName" required autocomplete="off">
+          <div id="customerSuggestionsList" class="autocomplete-suggestions"></div>
+          <div id="customerValidationMessage" class="validation-message hidden"></div>
+        </div>
+        <div class="form-group autocomplete-container">
+          <label for="editSalesName">Nama Sales</label>
+          <input type="text" id="editSalesName" required autocomplete="off">
+          <div id="salesSuggestionsListEdit" class="autocomplete-suggestions"></div>
+          <div id="salesValidationMessage" class="validation-message hidden"></div>
+        </div>
+        <div class="form-group autocomplete-container">
+          <label for="editAssyName">Nama ASSY</label>
+          <input type="text" id="editAssyName" required autocomplete="off">
+          <div id="assySuggestionsList" class="autocomplete-suggestions"></div>
+          <div id="assyValidationMessage" class="validation-message hidden"></div>
+        </div>
+        <div class="form-group">
+          <label for="editQty">Qty</label>
+          <input type="number" id="editQty" required min="0">
+        </div>
+        <div class="form-group">
+          <label for="editUnitPrice">Harga Satuan</label>
+          <input type="number" id="editUnitPrice" required min="0" step="0.01">
+        </div>
+        <!-- PPN field removed as per request, it will be calculated automatically -->
+        <div class="form-group">
+          <label for="editTotalPrice">Total Harga (Termasuk PPN 11%)</label>
+          <input type="number" id="editTotalPrice" readonly class="bg-gray-100 cursor-not-allowed">
+        </div>
+      </div>
+      <div class="flex justify-end gap-4 mt-6">
+        <button type="button" id="cancelEditPo" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Batal</button>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 ease-in-out">Simpan Perubahan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+@@include('../layouts/footer-block.html')
+@@include('../layouts/footer-js.html')
+
+<script>
+layout_change('false');
+</script>
+ 
+<script>
+layout_theme_sidebar_change('dark');
+</script>
+
+<script>
+change_box_container('false');
+</script>
+ 
+<script>
+layout_caption_change('true');
+</script>
+ 
+<script>
+layout_rtl_change('false');
+</script>
+ 
+<script>
+preset_change('preset-1');
+</script>
+ 
+<script>
+main_layout_change('vertical');
+</script>
+
+
+<!-- Include Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../assets/js/supabase-config.js"></script>
+<script src="../assets/js/role-based-menu.js"></script>
+
+<script>
+  function showNotification(message, isSuccess = true) {
+    console.log("showNotification called with message:", message, "isSuccess:", isSuccess); // Log pesan notifikasi
+    let notification = document.getElementById('customNotification');
+    if (!notification) {
+      notification = document.createElement('div');
+      notification.id = 'customNotification';
+      notification.className = 'px-6 py-4 rounded-lg shadow-xl z-50 hidden opacity-0 transition-opacity duration-500 flex items-center gap-3';
+      document.querySelector('.pc-content').appendChild(notification);
+
+      const iconSpan = document.createElement('span');
+      iconSpan.id = 'notificationIcon';
+      iconSpan.className = 'text-2xl';
+      notification.appendChild(iconSpan);
+
+      const messageSpan = document.createElement('span');
+      messageSpan.id = 'notificationMessage';
+      messageSpan.className = 'font-semibold';
+      notification.appendChild(messageSpan);
+    }
+
+    const notificationIcon = notification.querySelector('#notificationIcon');
+    const notificationMessage = notification.querySelector('#notificationMessage');
+
+    notificationMessage.textContent = message;
+    notificationIcon.textContent = isSuccess ? '✔' : '✖';
+
+    notification.classList.remove('bg-green-600', 'bg-red-600', 'hidden', 'opacity-0', 'text-white');
+    if (isSuccess) {
+      notification.classList.add('success');
+    } else {
+      notification.classList.add('error');
+    }
+    
+    notification.style.opacity = '1';
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      setTimeout(() => {
+        notification.classList.add('hidden');
+      }, 3000);
+    }, 3000);
+  }
+
+  document.addEventListener('DOMContentLoaded', async function() {
+    const poDataTableBody = document.getElementById('poTableBody');
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    const salesFilterContainer = document.getElementById('salesFilterContainer');
+    const salesNameFilterInput = document.getElementById('salesNameFilter');
+    const salesSuggestionsList = document.getElementById('salesSuggestionsList');
+    const filterButton = document.getElementById('filterButton');
+    const resetFilterButton = document.getElementById('resetFilterButton');
+
+    // Edit Modal Elements
+    const editPoModal = document.getElementById('editPoModal');
+    const editPoForm = document.getElementById('editPoForm');
+    const editPoIdInput = document.getElementById('editPoId');
+    const editNoPoInput = document.getElementById('editNoPo');
+    const editPoDateInput = document.getElementById('editPoDate');
+    const editCustomerNameInput = document.getElementById('editCustomerName');
+    const editSalesNameInput = document.getElementById('editSalesName');
+    const editAssyNameInput = document.getElementById('editAssyName');
+    const editQtyInput = document.getElementById('editQty');
+    const editUnitPriceInput = document.getElementById('editUnitPrice');
+    const editTotalPriceInput = document.getElementById('editTotalPrice');
+    const cancelEditPoButton = document.getElementById('cancelEditPo');
+
+    // Autocomplete elements for edit modal
+    const customerSuggestionsList = document.getElementById('customerSuggestionsList');
+    const salesSuggestionsListEdit = document.getElementById('salesSuggestionsListEdit');
+    const assySuggestionsList = document.getElementById('assySuggestionsList');
+
+    // Validation message elements
+    const customerValidationMessage = document.getElementById('customerValidationMessage');
+    const salesValidationMessage = document.getElementById('salesValidationMessage');
+    const assyValidationMessage = document.getElementById('assyValidationMessage');
+
+
+    let allPoData = [];
+    let allSalesData = [];
+    let allCustomersData = [];
+    let allItemsData = [];
+    let currentUserRole = null;
+    let currentUserId = null;
+
+    const checkRoleInterval = setInterval(async () => {
+      if (window.roleBasedMenuInstance && window.roleBasedMenuInstance.userRole && window.roleBasedMenuInstance.userId) {
+        currentUserRole = window.roleBasedMenuInstance.userRole;
+        currentUserId = window.roleBasedMenuInstance.userId;
+        console.log('Laporan PO: User role detected:', currentUserRole, 'User ID:', currentUserId);
+        clearInterval(checkRoleInterval);
+        
+        if (currentUserRole === 'Sales') {
+          if (salesFilterContainer) {
+            salesFilterContainer.style.display = 'none';
+            console.log('Laporan PO: Sales filter hidden for Sales role.');
+          }
+        } else {
+          await loadSalesDataForFilter();
+        }
+        await loadCustomersDataForAutocomplete();
+        await loadItemsDataForAutocomplete();
+        loadPoData();
+      } else {
+        console.log('Laporan PO: Waiting for roleBasedMenuInstance to be ready...');
+      }
+    }, 100);
+
+    function calculateTotalPrice() {
+      const qty = parseFloat(editQtyInput.value) || 0;
+      const unitPrice = parseFloat(editUnitPriceInput.value) || 0;
+      const ppnRate = 0.11;
+      const subtotal = qty * unitPrice;
+      const ppnValue = subtotal * ppnRate;
+      const total = subtotal + ppnValue;
+      editTotalPriceInput.value = total.toFixed(2);
+    }
+
+    editQtyInput.addEventListener('input', calculateTotalPrice);
+    editUnitPriceInput.addEventListener('input', calculateTotalPrice);
+
+    async function loadSalesDataForFilter() {
+      try {
+        const result = await window.DatabaseHelper.getSales();
+        if (result.success) {
+          allSalesData = result.data;
+          console.log('Sales data loaded for filter:', allSalesData);
+        } else {
+          console.error('Failed to load sales data for filter:', result.error);
+          showNotification(`❌ Gagal memuat daftar sales: ${result.error}`, false);
+        }
+      } catch (error) {
+        console.error('Exception loading sales data for filter:', error);
+        showNotification(`❌ Terjadi kesalahan saat memuat daftar sales: ${error.message}`, false);
+      }
+    }
+
+    async function loadCustomersDataForAutocomplete() {
+      try {
+        const result = await window.DatabaseHelper.getCustomers();
+        if (result.success) {
+          allCustomersData = result.data;
+          console.log('Customer data loaded for autocomplete:', allCustomersData);
+        } else {
+          console.error('Failed to load customer data for autocomplete:', result.error);
+          showNotification(`❌ Gagal memuat daftar customer: ${result.error}`, false);
+        }
+      } catch (error) {
+        console.error('Exception loading customer data for autocomplete:', error);
+        showNotification(`❌ Terjadi kesalahan saat memuat daftar customer: ${error.message}`, false);
+      }
+    }
+
+    async function loadItemsDataForAutocomplete() {
+      try {
+        const result = await window.DatabaseHelper.getItems();
+        if (result.success) {
+          allItemsData = result.data;
+          console.log('Item data loaded for autocomplete:', allItemsData);
+        } else {
+          console.error('Failed to load item data for autocomplete:', result.error);
+          showNotification(`❌ Gagal memuat daftar barang: ${result.error}`, false);
+        }
+      } catch (error) {
+        console.error('Exception loading item data for autocomplete:', error);
+        showNotification(`❌ Terjadi kesalahan saat memuat daftar barang: ${error.message}`, false);
+      }
+    }
+
+    function setupAutocomplete(inputElement, suggestionsListElement, validationMessageElement, dataArray, dataKey, validationMessage) {
+      let isValid = false;
+
+      function showSuggestions(searchTerm) {
+        suggestionsListElement.innerHTML = '';
+        let filteredSuggestions;
+        if (searchTerm.length === 0) {
+          filteredSuggestions = dataArray;
+        } else {
+          filteredSuggestions = dataArray.filter(item =>
+            item[dataKey].toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        }
+
+        if (filteredSuggestions.length > 0) {
+          filteredSuggestions.forEach(item => {
+            const suggestionItem = document.createElement('div');
+            suggestionItem.className = 'autocomplete-suggestion-item';
+            suggestionItem.textContent = item[dataKey];
+            suggestionItem.addEventListener('click', () => {
+              inputElement.value = item[dataKey];
+              suggestionsListElement.classList.remove('show');
+              validateInput(true);
+            });
+            suggestionsListElement.appendChild(suggestionItem);
+          });
+          suggestionsListElement.classList.add('show');
+        } else {
+          suggestionsListElement.classList.remove('show');
+        }
+      }
+
+      function hideSuggestions() {
+        suggestionsListElement.classList.remove('show');
+      }
+
+      function validateInput(forceValid = false) {
+        const inputValue = inputElement.value.trim();
+        if (forceValid || dataArray.some(item => item[dataKey].toLowerCase() === inputValue.toLowerCase())) {
+          inputElement.classList.remove('border-red-500');
+          validationMessageElement.classList.add('hidden');
+          validationMessageElement.textContent = '';
+          isValid = true;
+        } else {
+          inputElement.classList.add('border-red-500');
+          validationMessageElement.classList.remove('hidden');
+          validationMessageElement.textContent = validationMessage;
+          isValid = false;
+        }
+        return isValid;
+      }
+
+      inputElement.addEventListener('input', (event) => {
+        showSuggestions(event.target.value);
+        validateInput();
+      });
+
+      inputElement.addEventListener('focus', (event) => {
+        showSuggestions(event.target.value);
+      });
+
+      inputElement.addEventListener('blur', () => {
+        setTimeout(() => {
+          hideSuggestions();
+          validateInput();
+        }, 100);
+      });
+
+      validateInput();
+
+      return { validate: validateInput, isValid: () => isValid, resetValidation: () => {
+          inputElement.classList.remove('border-red-500');
+          validationMessageElement.classList.add('hidden');
+          validationMessageElement.textContent = '';
+          isValid = false;
+      }};
+    }
+
+    let customerAutocomplete, salesAutocompleteEdit, assyAutocomplete;
+
+    if (salesNameFilterInput) {
+      salesNameFilterInput.addEventListener('input', (event) => {
+        showSalesSuggestions(event.target.value);
+      });
+
+      salesNameFilterInput.addEventListener('focus', (event) => {
+        showSalesSuggestions(event.target.value);
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!salesNameFilterInput.contains(event.target) && !salesSuggestionsList.contains(event.target)) {
+          hideSalesSuggestions();
+        }
+      });
+    }
+
+    function showSalesSuggestions(searchTerm) {
+      salesSuggestionsList.innerHTML = '';
+      if (searchTerm.length === 0) {
+        salesSuggestionsList.classList.remove('show');
+        return;
+      }
+
+      const filteredSuggestions = allSalesData.filter(sales =>
+        sales.display_name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      if (filteredSuggestions.length > 0) {
+        filteredSuggestions.forEach(sales => {
+          const suggestionItem = document.createElement('div');
+          suggestionItem.className = 'autocomplete-suggestion-item';
+          suggestionItem.textContent = sales.display_name;
+          suggestionItem.addEventListener('click', () => {
+            salesNameFilterInput.value = sales.display_name;
+            salesSuggestionsList.classList.remove('show');
+          });
+          salesSuggestionsList.appendChild(suggestionItem);
+        });
+        salesSuggestionsList.classList.add('show');
+      } else {
+        salesSuggestionsList.classList.remove('show');
+      }
+    }
+
+    function hideSalesSuggestions() {
+      salesSuggestionsList.classList.remove('show');
+    }
+
+
+    async function loadPoData() {
+      const filterStartDateStr = startDateInput.value;
+      const filterEndDateStr = endDateInput.value;
+      const filterSalesName = (salesNameFilterInput && salesFilterContainer && salesFilterContainer.style.display !== 'none') ? salesNameFilterInput.value.trim() : '';
+
+      try {
+        if (typeof window.DatabaseHelper === 'undefined') {
+          throw new Error('Database connection not available. Please refresh the page.');
+        }
+
+        let result;
+        let filterOptions = {};
+
+        if (filterStartDateStr && filterEndDateStr) {
+          if (filterStartDateStr > filterEndDateStr) {
+            showNotification("⚠️ Tanggal mulai tidak boleh lebih besar dari tanggal akhir.", false);
+            return;
+          }
+          filterOptions.startDate = filterStartDateStr;
+          filterOptions.endDate = filterEndDateStr;
+        } else if (filterStartDateStr || filterEndDateStr) {
+          showNotification("⚠️ Harap masukkan kedua tanggal (mulai dan akhir) untuk filter.", false);
+          startDateInput.value = '';
+          endDateInput.value = '';
+        }
+
+        if (currentUserRole === 'Sales' && currentUserId) {
+          filterOptions.createdByUserId = currentUserId;
+          console.log('Laporan PO: Filtering for Sales role by user ID:', currentUserId);
+        } else {
+          console.log('Laporan PO: Loading all POs for role:', currentUserRole);
+        }
+
+        if (filterSalesName && (currentUserRole === 'Marketing' || currentUserRole === 'Direktur')) {
+          filterOptions.salesName = filterSalesName;
+          console.log('Laporan PO: Applying sales name filter:', filterSalesName);
+        }
+        
+        result = await window.DatabaseHelper.getPOs(
+          filterOptions.startDate,
+          filterOptions.endDate,
+          filterOptions.createdByUserId,
+          filterOptions.salesName
+        );
+
+        console.log('PO data result:', result);
+
+        if (result.success) {
+          allPoData = result.data || [];
+        } else {
+          console.error('Failed to load PO data:', result.error);
+          showNotification(`❌ Gagal memuat data: ${result.error}`, false);
+          poDataTableBody.innerHTML = '<tr><td colspan="12" class="text-center text-red-500">Gagal memuat data</td></tr>';
+          return;
+        }
+
+        poDataTableBody.innerHTML = '';
+
+        if (allPoData.length === 0) {
+          poDataTableBody.innerHTML = '<tr><td colspan="12" class="text-center">Tidak ada data PO yang ditemukan.</td></tr>';
+          return;
+        }
+
+        const canModify = currentUserRole === 'Direktur' || currentUserRole === 'Marketing';
+
+        allPoData.forEach((po, index) => {
+          const row = poDataTableBody.insertRow();
+          const poDate = new Date(po.po_date).toLocaleDateString('id-ID');
+          
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${po.no_po || '-'}</td>
+            <td>${poDate}</td>
+            <td>${po.customer_name || '-'}</td>
+            <td>${po.sales_name || '-'}</td>
+            <td>${po.assy_name || '-'}</td>
+            <td>${(po.qty || 0).toLocaleString()}</td>
+            <td>${(po.unit_price || 0).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td>${(po.ppn || 0).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td>${(po.total_price || 0).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td>${po.created_by_user_display_name || '-'}</td>
+            <td class="flex gap-2">
+              ${canModify ? `
+                <button class="text-blue-500 hover:text-blue-700" data-edit-id="${po.id}" title="Edit Data">
+                  <i data-feather="edit" class="size-5"></i>
+                </button>
+                <button class="text-red-500 hover:text-red-700" data-delete-id="${po.id}" title="Hapus Data">
+                  <i data-feather="trash-2" class="size-5"></i>
+                </button>
+              ` : ''}
+            </td>
+          `;
+        });
+        feather.replace();
+
+        showNotification(`✅ Data berhasil dimuat (${allPoData.length} PO)`, true);
+      } catch (error) {
+        console.error('Exception loading PO data:', error);
+        showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+        poDataTableBody.innerHTML = '<tr><td colspan="12" class="text-center text-red-500">Terjadi kesalahan saat memuat data</td></tr>';
+      }
+    }
+
+    async function deletePoRow(idToDelete) {
+      console.log('Attempting to delete PO row with ID:', idToDelete);
+      console.log('Current user role for delete operation:', currentUserRole);
+
+      if (currentUserRole !== 'Direktur' && currentUserRole !== 'Marketing') {
+        console.warn('Access denied: User role is not Direktur or Marketing.');
+        showNotification("❌ Anda tidak memiliki izin untuk menghapus data ini.", false);
+        return;
+      }
+
+      if (confirm('Apakah Anda yakin ingin menghapus data PO ini?')) {
+        const result = await DatabaseHelper.deletePO(idToDelete);
+        if (result.success) {
+          showNotification("✅ Data PO berhasil dihapus!", true);
+          loadPoData();
+        } else {
+          console.error('Failed to delete PO data:', result.error);
+          showNotification(`❌ Gagal menghapus data PO: ${result.error}`, false);
+        }
+      }
+    }
+
+    function openEditPoModal(data) {
+      editPoIdInput.value = data.id;
+      editNoPoInput.value = data.no_po || '';
+      editPoDateInput.value = data.po_date;
+      editCustomerNameInput.value = data.customer_name || '';
+      editAssyNameInput.value = data.assy_name || '';
+      editSalesNameInput.value = data.sales_name || '';
+      editQtyInput.value = data.qty || 0;
+      editUnitPriceInput.value = data.unit_price || 0;
+      calculateTotalPrice();
+
+      customerAutocomplete = setupAutocomplete(editCustomerNameInput, customerSuggestionsList, customerValidationMessage, allCustomersData, 'customer_name', 'Nama customer tidak valid.');
+      salesAutocompleteEdit = setupAutocomplete(editSalesNameInput, salesSuggestionsListEdit, salesValidationMessage, allSalesData, 'display_name', 'Nama sales tidak valid.');
+      assyAutocomplete = setupAutocomplete(editAssyNameInput, assySuggestionsList, assyValidationMessage, allItemsData, 'part_assy_name', 'Nama ASSY tidak valid.');
+
+      customerAutocomplete.validate(true);
+      salesAutocompleteEdit.validate(true);
+      assyAutocomplete.validate(true);
+
+      editPoModal.classList.add('show');
+    }
+
+    function closeEditPoModal() {
+      editPoModal.classList.remove('show');
+      editPoForm.reset();
+      customerAutocomplete.resetValidation();
+      salesAutocompleteEdit.resetValidation();
+      assyAutocomplete.resetValidation();
+    }
+
+    editPoForm.addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const isCustomerValid = customerAutocomplete.validate();
+      const isSalesValid = salesAutocompleteEdit.validate();
+      const isAssyValid = assyAutocomplete.validate();
+
+      if (!isCustomerValid || !isSalesValid || !isAssyValid) {
+        showNotification("❌ Harap perbaiki input yang tidak valid.", false);
+        return;
+      }
+
+      const idToUpdate = editPoIdInput.value;
+      const qty = parseFloat(editQtyInput.value) || 0;
+      const unitPrice = parseFloat(editUnitPriceInput.value) || 0;
+      const ppnRate = 0.11;
+      const subtotal = qty * unitPrice;
+      const ppnValue = subtotal * ppnRate;
+
+      const updatedData = {
+        no_po: editNoPoInput.value,
+        po_date: editPoDateInput.value,
+        customer_name: editCustomerNameInput.value,
+        sales_name: editSalesNameInput.value,
+        assy_name: editAssyNameInput.value,
+        qty: qty,
+        unit_price: unitPrice,
+        ppn: ppnValue,
+        total_price: parseFloat(editTotalPriceInput.value),
+      };
+
+      console.log('Attempting to update PO data:', idToUpdate, updatedData);
+
+      if (currentUserRole !== 'Direktur' && currentUserRole !== 'Marketing') {
+        console.warn('Access denied: User role is not Direktur or Marketing.');
+        showNotification("❌ Anda tidak memiliki izin untuk mengubah data ini.", false);
+        return;
+      }
+
+      const result = await DatabaseHelper.updatePO(idToUpdate, updatedData);
+
+      if (result.success) {
+        showNotification("✅ Data PO berhasil diperbarui!", true);
+        closeEditPoModal();
+        loadPoData();
+      } else {
+        console.error('Failed to update PO data:', result.error);
+        showNotification(`❌ Gagal memperbarui data PO: ${result.error}`, false);
+      }
+    });
+
+    cancelEditPoButton.addEventListener('click', closeEditPoModal);
+    editPoModal.addEventListener('click', function(event) {
+      if (event.target === editPoModal) {
+        closeEditPoModal();
+      }
+    });
+
+    filterButton.addEventListener('click', loadPoData);
+    
+    resetFilterButton.addEventListener('click', function() {
+      startDateInput.value = '';
+      endDateInput.value = '';
+      if (salesNameFilterInput) {
+        salesNameFilterInput.value = '';
+        hideSalesSuggestions();
+      }
+      loadPoData();
+    });
+
+    poDataTableBody.addEventListener('click', async function(event) {
+      const deleteButton = event.target.closest('[data-delete-id]');
+      const editButton = event.target.closest('[data-edit-id]');
+
+      if (deleteButton) {
+        const idToDelete = deleteButton.dataset.deleteId;
+        if (idToDelete) {
+          await deletePoRow(idToDelete);
+        } else {
+          console.error('Invalid data-delete-id: ID is missing or empty.');
+          showNotification('❌ ID data tidak valid untuk dihapus.', false);
+        }
+      } else if (editButton) {
+        const idToEdit = editButton.dataset.editId;
+        const dataToEdit = allPoData.find(data => String(data.id) === idToEdit);
+        if (dataToEdit) {
+          openEditPoModal(dataToEdit);
+        } else {
+          console.error('Data to edit not found for ID:', idToEdit);
+          showNotification('❌ Data tidak ditemukan untuk diedit.', false);
+        }
+      }
+    });
+  });
+</script>
+</body>
+<!-- [Body] end -->
+</html>

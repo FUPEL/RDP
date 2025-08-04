@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en" data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" dir="ltr" data-pc-theme="light">
+<!-- [Head] start -->
+<head>
+  @@include('../layouts/head-page-meta.html', {'title': 'Kelola Data Barang'})
+  @@include('../layouts/head-css.html')
+  <style>
+    .editable-cell {
+      cursor: pointer;
+    }
+    .editable-cell input {
+      width: 100%;
+      border: 1px solid #ccc;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+    }
+    .action-buttons button {
+      margin-right: 0.5rem;
+    }
+    .part-details-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.875rem;
+      color: #4a5568;
+    }
+    .part-details-list li {
+      margin-bottom: 0.25rem;
+    }
+    .validation-message {
+      color: #ef4444;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+    /* Custom Notification Styles */
+    #customNotification {
+      position: absolute; /* Changed from fixed to absolute */
+      top: 20px; /* Adjusted position relative to .pc-content */
+      right: 20px; /* Adjusted position relative to .pc-content */
+      padding: 12px 20px;
+      border-radius: 0.5rem; /* rounded-lg */
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-md */
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      transition: opacity 0.5s ease-in-out, background-color 0.3s ease, color 0.3s ease; /* Added transitions for color/bg */
+      opacity: 0; /* Start hidden */
+    }
+    #customNotification.hidden {
+      display: none;
+    }
+    /* Specific styles for success and error */
+    #customNotification.success {
+      background-color: #d1fae5; /* green-100 */
+      color: #065f46; /* green-800 */
+    }
+    #customNotification.error {
+      background-color: #fee2e2; /* red-100 */
+      color: #991b1b; /* red-800 */
+    }
+  </style>
+</head>
+<!-- [Head] end -->
+
+<!-- [Body] Start -->
+<body>
+  @@include('../layouts/loader.html')
+  @@include('../layouts/sidebar.html')
+  @@include('../layouts/topbar.html')
+
+  <!-- [ Main Content ] start -->
+  <div class="pc-container">
+    <div class="pc-content">
+      @@include('../layouts/breadcrumb.html', {'breadcrumb-item': 'Marketing', 'breadcrumb-item-href': '../pages/Marketing.html', 'breadcrumb-item-active': 'Kelola Data Barang'})
+
+      <!-- Custom Notification Element - Moved here -->
+      <div id="customNotification" class="hidden">
+        <span id="notificationIcon"></span>
+        <span id="notificationMessage"></span>
+      </div>
+
+      <div class="grid grid-cols-12 gap-x-6">
+        <div class="col-span-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Data Barang</h5>
+              <!-- Tombol Refresh Data dihapus -->
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <input type="text" id="itemSearchInput" placeholder="Cari Nama Part Assy..." class="form-control block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              </div>
+              
+              <!-- Notifikasi "Memuat data..." dihapus -->
+              
+              <div class="table-responsive">
+                <table class="table table-hover" id="itemDataTable">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Nama Part Assy</th>
+                      <th>Detail Part Single & Proses</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="itemTableBody">
+                    <!-- Konten awal akan kosong atau diisi oleh JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @@include('../layouts/footer-block.html')
+  @@include('../layouts/footer-js.html')
+
+  <!-- Include Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase-config.js"></script>
+  <script src="../assets/js/role-based-menu.js"></script>
+
+  <script>
+    function showNotification(message, isSuccess = true) {
+      let notification = document.getElementById('customNotification');
+      if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'customNotification';
+        // Removed fixed bottom-4 right-4 from className
+        notification.className = 'px-6 py-4 rounded-lg shadow-xl z-50 hidden opacity-0 transition-opacity duration-500 flex items-center gap-3';
+        // Changed appendChild target to .pc-content
+        document.querySelector('.pc-content').appendChild(notification);
+
+        const iconSpan = document.createElement('span');
+        iconSpan.id = 'notificationIcon';
+        iconSpan.className = 'text-2xl';
+        notification.appendChild(iconSpan);
+
+        const messageSpan = document.createElement('span');
+        messageSpan.id = 'notificationMessage';
+        messageSpan.className = 'font-semibold';
+        notification.appendChild(messageSpan);
+      }
+
+      const notificationIcon = notification.querySelector('#notificationIcon');
+      const notificationMessage = notification.querySelector('#notificationMessage');
+
+      notificationMessage.textContent = message;
+      notificationIcon.textContent = isSuccess ? '✔' : '✖';
+
+      // Removed bg-green-600, bg-red-600, text-white
+      notification.classList.remove('bg-green-600', 'bg-red-600', 'hidden', 'opacity-0', 'text-white');
+      // Added new success/error classes
+      if (isSuccess) {
+        notification.classList.add('success');
+      } else {
+        notification.classList.add('error');
+      }
+      
+      notification.style.opacity = '1';
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+          notification.classList.add('hidden');
+        }, 500);
+      }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      const itemDataTableBody = document.getElementById('itemTableBody');
+      const itemSearchInput = document.getElementById('itemSearchInput');
+      let allItemData = [];
+
+      function formatPartDetails(partDetails) {
+        if (!partDetails || partDetails.length === 0) {
+          return 'Tidak ada detail';
+        }
+        // Iterate through each part single and its processes
+        return `<ul class="part-details-list">${partDetails.map(detail => {
+          const processesHtml = detail.processes && detail.processes.length > 0 
+            ? `<ul class="ml-4 list-disc list-inside">${detail.processes.map(process => `<li>${process}</li>`).join('')}</ul>`
+            : ' (Tidak ada proses)';
+          return `<li><strong>${detail.partSingleName}</strong>${processesHtml}</li>`;
+        }).join('')}</ul>`;
+      }
+
+      async function loadItemData(dataToDisplay = null) {
+        // Baris ini yang menyebabkan notifikasi "Memuat data..."
+        // Telah dihapus sepenuhnya.
+        
+        try {
+          if (typeof window.DatabaseHelper === 'undefined') {
+            throw new Error('Database connection not available. Please refresh the page.');
+          }
+
+          if (!dataToDisplay) {
+            console.log('Loading item data...');
+            const result = await window.DatabaseHelper.getItems();
+            
+            console.log('Item data result:', result);
+            
+            if (result.success) {
+              allItemData = result.data || [];
+            } else {
+              console.error('Failed to load items:', result.error);
+              showNotification(`❌ Gagal memuat data: ${result.error}`, false);
+              itemDataTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-red-500">Gagal memuat data</td></tr>';
+              return;
+            }
+          }
+
+          const data = dataToDisplay || allItemData;
+
+          itemDataTableBody.innerHTML = '';
+
+          if (data.length === 0) {
+            itemDataTableBody.innerHTML = '<tr><td colspan="4" class="text-center">Tidak ada data barang.</td></tr>';
+            return;
+          }
+
+          data.forEach((item, index) => {
+            const row = itemDataTableBody.insertRow();
+            row.dataset.id = item.id;
+
+            row.innerHTML = `
+              <td>${index + 1}</td>
+              <td data-field="part_assy_name" class="editable-cell">${item.part_assy_name || '-'}</td>
+              <td>${formatPartDetails(item.part_details)}</td>
+              <td class="action-buttons">
+                <button class="btn btn-sm btn-primary edit-btn">Edit</button>
+                <button class="btn btn-sm btn-danger delete-btn">Hapus</button>
+              </td>
+            `;
+          });
+
+          addEventListeners();
+          showNotification(`✅ Data berhasil dimuat (${data.length} barang)`, true);
+        } catch (error) {
+          console.error('Exception loading item data:', error);
+          showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+          itemDataTableBody.innerHTML = '<tr><td colspan="4" class="text-center text-red-500">Terjadi kesalahan saat memuat data</td></tr>';
+        }
+      }
+
+      function addEventListeners() {
+        itemDataTableBody.querySelectorAll('.edit-btn').forEach(button => {
+          button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            toggleEditMode(row, true);
+          });
+        });
+
+        itemDataTableBody.querySelectorAll('.delete-btn').forEach(button => {
+          button.addEventListener('click', async function() {
+            const row = this.closest('tr');
+            const id = parseInt(row.dataset.id);
+            await deleteItem(id);
+          });
+        });
+      }
+
+      function toggleEditMode(row, isEditing) {
+        const partAssyNameCell = row.querySelector('[data-field="part_assy_name"]');
+        const actionButtonsCell = row.querySelector('.action-buttons');
+        const id = parseInt(row.dataset.id);
+        const originalData = allItemData.find(item => item.id === id);
+
+        if (isEditing) {
+          const originalValue = partAssyNameCell.textContent;
+          partAssyNameCell.innerHTML = `<input type="text" value="${originalValue}" data-original-value="${originalValue}" />`;
+
+          actionButtonsCell.innerHTML = `
+            <button class="btn btn-sm btn-success save-btn">Simpan</button>
+            <button class="btn btn-sm btn-secondary cancel-btn">Batal</button>
+          `;
+          actionButtonsCell.querySelector('.save-btn').addEventListener('click', async function() {
+            await saveItem(row, id);
+          });
+          actionButtonsCell.querySelector('.cancel-btn').addEventListener('click', function() {
+            toggleEditMode(row, false);
+          });
+        } else {
+          partAssyNameCell.textContent = originalData.part_assy_name || '-';
+          actionButtonsCell.innerHTML = `
+            <button class="btn btn-sm btn-primary edit-btn">Edit</button>
+            <button class="btn btn-sm btn-danger delete-btn">Hapus</button>
+          `;
+          addEventListeners();
+        }
+      }
+
+      async function saveItem(row, id) {
+        const partAssyNameInput = row.querySelector('[data-field="part_assy_name"] input');
+        const newPartAssyName = partAssyNameInput.value.trim();
+
+        if (!newPartAssyName) {
+          partAssyNameInput.classList.add('border-red-500');
+          showNotification("❌ Nama Part Assy tidak boleh kosong!", false);
+          return;
+        } else {
+          partAssyNameInput.classList.remove('border-red-500');
+        }
+
+        try {
+          if (typeof window.DatabaseHelper === 'undefined') {
+            throw new Error('Database connection not available');
+          }
+
+          const updatedItem = { part_assy_name: newPartAssyName };
+          console.log('Updating item:', { id, updatedItem });
+          
+          const result = await window.DatabaseHelper.updateItem(id, updatedItem);
+          
+          if (result.success) {
+            showNotification("✅ Data barang berhasil diperbarui!", true);
+            await loadItemData();
+            const searchTerm = itemSearchInput.value.toLowerCase();
+            if (searchTerm) {
+              const filteredData = allItemData.filter(item =>
+                item.part_assy_name.toLowerCase().includes(searchTerm)
+              );
+              loadItemData(filteredData);
+            }
+          } else {
+            showNotification(`❌ Gagal memperbarui data: ${result.error}`, false);
+          }
+        } catch (error) {
+          console.error('Error updating item:', error);
+          showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+        }
+      }
+
+      async function deleteItem(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus data barang ini?')) {
+          try {
+            if (typeof window.DatabaseHelper === 'undefined') {
+              throw new Error('Database connection not available');
+            }
+
+            console.log('Deleting item:', id);
+            const result = await window.DatabaseHelper.deleteItem(id);
+            
+            if (result.success) {
+              showNotification("✅ Data barang berhasil dihapus!", true);
+              await loadItemData();
+              const searchTerm = itemSearchInput.value.toLowerCase();
+              if (searchTerm) {
+                const filteredData = allItemData.filter(item =>
+                  item.part_assy_name.toLowerCase().includes(searchTerm)
+                );
+                loadItemData(filteredData);
+              }
+            } else {
+              showNotification(`❌ Gagal menghapus data: ${result.error}`, false);
+            }
+          } catch (error) {
+            console.error('Error deleting item:', error);
+            showNotification(`❌ Terjadi kesalahan: ${error.message}`, false);
+          }
+        }
+      }
+
+      // Search functionality
+      itemSearchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const filteredData = allItemData.filter(item =>
+          item.part_assy_name.toLowerCase().includes(searchTerm)
+        );
+        loadItemData(filteredData);
+      });
+
+      // Initial load with delay to ensure DatabaseHelper is available
+      setTimeout(() => {
+        loadItemData();
+      }, 1000);
+    });
+  </script>
+</body>
+<!-- [Body] end -->
+</html>

@@ -1,0 +1,176 @@
+/* Notification Dropdown Styles */
+.dropdown-notification {
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dropdown-notification .dropdown-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom: none;
+}
+
+.dropdown-notification .dropdown-header h5 {
+  color: white;
+  font-weight: 600;
+}
+
+.dropdown-notification .dropdown-header a {
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.2s ease;
+}
+
+.dropdown-notification .dropdown-header a:hover {
+  color: white;
+}
+
+.dropdown-notification .dropdown-body {
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar for notification body */
+.dropdown-notification .dropdown-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-notification .dropdown-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.dropdown-notification .dropdown-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.dropdown-notification .dropdown-body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Firefox scrollbar */
+.dropdown-notification .dropdown-body {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+.notification-item {
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.notification-item:not(.read) {
+  background-color: rgba(102, 126, 234, 0.02);
+  border-left-color: #667eea;
+}
+
+.notification-item:hover {
+  background-color: #f8f9fa !important;
+  transform: translateX(2px);
+}
+
+.notification-item.read {
+  opacity: 0.7;
+}
+
+.unread-indicator {
+  display: flex;
+  align-items: center;
+}
+
+/* Badge styles */
+.pc-head-link .badge {
+  font-size: 0.6rem;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  line-height: 1.2rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dropdown-notification {
+    width: 320px !important;
+    max-width: calc(100vw - 20px) !important;
+    margin-right: 10px;
+  }
+
+  .dropdown-notification .dropdown-body {
+    max-height: 300px;
+  }
+
+  .notification-item {
+    padding: 12px 16px !important;
+  }
+
+  .notification-item .d-flex.gap-3 {
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .dropdown-notification {
+    width: 280px !important;
+  }
+
+  .dropdown-notification .dropdown-header {
+    padding: 12px 16px !important;
+  }
+
+  .dropdown-notification .dropdown-header h5 {
+    font-size: 1rem;
+  }
+
+  .notification-item {
+    padding: 10px 12px !important;
+  }
+}
+
+/* Animation for new notifications */
+@keyframes notificationPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pc-head-link .badge.animate-pulse {
+  animation: notificationPulse 2s infinite;
+}
+
+/* Smooth transitions */
+.dropdown-notification * {
+  transition: all 0.2s ease;
+}
+
+/* Footer styles */
+.dropdown-notification .dropdown-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.dropdown-notification .dropdown-footer a {
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.dropdown-notification .dropdown-footer a:hover {
+  color: #0056b3 !important;
+}
